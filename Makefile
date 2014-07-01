@@ -1,10 +1,10 @@
 CXXFLAGS =	-O2 -g -Wall -fmessage-length=0 -std=c++11
 
-CPP_FILES = $(wildcard *.cpp) $(wildcard ui/*.cpp)
+CPP_FILES = $(wildcard *.cpp) $(wildcard **/*.cpp)
 
 OBJS =		$(CPP_FILES:.cpp=.o)
 
-LIBS = -lSDL2
+LIBS = -lSDL2 -lpugixml
 
 TARGET =	sdl_gui
 

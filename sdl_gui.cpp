@@ -4,6 +4,10 @@
 #include <SDL2/SDL.h>
 
 #include "ui/UI.h"
+#include "serialization/XMLSerializer.h"
+#include "serialization/ParseException.h"
+
+using namespace SDL_GUI;
 
 void event_loop() {
 	SDL_Event event;
@@ -23,17 +27,16 @@ int abc() {
 	return a;
 }
 
-int main() {
-
+int sdl_testing() {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		fprintf(stderr, "Error initializing SDL:  %s\n", SDL_GetError());
-		return 1;
+			fprintf(stderr, "Error initializing SDL:  %s\n", SDL_GetError());
+			return 1;
 	}
 
 
 	std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window(SDL_CreateWindow("A Window",
-		    SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480,
-		    0), SDL_DestroyWindow);
+			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480,
+			0), SDL_DestroyWindow);
 
 	if (window == nullptr) {
 		fprintf(stderr, "Failed creating window:  %s\n", SDL_GetError());
@@ -46,7 +49,27 @@ int main() {
 
 	UI ui = UI::make_ui(*renderer);
 
+
+
+
 	event_loop();
 	SDL_Quit();
+	return 0;
+}
+
+int main() {
+
+// sdl_testing();
+
+	try {
+		auto serializer = std::unique_ptr<XMLSerializer>{new XMLSerializer{"foobar.xml"}};
+		auto root_node = serializer->root_node();
+
+
+	} catch (const std::exception &ex) {
+		std::cout << std::string("exception: ") + ex.what() << "\n";
+	}
+
+
 	return 0;
 }
