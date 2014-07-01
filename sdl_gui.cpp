@@ -62,8 +62,12 @@ int main() {
 // sdl_testing();
 
 	try {
-		auto serializer = std::unique_ptr<XMLSerializer>{new XMLSerializer{"foobar.xml"}};
-		auto root_node = serializer->root_node();
+		auto serializer = std::unique_ptr<Serializer>{new XMLSerializer{"foobar.xml"}};
+		auto visitor = [](const Node &node) {
+			std::cout << node.name() << "\n";
+		};
+
+		serializer->accept(visitor);
 
 
 	} catch (const std::exception &ex) {

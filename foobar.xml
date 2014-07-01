@@ -1,4 +1,11 @@
 <window title = "my_title">
   <button>
   </button>
+
+  <foo>
+    <bar>
+    </bar>
+  </foo>
 </window>
+<herp>
+</herp>

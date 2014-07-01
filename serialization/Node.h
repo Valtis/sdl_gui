@@ -7,7 +7,7 @@ class Node {
 public:
 	virtual ~Node() { }
 
-	virtual std::string name() = 0;
+	virtual std::string name() const = 0;
 };
 
 }

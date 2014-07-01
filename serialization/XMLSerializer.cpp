@@ -28,8 +28,8 @@ void XMLSerializer::accept(std::function<void(const Node &)> visitor)
 }
 
 void XMLSerializer::accept(std::function<void(const Node &)> visitor, const pugi::xml_node &node) {
-	XMLNode node{node};
-	visitor(node);
+	XMLNode xmlnode{node};
+	visitor(xmlnode);
 
 	for (const auto &child : node.children()) {
 		accept(visitor, child);

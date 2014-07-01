@@ -4,7 +4,7 @@ CPP_FILES = $(wildcard *.cpp) $(wildcard **/*.cpp)
 
 OBJS =		$(CPP_FILES:.cpp=.o)
 
-LIBS = -lSDL2 -lpugixml
+LIBS = -lpugixml -lSDL2 
 
 TARGET =	sdl_gui
 

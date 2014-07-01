@@ -9,9 +9,9 @@ namespace SDL_GUI {
 
 class Serializer {
 public:
-	virtual ~Serializer() { }
+	virtual ~Serializer();
 
-	virtual void accept(std::function<void(const Node &)> visitor);
+	virtual void accept(std::function<void(const Node &)> visitor) = 0;
 };
 
 }
