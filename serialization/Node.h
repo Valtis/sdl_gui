@@ -8,6 +8,7 @@ public:
 	virtual ~Node() { }
 
 	virtual std::string name() const = 0;
+	virtual std::string value(const std::string &key) const = 0;
 };
 
 }

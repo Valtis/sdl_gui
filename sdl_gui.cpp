@@ -4,8 +4,9 @@
 #include <SDL2/SDL.h>
 
 #include "ui/UI.h"
+#include "ui/Window.h"
 #include "serialization/XMLSerializer.h"
-#include "serialization/ParseException.h"
+
 
 using namespace SDL_GUI;
 
@@ -62,12 +63,11 @@ int main() {
 // sdl_testing();
 
 	try {
-		auto serializer = std::unique_ptr<Serializer>{new XMLSerializer{"foobar.xml"}};
-		auto visitor = [](const Node &node) {
-			std::cout << node.name() << "\n";
-		};
+		Window window{80, 80};
 
-		serializer->accept(visitor);
+		XMLSerializer serializer{"foobar.xml"};
+
+		window.load(serializer);
 
 
 	} catch (const std::exception &ex) {

@@ -18,6 +18,7 @@ public:
 	XMLNode(const pugi::xml_node &node);
 	virtual ~XMLNode();
 	virtual std::string name() const override;
+	virtual std::string value(const std::string &key) const override;
 private:
 
 	pugi::xml_node m_node;

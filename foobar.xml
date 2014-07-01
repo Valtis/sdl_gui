@@ -1,4 +1,5 @@
-<window title = "my_title">
+<window title = "my_title" x="400" y="300" r="200" g="200" b="200">
+  
   <button>
   </button>
 
