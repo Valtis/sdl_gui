@@ -10,70 +10,58 @@
 
 using namespace SDL_GUI;
 
-void event_loop() {
-	SDL_Event event;
-	while (SDL_WaitEvent(&event)) {
-		switch (event.type) {
-		case SDL_QUIT:
-			return;
-			break;
-		default:
-			break;
-		}
-	}
-}
 
-int abc() {
-	int a = 5;
-	return a;
-}
+typedef std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window_ptr;
+typedef std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer_ptr;
 
-int sdl_testing() {
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-			fprintf(stderr, "Error initializing SDL:  %s\n", SDL_GetError());
-			return 1;
-	}
+UI sdl_initialize() {
 
-
-	std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window(SDL_CreateWindow("A Window",
-			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480,
-			0), SDL_DestroyWindow);
-
-	if (window == nullptr) {
-		fprintf(stderr, "Failed creating window:  %s\n", SDL_GetError());
-				return 1;
-	}
-
-	std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer(
-			SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED), SDL_DestroyRenderer);
-
-
-	UI ui = UI::make_ui(*renderer);
-
-
-
-
-	event_loop();
-	SDL_Quit();
-	return 0;
 }
 
 int main() {
-
-// sdl_testing();
-
-	try {
-		Window window{80, 80};
-
-		XMLSerializer serializer{"foobar.xml"};
-
-		window.load(serializer);
-
-
-	} catch (const std::exception &ex) {
-		std::cout << std::string("exception: ") + ex.what() << "\n";
+	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+			throw std::runtime_error(SDL_GetError());
 	}
 
 
+	window_ptr window{SDL_CreateWindow("A Window",
+			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480,
+			0), SDL_DestroyWindow};
+
+	if (window == nullptr) {
+		throw std::runtime_error(SDL_GetError());
+	}
+
+	renderer_ptr renderer{
+			SDL_CreateRenderer(window.get(), -1, SDL_RENDERER_ACCELERATED), SDL_DestroyRenderer};
+
+	if (renderer == nullptr) {
+		throw std::runtime_error(SDL_GetError());
+	}
+
+	UI ui = UI::make_ui(*renderer);
+	ui.load_window("foobar.xml");
+
+	SDL_Event event;
+	bool is_running = true;
+	while (is_running) {
+		if (SDL_PollEvent(&event)) {
+			switch (event.type) {
+			case SDL_QUIT:
+				is_running = false;
+				break;
+			default:
+				break;
+			}
+		}
+
+
+		SDL_SetRenderDrawColor(renderer.get(), 150, 150, 255, 255);
+		SDL_RenderClear(renderer.get());
+
+		SDL_RenderPresent(renderer.get());
+	}
+
+	SDL_Quit();
 	return 0;
 }
