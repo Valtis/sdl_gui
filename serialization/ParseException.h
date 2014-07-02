@@ -5,22 +5,17 @@
 #include <string>
 
 namespace SDL_GUI {
-class ParseException : public std::exception {
+class ParseException : public std::runtime_error {
 public:
-	ParseException(const char *msg) : m_msg(msg) {
+	ParseException(const char *msg) : std::runtime_error(msg) {
 
 	}
 
-	ParseException(const std::string &msg) : m_msg(msg) {
+	ParseException(const std::string &msg) : ParseException(msg.c_str()) {
 
-	}
-
-	const char *what() const noexcept override {
-		return m_msg.c_str();
 	}
 
 private:
-	std::string m_msg;
 };
 
 }

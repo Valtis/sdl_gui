@@ -14,10 +14,6 @@ using namespace SDL_GUI;
 typedef std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window_ptr;
 typedef std::unique_ptr<SDL_Renderer, decltype(&SDL_DestroyRenderer)> renderer_ptr;
 
-UI sdl_initialize() {
-
-}
-
 int main() {
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
 			throw std::runtime_error(SDL_GetError());
@@ -59,9 +55,12 @@ int main() {
 		SDL_SetRenderDrawColor(renderer.get(), 150, 150, 255, 255);
 		SDL_RenderClear(renderer.get());
 
+		ui.draw();
+
 		SDL_RenderPresent(renderer.get());
 	}
 
+	SDL_VideoQuit();
 	SDL_Quit();
 	return 0;
 }
