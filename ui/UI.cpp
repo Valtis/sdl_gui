@@ -22,7 +22,7 @@ void UI::draw() {
 
 void UI::load_window(const std::string &file_name) {
 	try {
-		std::shared_ptr<Window> window{new Window{80, 80}};
+		std::shared_ptr<Window> window{new Window{}};
 		XMLSerializer serializer{file_name};
 		window->load(serializer, &m_renderer);
 		m_windows.push_back(std::move(window));

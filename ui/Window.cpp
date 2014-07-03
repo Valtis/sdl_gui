@@ -15,14 +15,9 @@
 
 namespace SDL_GUI {
 
-Window::Window() : m_title{""}, m_dimension{0, 0, 0, 0}, m_background{nullptr, SDL_DestroyTexture} {
+Window::Window() : m_title{""} {
 
 }
-
-Window::Window(int x, int y) : m_title{""}, m_dimension{x, y, 0, 0}, m_background{nullptr, SDL_DestroyTexture} {
-
-}
-
 
 Window::~Window() {
 }
@@ -45,6 +40,8 @@ void Window::load(Serializer &serializer, SDL_Renderer *renderer) {
 		if (node.name() == "window") {
 
 			m_title = node.value("title");
+			m_dimension.x = stoi(node.value("x"));
+			m_dimension.y = stoi(node.value("y"));
 			m_dimension.w = stoi(node.value("width"));
 			m_dimension.h = stoi(node.value("height"));
 
@@ -64,9 +61,5 @@ void Window::load(Serializer &serializer, SDL_Renderer *renderer) {
 
 }
 
-void Window::draw(SDL_Renderer *renderer) {
-	SDL_RenderCopy(renderer, m_background.get(), nullptr, &m_dimension);
-
-}
 
 }
