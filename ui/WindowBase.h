@@ -20,6 +20,8 @@ public:
 
 	virtual void on_drag(Uint16 mouse_x, Uint16 mouse_y, Sint16 dx, Sint16 dy);
 
+	SDL_Rect dimension() { return m_dimension; }
+
 protected:
 	SDL_Rect m_dimension;
 	SDL_Color m_color;
