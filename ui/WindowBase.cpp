@@ -24,4 +24,9 @@ void WindowBase::draw(SDL_Renderer *renderer) {
 
 }
 
+void WindowBase::on_drag(Uint16 mouse_x, Uint16 mouse_y, Sint16 dx, Sint16 dy) {
+	m_dimension.x += dx;
+	m_dimension.y += dy;
+}
+
 } /* namespace SDL_GUI */

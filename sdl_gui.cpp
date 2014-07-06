@@ -55,12 +55,11 @@ int main() {
 		SDL_SetRenderDrawColor(renderer.get(), 150, 150, 255, 255);
 		SDL_RenderClear(renderer.get());
 
+		ui.update(event);
 		ui.draw();
-
 		SDL_RenderPresent(renderer.get());
 	}
 
-	SDL_VideoQuit();
 	SDL_Quit();
 	return 0;
 }

@@ -8,8 +8,6 @@
 #include "Window.h"
 #include "../serialization/Serializer.h"
 #include "creation/TextureFactory.h"
-
-#include <iostream>
 #include <functional>
 
 
@@ -36,7 +34,6 @@ void Window::load(Serializer &serializer, SDL_Renderer *renderer) {
 			return std::stoi(str);
 		};
 
-		std::cout << "Name: " << node.name() << "\n";
 		if (node.name() == "window") {
 
 			m_title = node.value("title");
@@ -60,6 +57,5 @@ void Window::load(Serializer &serializer, SDL_Renderer *renderer) {
 	serializer.accept(visitor);
 
 }
-
 
 }

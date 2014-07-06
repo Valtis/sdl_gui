@@ -15,7 +15,10 @@ class WindowBase {
 public:
 	WindowBase();
 	virtual ~WindowBase();
-	void draw(SDL_Renderer *renderer);
+
+	virtual void draw(SDL_Renderer *renderer);
+
+	virtual void on_drag(Uint16 mouse_x, Uint16 mouse_y, Sint16 dx, Sint16 dy);
 
 protected:
 	SDL_Rect m_dimension;

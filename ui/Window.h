@@ -15,6 +15,7 @@ public:
 	Window(int x, int y);
 
 	virtual ~Window();
+
 	void load(Serializer &serializer, SDL_Renderer *renderer);
 
 private:
