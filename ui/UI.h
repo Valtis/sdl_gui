@@ -36,6 +36,9 @@ private:
 
 	// workaround for a glitch
 	SDL_Point m_old_mouse_position;
+
+	enum class Drag_Status { NOT_DRAGGING, DRAGGING, FAILED_DRAG };
+	Drag_Status m_dragging;
 };
 }
 #endif /* UI_H_ */

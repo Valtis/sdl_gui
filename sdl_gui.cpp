@@ -37,6 +37,7 @@ int main() {
 
 	UI ui = UI::make_ui(*renderer);
 	ui.load_window("foobar.xml");
+	ui.load_window("bazqux.xml");
 
 	SDL_Event event;
 	bool is_running = true;

@@ -1,9 +1,10 @@
 #include "UI.h"
 #include <SDL2/SDL.h>
 #include <algorithm>
+
 #include "../serialization/XMLSerializer.h"
 namespace SDL_GUI {
-UI::UI(SDL_Renderer &renderer) : m_renderer(renderer) {
+UI::UI(SDL_Renderer &renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING) {
 
 }
 
@@ -21,6 +22,7 @@ void UI::update(const SDL_Event &event) {
 
 		break;
 	case SDL_MOUSEBUTTONUP:
+		m_dragging = Drag_Status::NOT_DRAGGING;
 		break;
 
 
@@ -51,16 +53,22 @@ void UI::load_window(const std::string &file_name) {
 	m_windows.push_back(window);
 }
 
+
 void UI::handle_drag() {
 	int x, y;
 	auto state = SDL_GetMouseState(&x, &y);
 
-	if (state & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+	if ((state & SDL_BUTTON(SDL_BUTTON_LEFT)) && m_dragging != Drag_Status::FAILED_DRAG) {
+
 
 		if (update_active_window(x, y)) {
 			m_windows.back()->on_drag(x, y,
 						x - m_old_mouse_position.x, y - m_old_mouse_position.y);
-					m_old_mouse_position = { x, y };
+
+			m_old_mouse_position = { x, y };
+			m_dragging = Drag_Status::DRAGGING;
+		} else {
+			m_dragging = Drag_Status::FAILED_DRAG;
 		}
 	}
 }

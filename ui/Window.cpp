@@ -39,8 +39,8 @@ void Window::load(Serializer &serializer, SDL_Renderer *renderer) {
 			m_title = node.value("title");
 			m_dimension.x = stoi(node.value("x"));
 			m_dimension.y = stoi(node.value("y"));
-			m_dimension.w = stoi(node.value("width"));
-			m_dimension.h = stoi(node.value("height"));
+			m_dimension.w = stoi(node.value("w"));
+			m_dimension.h = stoi(node.value("h"));
 
 			m_color.r = stoi(node.value("r"));
 			m_color.g = stoi(node.value("g"));
