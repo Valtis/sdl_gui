@@ -5,14 +5,19 @@
 #include <vector>
 #include "Window.h"
 
-struct SDL_Renderer;
+
 
 namespace SDL_GUI {
+
+enum class Handedness { LEFT, RIGHT };
+
 class UI {
 public:
 	static UI make_ui(SDL_Renderer &renderer);
 
 	virtual ~UI();
+
+	void set_handedness(Handedness h);
 
 	void update(const SDL_Event &event);
 
@@ -23,9 +28,18 @@ public:
 private:
 	UI(SDL_Renderer &renderer);
 
+	void handle_click(const SDL_Event &event);
 	void handle_drag();
 	bool update_active_window(int x, int y);
 	void update_mouse_position();
+
+	Sint16 relative_x(Sint16 x, SDL_Rect r) {
+		return x - r.x;
+	}
+
+	Sint16 relative_y(Sint16 y, SDL_Rect r) {
+		return y - r.y;
+	}
 
 	SDL_Renderer &m_renderer;
 
@@ -39,6 +53,16 @@ private:
 
 	enum class Drag_Status { NOT_DRAGGING, DRAGGING, FAILED_DRAG };
 	Drag_Status m_dragging;
+
+	struct Buttons {
+		Uint8 action_button;
+		Uint8 menu_button;
+	};
+
+	Buttons m_mouse_buttons;
+
+
+
 };
 }
 #endif /* UI_H_ */
