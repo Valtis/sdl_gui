@@ -9,6 +9,8 @@
 #define WINDOWBASE_H_
 #include <SDL2/SDL.h>
 #include <memory>
+#include <Typedefs.h>
+
 namespace sdl_gui {
 
 class WindowBase {
@@ -28,7 +30,7 @@ protected:
 	SDL_Rect m_dimension;
 	SDL_Color m_color;
 
-	std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> m_background;
+	texture_ptr m_background;
 
 };
 

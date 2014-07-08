@@ -11,12 +11,12 @@ namespace sdl_gui {
 namespace component {
 
 Button::Button() {
-	// TODO Auto-generated constructor stub
+
 
 }
 
 Button::~Button() {
-	// TODO Auto-generated destructor stub
+
 }
 }
 
