@@ -24,7 +24,7 @@ void WindowBase::draw(SDL_Renderer *renderer) {
 
 }
 
-void WindowBase::on_click(Uint16 mouse_x, Uint16 mouse_y) {
+void WindowBase::on_click(Sint16 mouse_x, Sint16 mouse_y) {
 
 }
 
