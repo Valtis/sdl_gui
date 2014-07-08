@@ -9,7 +9,7 @@
 #define WINDOWBASE_H_
 #include <SDL2/SDL.h>
 #include <memory>
-#include <Typedefs.h>
+#include "Typedefs.h"
 
 namespace sdl_gui {
 

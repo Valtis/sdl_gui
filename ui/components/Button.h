@@ -1,8 +1,8 @@
 #ifndef BUTTON_H_
 #define BUTTON_H_
 
-#include <../WindowBase.h>
-#include <../Typedefs.h>
+#include "../WindowBase.h"
+#include "../Typedefs.h"
 #include <string>
 
 
