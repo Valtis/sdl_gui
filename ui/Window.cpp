@@ -8,6 +8,7 @@
 #include "Window.h"
 #include "../serialization/Serializer.h"
 #include "creation/TextureFactory.h"
+#include "components/Button.h"
 #include <functional>
 
 
@@ -63,12 +64,14 @@ void Window::load(Serializer &serializer, SDL_Renderer *renderer) {
 			m_background = factory.create_window(m_dimension.w, m_dimension.h, m_color);
 
 		} else if (node.name() == "button") {
+			component::Button* button = new component::Button{node.value("text")};
 
+			set_dimensions(node, button->m_dimension);
+			set_color(node, button->m_color);
 
+			button->m_background = factory.create_button(button->m_dimension.w, button->m_dimension.h, button->m_color);
 
-
-			m_background = factory.create_window(m_dimension.w, m_dimension.h, m_color);
-
+			add_child(std::unique_ptr<WindowBase>{button});
 		}
 
 	};
@@ -77,4 +80,9 @@ void Window::load(Serializer &serializer, SDL_Renderer *renderer) {
 
 }
 
+void Window::on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy) {
+	m_dimension.x += dx;
+	m_dimension.y += dy;
 }
+
+} /* namespace sdl_gui */

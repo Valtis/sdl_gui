@@ -1,10 +1,3 @@
-/*
- * Button.cpp
- *
- *  Created on: 8.7.2014
- *      Author: valtis
- */
-
 #include "Button.h"
 
 #include <iostream>

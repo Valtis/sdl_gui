@@ -27,14 +27,19 @@ public:
 
 	SDL_Rect dimension() { return m_dimension; }
 
-	void add_child(std::unique_ptr<WindowBase> child) { m_children.push_back(std::move(child)); }
+	void add_child(std::unique_ptr<WindowBase> child);
+	void set_parent(WindowBase *parent) { m_parent = parent; }
 
-protected:
+
+public: // temporary until deserialization is properly implemented
 	SDL_Rect m_dimension;
 	SDL_Color m_color;
 
 	texture_ptr m_background;
+
+	WindowBase *m_parent;
 	std::vector<std::unique_ptr<WindowBase>> m_children;
+	WindowBase *child_under_coordinates(Sint16 x, Sint16 y);
 
 };
 

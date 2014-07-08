@@ -40,9 +40,11 @@ int main() {
 	ui.load_window("bazqux.xml");
 	ui.set_handedness(Handedness::RIGHT);
 
-	SDL_Event event;
+
 	bool is_running = true;
 	while (is_running) {
+		SDL_Event event;
+		event.type = -1;
 		if (SDL_PollEvent(&event)) {
 			switch (event.type) {
 			case SDL_QUIT:

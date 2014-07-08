@@ -29,7 +29,7 @@ private:
 	UI(SDL_Renderer &renderer);
 
 	void handle_click(const SDL_Event &event);
-	void handle_drag();
+	void handle_drag(const SDL_Event &event);
 	bool update_active_window(int x, int y);
 	void update_mouse_position();
 
@@ -47,9 +47,6 @@ private:
 	// Window is non-copyable, hence we must store it as a pointer as stl requires copyability for container reallocations
 	// shared_ptr is used for same reason, as unique_ptr would make UI non-copyable which might be too restricting
 	std::vector<std::shared_ptr<Window>> m_windows;
-
-	// workaround for a glitch
-	SDL_Point m_old_mouse_position;
 
 	enum class Drag_Status { NOT_DRAGGING, DRAGGING, FAILED_DRAG };
 	Drag_Status m_dragging;
