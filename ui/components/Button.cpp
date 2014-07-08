@@ -12,11 +12,11 @@
 namespace sdl_gui {
 namespace component {
 
-Button::Button() {
+Button::Button() : Button(""){
 
 }
 
-Button::Button(std::string text) : m_text_string(text) {
+Button::Button(std::string text) : m_text_string{text}, m_text_texture{nullptr, SDL_DestroyTexture} {
 
 }
 

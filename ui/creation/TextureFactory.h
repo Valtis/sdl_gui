@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <memory>
 #include <string>
+#include "../Typedefs.h"
 
 
 namespace sdl_gui {

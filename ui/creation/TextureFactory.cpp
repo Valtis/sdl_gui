@@ -66,7 +66,7 @@ texture_ptr TextureFactory::create_texture(SDL_Surface *surface) {
 	if (texture == nullptr) {
 		throw AllocationFailureException("Failed to allocate memory for texture");
 	}
-	return texture_ptr;
+	return texture;
 }
 
 void TextureFactory::fill_surface_with_color(SDL_Surface *surface, const SDL_Color &color) {
@@ -74,4 +74,4 @@ void TextureFactory::fill_surface_with_color(SDL_Surface *surface, const SDL_Col
 }
 
 } /*namespace construction */
-} /* namespace SDL_GUI */
+} /* namespace sdl_gui */
