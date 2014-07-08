@@ -22,8 +22,10 @@ Window::~Window() {
 
 
 
-// TODO: Refactor this into something nicer
+// TODO: Refactor the loading into something much nicer
 void Window::load(Serializer &serializer, SDL_Renderer *renderer) {
+
+	auto factory = creation::TextureFactory{renderer};
 
 	auto visitor = [&](const Node &node) {
 
@@ -36,20 +38,35 @@ void Window::load(Serializer &serializer, SDL_Renderer *renderer) {
 			return std::stoi(str);
 		};
 
+		auto set_dimensions = [stoi](const Node &node, SDL_Rect &dimension) {
+			dimension.x = stoi(node.value("x"));
+			dimension.y = stoi(node.value("y"));
+			dimension.w = stoi(node.value("w"));
+			dimension.h = stoi(node.value("h"));
+		};
+
+		auto set_color = [stoi](const Node &node, SDL_Color &color) {
+			color.r = stoi(node.value("r"));
+			color.g = stoi(node.value("g"));
+			color.b = stoi(node.value("b"));
+			color.a = stoi(node.value("a"));
+		};
+
 		if (node.name() == "window") {
 
 			m_title = node.value("title");
-			m_dimension.x = stoi(node.value("x"));
-			m_dimension.y = stoi(node.value("y"));
-			m_dimension.w = stoi(node.value("w"));
-			m_dimension.h = stoi(node.value("h"));
 
-			m_color.r = stoi(node.value("r"));
-			m_color.g = stoi(node.value("g"));
-			m_color.b = stoi(node.value("b"));
-			m_color.a = stoi(node.value("a"));
+			set_dimensions(node, m_dimension);
+			set_color(node, m_color);
 
-			auto factory = creation::TextureFactory{renderer};
+
+			m_background = factory.create_window(m_dimension.w, m_dimension.h, m_color);
+
+		} else if (node.name() == "button") {
+
+
+
+
 			m_background = factory.create_window(m_dimension.w, m_dimension.h, m_color);
 
 		}

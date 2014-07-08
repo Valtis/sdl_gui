@@ -9,6 +9,7 @@
 #define WINDOWBASE_H_
 #include <SDL2/SDL.h>
 #include <memory>
+#include <vector>
 #include "Typedefs.h"
 
 namespace sdl_gui {
@@ -26,11 +27,14 @@ public:
 
 	SDL_Rect dimension() { return m_dimension; }
 
+	void add_child(std::unique_ptr<WindowBase> child) { m_children.push_back(std::move(child)); }
+
 protected:
 	SDL_Rect m_dimension;
 	SDL_Color m_color;
 
 	texture_ptr m_background;
+	std::vector<std::unique_ptr<WindowBase>> m_children;
 
 };
 
