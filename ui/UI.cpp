@@ -3,7 +3,7 @@
 #include <algorithm>
 
 #include "../serialization/XMLSerializer.h"
-namespace SDL_GUI {
+namespace sdl_gui {
 UI::UI(SDL_Renderer &renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING) {
 	set_handedness(Handedness::RIGHT);
 }

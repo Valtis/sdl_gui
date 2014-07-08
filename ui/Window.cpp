@@ -11,7 +11,7 @@
 #include <functional>
 
 
-namespace SDL_GUI {
+namespace sdl_gui {
 
 Window::Window() : m_title{""} {
 
@@ -22,11 +22,13 @@ Window::~Window() {
 
 
 
+// TODO: Refactor this into something nicer
 void Window::load(Serializer &serializer, SDL_Renderer *renderer) {
 
 	auto visitor = [&](const Node &node) {
 
-		// if string is empty, returns zero
+		// helper function, modifies stoi behaviour slightly
+		// if string is empty, returns zero instead of throwing
 		auto stoi = [](const std::string &str) {
 			if (str.empty()) {
 				return 0;

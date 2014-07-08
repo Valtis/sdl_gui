@@ -7,7 +7,7 @@
 
 #include "WindowBase.h"
 
-namespace SDL_GUI {
+namespace sdl_gui {
 
 WindowBase::WindowBase() : m_dimension{0, 0, 0, 0}, m_color{0, 0, 0, 0}, m_background{nullptr, SDL_DestroyTexture} {
 

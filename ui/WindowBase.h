@@ -9,7 +9,7 @@
 #define WINDOWBASE_H_
 #include <SDL2/SDL.h>
 #include <memory>
-namespace SDL_GUI {
+namespace sdl_gui {
 
 class WindowBase {
 public:

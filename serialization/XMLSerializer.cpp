@@ -2,7 +2,7 @@
 #include "ParseException.h"
 #include "XMLNode.h"
 #include <sstream>
-namespace SDL_GUI {
+namespace sdl_gui {
 
 XMLSerializer::XMLSerializer(const std::string &file_name) {
 	auto result = doc.load_file(file_name.c_str());

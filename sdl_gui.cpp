@@ -8,7 +8,7 @@
 #include "serialization/XMLSerializer.h"
 
 
-using namespace SDL_GUI;
+using namespace sdl_gui;
 
 
 typedef std::unique_ptr<SDL_Window, decltype(&SDL_DestroyWindow)> window_ptr;

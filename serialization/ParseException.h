@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <string>
 
-namespace SDL_GUI {
+namespace sdl_gui {
 class ParseException : public std::runtime_error {
 public:
 	ParseException(const char *msg) : std::runtime_error(msg) {

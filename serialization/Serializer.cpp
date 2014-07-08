@@ -1,6 +1,6 @@
 #include "Serializer.h"
 
-namespace SDL_GUI {
+namespace sdl_gui {
 
 Serializer::~Serializer() {
 

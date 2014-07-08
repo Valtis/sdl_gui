@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <memory>
 
-namespace SDL_GUI {
+namespace sdl_gui {
 namespace creation {
 
 typedef std::unique_ptr<SDL_Texture, decltype(&SDL_DestroyTexture)> texture_ptr;

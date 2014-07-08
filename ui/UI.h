@@ -7,7 +7,7 @@
 
 
 
-namespace SDL_GUI {
+namespace sdl_gui {
 
 enum class Handedness { LEFT, RIGHT };
 

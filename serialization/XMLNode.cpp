@@ -1,6 +1,6 @@
 #include "XMLNode.h"
 
-namespace SDL_GUI {
+namespace sdl_gui {
 
 XMLNode::XMLNode(const pugi::xml_node &node) : m_node(node) {
 

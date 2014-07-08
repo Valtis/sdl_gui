@@ -6,7 +6,7 @@
 #include <string>
 #include "Serializer.h"
 
-namespace SDL_GUI {
+namespace sdl_gui {
 
 class XMLSerializer : public Serializer {
 public:

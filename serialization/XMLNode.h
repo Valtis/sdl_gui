@@ -11,7 +11,7 @@
 #include "Node.h"
 #include <pugixml/pugixml.hpp>
 
-namespace SDL_GUI {
+namespace sdl_gui {
 
 class XMLNode : public Node {
 public:

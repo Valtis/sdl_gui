@@ -1,7 +1,7 @@
 #include <string>
 #ifndef NODE_H_
 #define NODE_H_
-namespace SDL_GUI {
+namespace sdl_gui {
 
 class Node {
 public:

@@ -5,7 +5,7 @@
 #include <string>
 #include "WindowBase.h"
 
-namespace SDL_GUI {
+namespace sdl_gui {
 
 class Serializer;
 

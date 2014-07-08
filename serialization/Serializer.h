@@ -5,7 +5,7 @@
 #include <memory>
 #include <functional>
 
-namespace SDL_GUI {
+namespace sdl_gui {
 
 class Serializer {
 public:

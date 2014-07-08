@@ -23,7 +23,7 @@
 
 #include "AllocationFailureException.h"
 
-namespace SDL_GUI {
+namespace sdl_gui {
 
 namespace creation {
 

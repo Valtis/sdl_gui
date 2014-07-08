@@ -8,7 +8,7 @@
 #ifndef ALLOCATIONFAILUREEXCEPTION_H_
 #define ALLOCATIONFAILUREEXCEPTION_H_
 
-namespace SDL_GUI {
+namespace sdl_gui {
 namespace creation {
 
 class AllocationFailureException : public std::runtime_error {
