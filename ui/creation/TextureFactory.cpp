@@ -36,24 +36,41 @@ TextureFactory::~TextureFactory() {
 	// do not release the renderer; we do not own the pointer
 }
 
-texture_ptr TextureFactory::create_window(int width, int height, SDL_Color color) {
-	auto surface = create_surface(width, height);
-	SDL_FillRect(surface.get(), nullptr, SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a));
-
-	texture_ptr texture(SDL_CreateTextureFromSurface(m_renderer, surface.get()), SDL_DestroyTexture);
-	if (texture == nullptr) {
-		throw AllocationFailureException("Failed to allocate memory for texture");
-	}
-	return texture;
-
+texture_ptr TextureFactory::create_window(int width, int height, const SDL_Color &color) {
+	auto surface = create_surface(width, height, color);
+	return create_texture(surface.get());
 }
 
-surface_ptr TextureFactory::create_surface(int width, int height) {
+
+
+texture_ptr TextureFactory::create_button(int width, int height, const SDL_Color &color) {
+	auto surface = create_surface(width, height, color);
+	return create_texture(surface.get());
+}
+
+
+surface_ptr TextureFactory::create_surface(int width, int height, const SDL_Color &color) {
 	surface_ptr surface(SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK), SDL_FreeSurface);
+
 	if (surface == nullptr) {
 		throw AllocationFailureException("Failed to allocate memory for surface");
 	}
+
+	fill_surface_with_color(surface.get(), color);
 	return surface;
+}
+
+texture_ptr TextureFactory::create_texture(SDL_Surface *surface) {
+	texture_ptr texture(SDL_CreateTextureFromSurface(m_renderer, surface), SDL_DestroyTexture);
+
+	if (texture == nullptr) {
+		throw AllocationFailureException("Failed to allocate memory for texture");
+	}
+	return texture_ptr;
+}
+
+void TextureFactory::fill_surface_with_color(SDL_Surface *surface, const SDL_Color &color) {
+	SDL_FillRect(surface, nullptr, SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a));
 }
 
 } /*namespace construction */
