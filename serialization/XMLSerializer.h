@@ -7,7 +7,7 @@
 #include "Serializer.h"
 
 namespace sdl_gui {
-
+namespace serialization {
 class XMLSerializer : public Serializer {
 public:
 	virtual ~XMLSerializer();
@@ -21,7 +21,7 @@ private:
 };
 
 
-
-}
+} /* namespace serialization */
+} /* namespace sdl_gui */
 
 #endif /* XMLSERIALIZER_H_ */

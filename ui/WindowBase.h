@@ -14,6 +14,10 @@
 
 namespace sdl_gui {
 
+namespace creation {
+	class WindowLoader;
+}
+
 class WindowBase {
 public:
 	WindowBase();
@@ -26,12 +30,12 @@ public:
 	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy);
 
 	SDL_Rect dimension() { return m_dimension; }
-
 	void add_child(std::unique_ptr<WindowBase> child);
 	void set_parent(WindowBase *parent) { m_parent = parent; }
 
 
-public: // temporary until deserialization is properly implemented
+protected:
+	friend class creation::WindowLoader;
 	SDL_Rect m_dimension;
 	SDL_Color m_color;
 

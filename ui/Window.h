@@ -16,11 +16,10 @@ public:
 
 	virtual ~Window();
 
-	void load(Serializer &serializer, SDL_Renderer *renderer);
-
 	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy);
 
 private:
+	friend class creation::WindowLoader;
 	std::string m_title;
 
 };

@@ -13,7 +13,7 @@ enum class Handedness { LEFT, RIGHT };
 
 class UI {
 public:
-	static UI make_ui(SDL_Renderer &renderer);
+	static UI make_ui(SDL_Renderer *renderer);
 
 	virtual ~UI();
 
@@ -26,7 +26,7 @@ public:
 	void load_window(const std::string &file_name);
 
 private:
-	UI(SDL_Renderer &renderer);
+	UI(SDL_Renderer *renderer);
 
 	void handle_click(const SDL_Event &event);
 	void handle_drag(const SDL_Event &event);
@@ -41,7 +41,7 @@ private:
 		return y - r.y;
 	}
 
-	SDL_Renderer &m_renderer;
+	SDL_Renderer *m_renderer;
 
 
 	// Window is non-copyable, hence we must store it as a pointer as stl requires copyability for container reallocations

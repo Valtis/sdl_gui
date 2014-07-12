@@ -6,6 +6,7 @@
 
 
 namespace sdl_gui {
+
 namespace component {
 
 class Button : public WindowBase {
@@ -20,6 +21,7 @@ public:
 	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy) override {} // do nothing if dragged
 
 private:
+	friend class creation::WindowLoader;
 	std::string m_text_string;
 	texture_ptr m_text_texture;
 };

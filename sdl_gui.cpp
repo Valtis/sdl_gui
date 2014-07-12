@@ -5,8 +5,6 @@
 
 #include "ui/UI.h"
 #include "ui/Window.h"
-#include "serialization/XMLSerializer.h"
-
 
 using namespace sdl_gui;
 
@@ -35,7 +33,7 @@ int main() {
 		throw std::runtime_error(SDL_GetError());
 	}
 
-	UI ui = UI::make_ui(*renderer);
+	UI ui = UI::make_ui(renderer.get());
 	ui.load_window("foobar.xml");
 	ui.load_window("bazqux.xml");
 	ui.load_window("abcd.xml");

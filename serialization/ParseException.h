@@ -5,6 +5,7 @@
 #include <string>
 
 namespace sdl_gui {
+namespace serialization {
 class ParseException : public std::runtime_error {
 public:
 	ParseException(const char *msg) : std::runtime_error(msg) {
@@ -17,8 +18,8 @@ public:
 
 private:
 };
-
-}
+} /* namespace serialization */
+} /* namespace sdl_gui */
 
 
 #endif /* PARSEEXCEPTION_H_ */

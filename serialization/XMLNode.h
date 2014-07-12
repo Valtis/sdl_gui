@@ -1,10 +1,3 @@
-/*
- * XMLNode.h
- *
- *  Created on: 29.6.2014
- *      Author: valtis
- */
-
 #ifndef XMLNODE_H_
 #define XMLNODE_H_
 
@@ -12,6 +5,7 @@
 #include <pugixml/pugixml.hpp>
 
 namespace sdl_gui {
+namespace serialization {
 
 class XMLNode : public Node {
 public:
@@ -24,7 +18,7 @@ private:
 	pugi::xml_node m_node;
 };
 
-
-}
+} /* namespace serialization */
+} /* namespace sdl_gui */
 
 #endif /* XMLNODE_H_ */

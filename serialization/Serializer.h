@@ -6,7 +6,7 @@
 #include <functional>
 
 namespace sdl_gui {
-
+namespace serialization {
 class Serializer {
 public:
 
@@ -14,7 +14,8 @@ public:
 	virtual void accept(std::function<void(const Node &)> visitor) = 0;
 };
 
-}
+} /* namespace serialization */
+} /* namespace sdl_gui */
 
 
 

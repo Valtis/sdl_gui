@@ -3,17 +3,22 @@
 #include <algorithm>
 
 #include "../serialization/XMLSerializer.h"
+
+#include "creation/WindowLoader.h"
 #include "utility/Helpers.h"
 
 namespace sdl_gui {
-UI::UI(SDL_Renderer &renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING) {
+UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING) {
 	set_handedness(Handedness::RIGHT);
 }
 
 UI::~UI() {
 }
 
-UI UI::make_ui(SDL_Renderer &renderer) {
+UI UI::make_ui(SDL_Renderer *renderer) {
+	if (renderer == nullptr) {
+		throw std::invalid_argument("Renderer must not be null");
+	}
 	return UI{renderer};
 }
 
@@ -48,14 +53,15 @@ void UI::update(const SDL_Event &event) {
 
 void UI::draw() {
 	for (auto &window : m_windows) {
-		window->draw(&m_renderer);
+		window->draw(m_renderer);
 	}
 }
 
 void UI::load_window(const std::string &file_name) {
 	std::shared_ptr<Window> window{new Window{}};
-	XMLSerializer serializer{file_name};
-	window->load(serializer, &m_renderer);
+	serialization::XMLSerializer serializer{file_name};
+	creation::WindowLoader loader{serializer, m_renderer, window.get()};
+	loader.load();
 	m_windows.push_back(window);
 }
 

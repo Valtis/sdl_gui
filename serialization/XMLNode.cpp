@@ -1,7 +1,7 @@
 #include "XMLNode.h"
 
 namespace sdl_gui {
-
+namespace serialization {
 XMLNode::XMLNode(const pugi::xml_node &node) : m_node(node) {
 
 }
@@ -18,4 +18,5 @@ std::string XMLNode::value(const std::string &key) const {
 
 }
 
+} /* namespace serialization */
 } /* namespace SDL_GUI */

@@ -2,7 +2,9 @@
 #include "ParseException.h"
 #include "XMLNode.h"
 #include <sstream>
+
 namespace sdl_gui {
+namespace serialization {
 
 XMLSerializer::XMLSerializer(const std::string &file_name) {
 	auto result = doc.load_file(file_name.c_str());
@@ -36,5 +38,5 @@ void XMLSerializer::accept(std::function<void(const Node &)> visitor, const pugi
 	}
 }
 
-
-} /* namespace SDL_GUI */
+} /* namespace serialization */
+} /* namespace sdl_gui */
