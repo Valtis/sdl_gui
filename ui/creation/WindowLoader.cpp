@@ -11,7 +11,6 @@
 #include "../../serialization/Serializer.h"
 #include <SDL2/SDL.h>
 #include <stdexcept>
-#include <iostream>
 
 namespace sdl_gui {
 namespace creation {
@@ -53,7 +52,6 @@ void WindowLoader::load() {
 }
 
 void WindowLoader::visitor(const serialization::Node &node) {
-	std::cout << "Finding " << node.name() << "\tCount: " << m_loaders.count(node.name()) << "\n";
 	if (m_loaders.count(node.name()) != 0) {
 		m_loaders[node.name()](node);
 	}
