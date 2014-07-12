@@ -91,7 +91,9 @@ bool UI::update_active_window(int x, int y) {
 	for (auto iter = m_windows.rbegin(); iter != m_windows.rend(); ++iter) {
 		SDL_Rect r = (*iter)->dimension();
 		if (utility::point_inside_rect({x, y}, r)) {
-			std::iter_swap(iter, (m_windows.end()-1));
+			auto window = *iter;
+			m_windows.erase(--(iter.base()));
+			m_windows.push_back(window);
 
 			return true;
 		 }

@@ -38,6 +38,7 @@ int main() {
 	UI ui = UI::make_ui(*renderer);
 	ui.load_window("foobar.xml");
 	ui.load_window("bazqux.xml");
+	ui.load_window("abcd.xml");
 	ui.set_handedness(Handedness::RIGHT);
 
 
