@@ -22,7 +22,7 @@
 #define AMASK 0xff000000
 #endif
 
-#include "AllocationFailureException.h"
+#include "CreationFailureException.h"
 
 namespace sdl_gui {
 
@@ -50,15 +50,29 @@ texture_ptr TextureFactory::create_button(int width, int height, const SDL_Color
 }
 
 
+// TODO: allow size & color to be controlled by the caller
 texture_ptr TextureFactory::create_text(std::string text) {
-	return create_button(0, 0, {0, 0, 0, 0});
+	font_ptr font{TTF_OpenFont("FreeMono.ttf", 12), TTF_CloseFont};
+	if (font == nullptr) {
+		// TODO: replace with appropriate exception type
+		throw CreationFailureException(std::string("Failed to open font file: ") + TTF_GetError());
+
+	}
+
+	surface_ptr font_surface{TTF_RenderText_Blended(font.get(), text.c_str(), {0, 0, 0, 255}), SDL_FreeSurface};
+
+	if (font_surface == nullptr) {
+		throw CreationFailureException(std::string("Failed to create surface for text: ") + TTF_GetError());
+	}
+
+	return create_texture(font_surface.get());
 }
 
 surface_ptr TextureFactory::create_surface(int width, int height, const SDL_Color &color) {
-	surface_ptr surface(SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK), SDL_FreeSurface);
+	surface_ptr surface{SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK), SDL_FreeSurface};
 
 	if (surface == nullptr) {
-		throw AllocationFailureException("Failed to allocate memory for surface");
+		throw CreationFailureException(std::string("Failed to create surface: ") + SDL_GetError());
 	}
 
 	fill_surface_with_color(surface.get(), color);
@@ -66,10 +80,10 @@ surface_ptr TextureFactory::create_surface(int width, int height, const SDL_Colo
 }
 
 texture_ptr TextureFactory::create_texture(SDL_Surface *surface) {
-	texture_ptr texture(SDL_CreateTextureFromSurface(m_renderer, surface), SDL_DestroyTexture);
+	texture_ptr texture{SDL_CreateTextureFromSurface(m_renderer, surface), SDL_DestroyTexture};
 
 	if (texture == nullptr) {
-		throw AllocationFailureException("Failed to allocate memory for texture");
+		throw CreationFailureException(std::string("Failed to create texture: ") + SDL_GetError());
 	}
 	return texture;
 }

@@ -5,8 +5,8 @@ CPP_FILES = $(wildcard *.cpp) $(wildcard ui/*.cpp) $(wildcard ui/components/*.cp
 
 OBJS =		$(CPP_FILES:.cpp=.o)
 
-LIBS = -lpugixml -lSDL2 
-
+LIBS = -lpugixml -lSDL2 -lSDL2_ttf
+ 
 TARGET =	sdl_gui
 
 $(TARGET):	$(OBJS)

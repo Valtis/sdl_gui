@@ -45,6 +45,8 @@ private:
 
 	SDL_Renderer *m_renderer;
 
+	enum class Drag_Status { NOT_DRAGGING, DRAGGING, FAILED_DRAG };
+	Drag_Status m_dragging;
 	// whether or not this class is responsible for initializing font support; if so, it must also
 	// shut it down on destruction
 	bool m_has_initialized_ttf;
@@ -53,8 +55,7 @@ private:
 	// shared_ptr is used for same reason, as unique_ptr would make UI non-copyable which might be too restricting
 	std::vector<std::shared_ptr<Window>> m_windows;
 
-	enum class Drag_Status { NOT_DRAGGING, DRAGGING, FAILED_DRAG };
-	Drag_Status m_dragging;
+
 
 	struct Buttons {
 		Uint8 action_button;
