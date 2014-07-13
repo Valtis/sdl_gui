@@ -30,6 +30,7 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, SDL_Renderer *
 
 	m_loaders["button"] = [=](const serialization::Node &node) {
 		std::unique_ptr<Button> button{new Button{node.value("text")}};
+		button->set_renderer(m_renderer);
 		set_generic_parameters(node, button.get());
 		button->set_text(node.value("text"));
 		m_window->add_child(std::move(button));

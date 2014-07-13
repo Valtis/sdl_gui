@@ -23,7 +23,7 @@ public:
 	WindowBase();
 	virtual ~WindowBase();
 
-	void set_renderer(SDL_Renderer *renderer) { m_renderer = renderer; }
+	void set_renderer(SDL_Renderer *renderer);
 
 	virtual void draw();
 

@@ -20,6 +20,13 @@ WindowBase::~WindowBase() {
 	// do not delete the renderer or parent; this class does not own these pointers
 }
 
+void WindowBase::set_renderer(SDL_Renderer *renderer) {
+	 m_renderer = renderer;
+	 for (const auto &child : m_children) {
+		 child->set_renderer(renderer);
+	 }
+}
+
 
 void WindowBase::draw() {
 	if (m_renderer == nullptr && m_background == nullptr) {
