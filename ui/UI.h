@@ -30,7 +30,6 @@ public:
 
 private:
 	UI(SDL_Renderer *renderer);
-
 	void handle_click(const SDL_Event &event);
 	void handle_drag(const SDL_Event &event);
 	bool update_active_window(int x, int y);
@@ -46,6 +45,9 @@ private:
 
 	SDL_Renderer *m_renderer;
 
+	// whether or not this class is responsible for initializing font support; if so, it must also
+	// shut it down on destruction
+	bool m_has_initialized_ttf;
 
 	// Window is non-copyable, hence we must store it as a pointer as stl requires copyability for container reallocations
 	// shared_ptr is used for same reason, as unique_ptr would make UI non-copyable which might be too restricting

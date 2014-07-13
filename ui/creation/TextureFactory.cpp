@@ -6,6 +6,7 @@
  */
 
 #include "TextureFactory.h"
+#include <SDL2/SDL_ttf.h>
 
 #include <stdexcept>
 
@@ -33,7 +34,7 @@ TextureFactory::TextureFactory(SDL_Renderer *renderer) : m_renderer(renderer) {
 }
 
 TextureFactory::~TextureFactory() {
-	// do not release the renderer; we do not own the pointer
+	// do not delete the renderer; this class does not own the pointer
 }
 
 texture_ptr TextureFactory::create_window(int width, int height, const SDL_Color &color) {
@@ -48,6 +49,10 @@ texture_ptr TextureFactory::create_button(int width, int height, const SDL_Color
 	return create_texture(surface.get());
 }
 
+
+texture_ptr TextureFactory::create_text(std::string text) {
+	return create_button(0, 0, {0, 0, 0, 0});
+}
 
 surface_ptr TextureFactory::create_surface(int width, int height, const SDL_Color &color) {
 	surface_ptr surface(SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK), SDL_FreeSurface);

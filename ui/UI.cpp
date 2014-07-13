@@ -1,6 +1,8 @@
 #include "UI.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <algorithm>
+
 
 #include "../serialization/XMLSerializer.h"
 
@@ -8,11 +10,23 @@
 #include "utility/Helpers.h"
 
 namespace sdl_gui {
-UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING) {
+UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING),
+		m_has_initialized_ttf(false) {
 	set_handedness(Handedness::RIGHT);
+
+	if (!TTF_WasInit()) {
+		if (TTF_Init()) {
+			throw std::runtime_error(std::string("Failed to initialize font support: ") + TTF_GetError());
+		}
+		m_has_initialized_ttf = true;
+	}
+
 }
 
 UI::~UI() {
+	if (m_has_initialized_ttf) {
+		TTF_Quit();
+	}
 }
 
 UI UI::make_ui(SDL_Renderer *renderer) {

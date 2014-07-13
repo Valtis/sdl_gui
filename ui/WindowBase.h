@@ -40,6 +40,10 @@ public:
 
 protected:
 	friend class creation::WindowLoader;
+
+	WindowBase *child_under_coordinates(Sint16 x, Sint16 y);
+	void do_draw(SDL_Rect destination_rect);
+
 	SDL_Rect m_dimension;
 	SDL_Color m_color;
 	texture_ptr m_background;
@@ -47,9 +51,6 @@ protected:
 	SDL_Renderer *m_renderer;
 
 	std::vector<std::unique_ptr<WindowBase>> m_children;
-	WindowBase *child_under_coordinates(Sint16 x, Sint16 y);
-
-	void do_draw(SDL_Rect destination_rect);
 };
 
 } /* namespace SDL_GUI */

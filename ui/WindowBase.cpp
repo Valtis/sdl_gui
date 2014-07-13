@@ -17,7 +17,7 @@ WindowBase::WindowBase() : m_dimension{0, 0, 0, 0}, m_color{0, 0, 0, 0},
 }
 
 WindowBase::~WindowBase() {
-	// TODO Auto-generated destructor stub
+	// do not delete the renderer or parent; this class does not own these pointers
 }
 
 

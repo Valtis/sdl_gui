@@ -29,14 +29,8 @@ public:
 	WindowLoader(serialization::Serializer &serializer, SDL_Renderer *renderer, Window *window);
 	virtual ~WindowLoader();
 	void load();
+
 private:
-
-	serialization::Serializer &m_serializer;
-	SDL_Renderer *m_renderer;
-	Window *m_window;
-	TextureFactory m_factory;
-
-	std::unordered_map<std::string, std::function<void(const serialization::Node &node)>> m_loaders;
 
 	int stoi(const std::string &str, int default_value = 0);
 	void visitor(const serialization::Node &node);
@@ -44,6 +38,13 @@ private:
 	void set_dimensions(const serialization::Node &node, SDL_Rect &dimension);
 	void set_color(const serialization::Node &node, SDL_Color &color);
 	void set_generic_parameters(const serialization::Node &node, WindowBase *base);
+
+	serialization::Serializer &m_serializer;
+	SDL_Renderer *m_renderer;
+	Window *m_window;
+	TextureFactory m_factory;
+	std::unordered_map<std::string, std::function<void(const serialization::Node &node)>> m_loaders;
+
 };
 
 } /* namespace creation */
