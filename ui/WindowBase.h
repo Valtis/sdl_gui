@@ -32,6 +32,7 @@ public:
 	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy);
 
 	SDL_Rect relative_dimension();
+	void set_relative_dimension(SDL_Rect dimension) { m_dimension = dimension; }
 	SDL_Rect absolute_dimension();
 
 	void add_child(std::unique_ptr<WindowBase> child);
