@@ -7,8 +7,6 @@
 
 namespace sdl_gui {
 
-namespace component {
-
 class Button : public WindowBase {
 public:
 	Button();
@@ -26,8 +24,6 @@ private:
 	texture_ptr m_text_texture;
 };
 
-
-} /* namespace component */
 } /* namespace SDL_GUI */
 
 #endif /* BUTTON_H_ */

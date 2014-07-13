@@ -3,7 +3,6 @@
 #include <iostream>
 
 namespace sdl_gui {
-namespace component {
 
 Button::Button() : Button(""){
 
@@ -24,8 +23,6 @@ void Button::draw(SDL_Renderer *renderer) {
 
 void Button::on_click(Sint16 x, Sint16 y) {
 	std::cout << "Pressed! X: " << x << "\tY: " << y << "\n";
-}
-
 }
 
 } /* namespace SDL_GUI */
