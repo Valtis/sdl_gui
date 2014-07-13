@@ -13,15 +13,17 @@ public:
 	Button(std::string text);
 	virtual ~Button();
 
-	virtual void draw(SDL_Renderer *renderer) override;
+	virtual void draw() override;
 
 	virtual void on_click(Sint16 x, Sint16 y) override;
 	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy) override {} // do nothing if dragged
 
+	void set_text(std::string text);
+	std::string get_text() { return m_text; }
+
 private:
 	friend class creation::WindowLoader;
-	std::string m_text_string;
-	texture_ptr m_text_texture;
+	std::string m_text;
 };
 
 } /* namespace SDL_GUI */

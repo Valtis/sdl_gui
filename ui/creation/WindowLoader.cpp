@@ -39,7 +39,7 @@ WindowLoader::~WindowLoader() {
 	// m_renderer and m_window are not owned by this class and must not be deleted here
 }
 
-// helper function; returns the default valuie on empty string instead of throwing
+// helper function; returns the default value on empty string instead of throwing
 int WindowLoader::stoi(const std::string &str, int default_value) {
 	if (str.empty()) {
 		return default_value;

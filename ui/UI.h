@@ -19,11 +19,14 @@ public:
 
 	void set_handedness(Handedness h);
 
+	void set_renderer(SDL_Renderer *renderer);
+
 	void update(const SDL_Event &event);
 
 	void draw();
 
 	void load_window(const std::string &file_name);
+
 
 private:
 	UI(SDL_Renderer *renderer);

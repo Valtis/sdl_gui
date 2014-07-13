@@ -30,6 +30,13 @@ void UI::set_handedness(Handedness h) {
 	}
 }
 
+void UI::set_renderer(SDL_Renderer *renderer) {
+	m_renderer = renderer;
+	for (auto &window : m_windows) {
+		window->set_renderer(renderer);
+	}
+}
+
 void UI::update(const SDL_Event &event) {
 	switch (event.type) {
 
@@ -53,12 +60,13 @@ void UI::update(const SDL_Event &event) {
 
 void UI::draw() {
 	for (auto &window : m_windows) {
-		window->draw(m_renderer);
+		window->draw();
 	}
 }
 
 void UI::load_window(const std::string &file_name) {
 	std::shared_ptr<Window> window{new Window{}};
+	window->set_renderer(m_renderer);
 	serialization::XMLSerializer serializer{file_name};
 	creation::WindowLoader loader{serializer, m_renderer, window.get()};
 	loader.load();
@@ -69,7 +77,7 @@ void UI::handle_click(const SDL_Event &event) {
 
 	if (event.button.button == m_mouse_buttons.action_button) {
 		if (update_active_window(event.button.x, event.button.y)) {
-			SDL_Rect r = m_windows.back()->dimension();
+			SDL_Rect r = m_windows.back()->absolute_dimension();
 			m_windows.back()->on_click(relative_x(event.button.x, r),
 					relative_y(event.button.y, r));
 		}
@@ -95,7 +103,7 @@ void UI::handle_drag(const SDL_Event &event) {
 bool UI::update_active_window(int x, int y) {
 
 	for (auto iter = m_windows.rbegin(); iter != m_windows.rend(); ++iter) {
-		SDL_Rect r = (*iter)->dimension();
+		SDL_Rect r = (*iter)->absolute_dimension();
 		if (utility::point_inside_rect({x, y}, r)) {
 			auto window = *iter;
 			m_windows.erase(--(iter.base()));

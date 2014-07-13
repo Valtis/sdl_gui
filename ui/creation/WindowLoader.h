@@ -28,7 +28,6 @@ class WindowLoader {
 public:
 	WindowLoader(serialization::Serializer &serializer, SDL_Renderer *renderer, Window *window);
 	virtual ~WindowLoader();
-
 	void load();
 private:
 
