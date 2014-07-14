@@ -5,7 +5,7 @@ tar -xzvf SDL2_ttf-2.0.12.tar.gz
 cd SDL2_ttf-2.0.12/
 ./configure
 make
-make install
+sudo make install
 
 
 
