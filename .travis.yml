@@ -15,7 +15,7 @@ before_script:
 - ./install-pugixml.sh
 - ./install-sdl2.sh
 - ./install-sdl_ttf.sh
-- PATH = $PATH:/usr/local/lib
+- PATH=$PATH:/usr/local/lib
 
 script:
 - cd tests
