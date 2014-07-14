@@ -11,5 +11,5 @@ install:
 - export CXX="g++-4.8"
 
 script:
-  cd tests
+- cd tests
 - $CXX --version
