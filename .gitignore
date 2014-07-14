@@ -3,3 +3,4 @@
 *.o
 .settings/*
 sdl_gui
+*.ttf
