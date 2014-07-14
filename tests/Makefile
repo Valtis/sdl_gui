@@ -1,4 +1,4 @@
-CXX = g++
+CXX = g++-4.8
 CXXFLAGS =	-g -Wall -fmessage-length=0 -std=c++11
 
 CPP_FILES = $(wildcard *.cpp) $(wildcard ../ui/*.cpp) $(wildcard ../ui/components/*.cpp) $(wildcard ../ui/creation/*.cpp) $(wildcard ../serialization/*.cpp) $(wildcard ../ui/utility/*.cpp)
