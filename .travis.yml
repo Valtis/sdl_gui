@@ -13,7 +13,7 @@ install:
 - ./install-pugixml.sh
 - ./install-sdl2.sh
 - ./install-sdl_ttf.sh
-- PATH=$PATH:/usr/local/lib
+- export PATH=$PATH:/usr/local/lib
 - ls /usr/local/lib/ | grep "SDL"
 
 script:
