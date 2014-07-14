@@ -9,5 +9,5 @@ sudo cp libpugixml.a /usr/local/lib/libpugixml.a
 cd ..
 cd src
 sudo mkdir /usr/local/include/pugixml
-cp pugixml.hpp /usr/local/include/pugixml/pugixml.hpp
-cp pugiconfig.hpp /usr/local/include/pugixml/pugiconfig.hpp
+sudo cp pugixml.hpp /usr/local/include/pugixml/pugixml.hpp
+sudo cp pugiconfig.hpp /usr/local/include/pugixml/pugiconfig.hpp
