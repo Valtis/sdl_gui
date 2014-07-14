@@ -15,6 +15,7 @@ install:
 - ./install-sdl_ttf.sh
 - export PATH=$PATH:/usr/local/lib
 - ls /usr/local/lib/ | grep "SDL"
+- sudo ldconfig
 
 script:
 - cd tests
