@@ -12,12 +12,13 @@ install:
 - export CXX="g++-4.8"
 
 before_script:
+- ./install-pugixml.sh
 - ./install-sdl2.sh
 - ./install-sdl_ttf.sh
-- ./install-pugixml.sh
 
 script:
 - cd tests
+- echo $PATH
 - $CXX --version
 - make test
 - ./sdl_gui

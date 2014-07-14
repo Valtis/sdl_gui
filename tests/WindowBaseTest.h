@@ -27,7 +27,7 @@ private:
 	void always_fail();
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION( WindowBaseTest );
+
 } /* namespace sdl_gui */
 
 
