@@ -10,14 +10,11 @@ install:
 - sudo apt-get install -qq g++-4.8
 - sudo apt-get install -qq libcppunit-dev
 - export CXX="g++-4.8"
-
-before_script:
 - ./install-pugixml.sh
 - ./install-sdl2.sh
 - ./install-sdl_ttf.sh
 - PATH=$PATH:/usr/local/lib
 - ls /usr/local/lib/ | grep "SDL"
-- ls /usr/lib/ | grep "SDL"
 
 script:
 - cd tests
