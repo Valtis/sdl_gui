@@ -39,6 +39,10 @@ int main() {
 	ui.load_window("abcd.xml");
 	ui.set_handedness(Handedness::RIGHT);
 
+	ui.register_handler("my_handler", [](){
+		std::cout << "button on_click handler was called!\n";
+	});
+
 
 	bool is_running = true;
 	while (is_running) {
