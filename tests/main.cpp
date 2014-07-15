@@ -17,7 +17,7 @@ using namespace CppUnit;
 using namespace std;
 using namespace sdl_gui;
 
-CPPUNIT_TEST_SUITE_REGISTRATION( WindowBaseTest );
+
 
 int main() {
 

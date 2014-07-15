@@ -25,6 +25,7 @@ private:
 	void always_pass() { CPPUNIT_ASSERT_EQUAL(4, 4); }
 };
 
+CPPUNIT_TEST_SUITE_REGISTRATION( WindowBaseTest );
 
 } /* namespace sdl_gui */
 
