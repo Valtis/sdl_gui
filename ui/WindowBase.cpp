@@ -8,6 +8,7 @@
 #include "WindowBase.h"
 #include "utility/Helpers.h"
 #include "HandlerManager.h"
+#include <iostream>
 
 namespace sdl_gui {
 
@@ -43,7 +44,6 @@ void WindowBase::draw() {
 
 void WindowBase::do_draw(SDL_Rect destination_rect) {
 	if (m_parent != nullptr) {
-		//SDL_Rect r = m_parent->absolute_dimension();
 		SDL_RenderCopy(m_renderer, m_background.get(), nullptr, &destination_rect);
 	} else {
 		SDL_RenderCopy(m_renderer, m_background.get(), nullptr, &destination_rect);
