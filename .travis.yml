@@ -12,14 +12,11 @@ install:
 - export CXX="g++-4.8"
 - ./install-pugixml.sh
 - ./install-sdl2.sh
-- ./install-sdl_ttf.sh
-- export PATH=$PATH:/usr/local/lib
-- ls /usr/local/lib/ | grep "SDL"
+- ./install-sdl_ttf.sh 
 - sudo ldconfig
 
 script:
 - cd tests
-- echo $PATH
 - $CXX --version
 - make test
 - ./sdl_gui

@@ -11,20 +11,18 @@ class WindowBaseTest : public CppUnit::TestFixture {
 
     CPPUNIT_TEST_SUITE(WindowBaseTest);
     CPPUNIT_TEST(always_pass);
-    CPPUNIT_TEST(always_fail);
     CPPUNIT_TEST_SUITE_END();
 
 public:
-	WindowBaseTest();
-	virtual ~WindowBaseTest();
+	WindowBaseTest() { }
+	virtual ~WindowBaseTest() { }
 
 
     void setUp(void) {}
     void tearDown(void) {}
 
 private:
-	void always_pass();
-	void always_fail();
+	void always_pass() { CPPUNIT_ASSERT_EQUAL(4, 4); }
 };
 
 
