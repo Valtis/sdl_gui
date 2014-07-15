@@ -7,17 +7,18 @@
 
 #include "WindowBase.h"
 #include "utility/Helpers.h"
-#include <iostream>
+#include "HandlerManager.h"
 
 namespace sdl_gui {
 
 WindowBase::WindowBase() : m_dimension{0, 0, 0, 0}, m_color{0, 0, 0, 0},
-		m_background{nullptr, SDL_DestroyTexture}, m_parent(nullptr), m_renderer(nullptr) {
+		m_background{nullptr, SDL_DestroyTexture}, m_parent(nullptr), m_renderer(nullptr),
+		m_handler_manager(nullptr) {
 
 }
 
 WindowBase::~WindowBase() {
-	// do not delete the renderer or parent; this class does not own these pointers
+	// do not delete the renderer, parent or HandlerManager; this class does not own these pointers
 }
 
 void WindowBase::set_renderer(SDL_Renderer *renderer) {
@@ -74,6 +75,7 @@ SDL_Rect WindowBase::relative_dimension() {
 void WindowBase::add_child(std::unique_ptr<WindowBase> child) {
 	child->set_parent(this);
 	child->set_renderer(m_renderer);
+	child->m_handler_manager = m_handler_manager;
 	m_children.push_back(std::move(child));
 }
 
@@ -81,8 +83,11 @@ void WindowBase::on_click(Sint16 mouse_x, Sint16 mouse_y) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
 	if (child != nullptr) {
 		child->on_click(mouse_x, mouse_y);
+	} else {
+		call_handler(HandlerType::ON_CLICK);
 	}
 }
+
 
 void WindowBase::on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
@@ -101,5 +106,19 @@ WindowBase *WindowBase::child_under_coordinates(Sint16 x, Sint16 y) {
 
 	return nullptr;
 }
+
+void WindowBase::set_handler(HandlerType type, const std::string &handler_name) {
+	if (!handler_name.empty()) {
+		m_handlers[type] = handler_name;
+	}
+}
+
+
+void WindowBase::call_handler(HandlerType type) {
+	if (m_handlers.count(type) != 0 && m_handler_manager != nullptr) {
+		m_handler_manager->call_handler(m_handlers[type]);
+	}
+}
+
 
 } /* namespace SDL_GUI */

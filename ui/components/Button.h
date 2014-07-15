@@ -15,7 +15,6 @@ public:
 
 	virtual void draw() override;
 
-	virtual void on_click(Sint16 x, Sint16 y) override;
 	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy) override {} // do nothing if dragged
 
 	void set_text(std::string text);

@@ -3,15 +3,14 @@
 #include <SDL2/SDL_ttf.h>
 #include <algorithm>
 
-
 #include "../serialization/XMLSerializer.h"
-
 #include "creation/WindowLoader.h"
 #include "utility/Helpers.h"
+#include "ThrowHandlerExceptionPolicy.h"
 
 namespace sdl_gui {
 UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING),
-		m_has_initialized_ttf(false) {
+		m_has_initialized_ttf(false), m_handler_exception_policy{new ThrowHandlerExceptionPolicy{}} {
 	set_handedness(Handedness::RIGHT);
 
 	if (!TTF_WasInit()) {
@@ -81,6 +80,7 @@ void UI::draw() {
 void UI::load_window(const std::string &file_name) {
 	std::shared_ptr<Window> window{new Window{}};
 	window->set_renderer(m_renderer);
+	window->set_handler_manager(this);
 	serialization::XMLSerializer serializer{file_name};
 	creation::WindowLoader loader{serializer, m_renderer, window.get()};
 	loader.load();
@@ -129,6 +129,15 @@ bool UI::update_active_window(int x, int y) {
 
 
 	return false;
+}
+
+void UI::call_handler(const std::string &handler_name) {
+	if (m_handlers.count(handler_name) == 0) {
+		m_handler_exception_policy->on_missing_handler(handler_name);
+		return;
+	}
+
+	m_handlers[handler_name]();
 }
 
 }

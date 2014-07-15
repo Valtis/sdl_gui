@@ -30,8 +30,8 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, SDL_Renderer *
 
 	m_loaders["button"] = [=](const serialization::Node &node) {
 		std::unique_ptr<Button> button{new Button{node.value("text")}};
-		button->set_renderer(m_renderer);
 		set_generic_parameters(node, button.get());
+		button->set_renderer(m_renderer);
 		button->set_text(node.value("text"));
 		m_window->add_child(std::move(button));
 	};
@@ -59,6 +59,14 @@ void WindowLoader::visitor(const serialization::Node &node) {
 	}
 }
 
+
+void WindowLoader::set_generic_parameters(const serialization::Node &node, WindowBase *base) {
+	set_dimensions(node, base->m_dimension);
+	set_color(node, base->m_color);
+	set_handlers(node, base);
+	base->m_background = m_factory.create_window(base->m_dimension.w, base->m_dimension.h, base->m_color);
+}
+
 void WindowLoader::set_dimensions(const serialization::Node &node, SDL_Rect &dimension) {
 	dimension.x = stoi(node.value("x"));
 	dimension.y = stoi(node.value("y"));
@@ -73,11 +81,10 @@ void WindowLoader::set_color(const serialization::Node &node, SDL_Color &color) 
 	color.a = stoi(node.value("a"), 255);
 }
 
-void WindowLoader::set_generic_parameters(const serialization::Node &node, WindowBase *base) {
-	set_dimensions(node, base->m_dimension);
-	set_color(node, base->m_color);
-	base->m_background = m_factory.create_window(base->m_dimension.w, base->m_dimension.h, base->m_color);
+void WindowLoader::set_handlers(const serialization::Node &node, WindowBase *base) {
+	base->set_handler(HandlerType::ON_CLICK, node.value("on_click"));
 }
+
 
 
 } /* namespace creation */

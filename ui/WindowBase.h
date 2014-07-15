@@ -10,13 +10,18 @@
 #include <SDL2/SDL.h>
 #include <memory>
 #include <vector>
+#include <map>
 #include "Typedefs.h"
 
 namespace sdl_gui {
 
+class HandlerManager;
+
 namespace creation {
 	class WindowLoader;
 }
+
+enum class HandlerType { ON_CLICK };
 
 class WindowBase {
 public:
@@ -36,22 +41,33 @@ public:
 	SDL_Rect absolute_dimension();
 
 	void add_child(std::unique_ptr<WindowBase> child);
-	void set_parent(WindowBase *parent) { m_parent = parent; }
+	void set_parent(WindowBase *parent) {
+		m_parent = parent;
+	}
 
+	void set_handler_manager(HandlerManager *manager) {
+		m_handler_manager = manager;
+	}
+
+	void set_handler(HandlerType type, const std::string &handler_name);
 
 protected:
 	friend class creation::WindowLoader;
-
 	WindowBase *child_under_coordinates(Sint16 x, Sint16 y);
 	void do_draw(SDL_Rect destination_rect);
+	void call_handler(HandlerType type);
+
+
 
 	SDL_Rect m_dimension;
 	SDL_Color m_color;
 	texture_ptr m_background;
 	WindowBase *m_parent;
 	SDL_Renderer *m_renderer;
+	HandlerManager *m_handler_manager;
 
 	std::vector<std::unique_ptr<WindowBase>> m_children;
+	std::map<HandlerType, std::string> m_handlers;
 };
 
 } /* namespace SDL_GUI */
