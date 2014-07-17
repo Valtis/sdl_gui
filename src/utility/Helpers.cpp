@@ -18,8 +18,8 @@ void clip_draw_rectangles(const SDL_Rect &draw_area, SDL_Rect &source_rect, SDL_
 
 	source_rect.x = std::min(source_rect.w, std::max(source_rect.x, source_rect.x + left_side_clipping));
 	source_rect.y = std::min(source_rect.h, std::max(source_rect.y, source_rect.y + top_side_clipping));
-	source_rect.w = std::max(0, std::min(source_rect.w, source_rect.w - right_side_clipping));
-	source_rect.h = std::max(0, std::min(source_rect.h, source_rect.h - bot_side_clipping));
+	source_rect.w = std::max(0, std::min(source_rect.w, source_rect.w - right_side_clipping - std::max(0, left_side_clipping)));
+	source_rect.h = std::max(0, std::min(source_rect.h, source_rect.h - bot_side_clipping - std::max(0, top_side_clipping)));
 
 	SDL_IntersectRect(&draw_area, &destination_rect, &destination_rect);
 

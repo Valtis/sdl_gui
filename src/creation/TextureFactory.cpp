@@ -1,6 +1,6 @@
 #include "TextureFactory.h"
+#include "SurfaceOperations.h"
 #include <SDL2/SDL_ttf.h>
-
 #include <stdexcept>
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
@@ -32,6 +32,7 @@ TextureFactory::~TextureFactory() {
 
 texture_ptr TextureFactory::create_window(int width, int height, const SDL_Color &color) {
 	auto surface = create_surface(width, height, color);
+	draw_box(surface.get(), {0, 0, width, height }, {0, 0, 0, 255 });
 	return create_texture(surface.get());
 }
 
@@ -39,6 +40,7 @@ texture_ptr TextureFactory::create_window(int width, int height, const SDL_Color
 
 texture_ptr TextureFactory::create_button(int width, int height, const SDL_Color &color) {
 	auto surface = create_surface(width, height, color);
+	draw_box(surface.get(), {0, 0, width, height }, {0, 0, 0, 255 });
 	return create_texture(surface.get());
 }
 
@@ -81,8 +83,16 @@ texture_ptr TextureFactory::create_texture(SDL_Surface *surface) {
 	return texture;
 }
 
-void TextureFactory::fill_surface_with_color(SDL_Surface *surface, const SDL_Color &color) {
-	SDL_FillRect(surface, nullptr, SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a));
+void TextureFactory::draw_box(SDL_Surface *surface, SDL_Rect dimension, SDL_Color color) {
+	for (int x = dimension.x; x < dimension.w; ++x) {
+		set_color(surface, x, 0, color);
+		set_color(surface, x, dimension.h-1, color);
+	}
+
+	for (int y = dimension.y; y < dimension.h; ++y) {
+		set_color(surface, 0, y, color);
+		set_color(surface, dimension.w-1, y, color);
+	}
 }
 
 } /*namespace construction */

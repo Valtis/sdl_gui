@@ -47,7 +47,11 @@ SDL_Rect WindowBase::get_draw_area() {
 		return absolute_dimension();
 	}
 
-	return m_parent->get_draw_area();
+	SDL_Rect r;
+	SDL_Rect parent_area = m_parent->get_draw_area();
+	SDL_Rect own_area = absolute_dimension();
+	SDL_IntersectRect(&parent_area, &own_area, &r);
+	return r;
 }
 
 

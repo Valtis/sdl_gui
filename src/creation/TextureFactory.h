@@ -22,8 +22,10 @@ public:
 
 private:
 	surface_ptr create_surface(int width, int height, const SDL_Color &color);
-	void fill_surface_with_color(SDL_Surface *surface, const SDL_Color &color);
+
 	texture_ptr create_texture(SDL_Surface *surface);
+
+	void draw_box(SDL_Surface *surface, SDL_Rect dimension, SDL_Color color);
 
 	SDL_Renderer *m_renderer;
 };

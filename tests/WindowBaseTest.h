@@ -302,7 +302,7 @@ private:
 
 		CPPUNIT_ASSERT(renderer->m_source_is_set);
 		CPPUNIT_ASSERT(renderer->m_destination_is_set);
-		check_source_and_destination(renderer, {0, 40, 200, 100}, {50, 60, 200, 60});
+		check_source_and_destination(renderer, {0, 40, 200, 60}, {50, 60, 200, 60});
 	}
 
 	void grand_child_window_is_clipped_correctly_from_top_if_child_is_clipped() {
@@ -323,7 +323,7 @@ private:
 		base.add_child(std::move(child));
 
 		base.draw();
-		check_source_and_destination(renderer, {0, 30, 160, 80}, {60, 60, 160, 50});
+		check_source_and_destination(renderer, {0, 30, 160, 50}, {60, 60, 160, 50});
 	}
 
 	void child_window_is_clipped_correctly_from_left() {
@@ -340,7 +340,7 @@ private:
 		base.add_child(std::move(child));
 
 		base.draw();
-		check_source_and_destination(renderer, {40, 0, 200, 100}, {40, 70, 160, 100});
+		check_source_and_destination(renderer, {40, 0, 160, 100}, {40, 70, 160, 100});
 	}
 
 	void grand_child_window_is_clipped_correctly_from_left_if_child_is_clipped() {
@@ -361,7 +361,7 @@ private:
 		base.add_child(std::move(child));
 
 		base.draw();
-		check_source_and_destination(renderer, {10, 0, 160, 80}, {40, 80, 150, 80});
+		check_source_and_destination(renderer, {10, 0, 150, 80}, {40, 80, 150, 80});
 	}
 
 	void child_window_is_clipped_correctly_from_bottom() {

@@ -1,3 +1,4 @@
 <window title="my_title" x="0" y="0" w="400" h="400" r="255" g="100" b="100" a="255">
     <button text="button_text" x="200" y="20" w="50" h="20" r="255" g="0" b="0"/>
+    <button text="button_text" x="180" y="50" w="90" h="20" r="255" g="0" b="0"/>
 </window>
