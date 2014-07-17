@@ -6,7 +6,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <string>
 
-#include "../src/WindowBase.h"
+#include "../src/components/WindowBase.h"
 #include "../src/HandlerManager.h"
 
 namespace sdl_gui {

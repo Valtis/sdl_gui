@@ -1,7 +1,7 @@
 CXX = g++-4.8
 CXXFLAGS =	-g -Wall -fmessage-length=0 -std=c++11
 
-CPP_FILES = $(wildcard *.cpp) $(wildcard ../ui/*.cpp) $(wildcard ../ui/components/*.cpp) $(wildcard ../ui/creation/*.cpp) $(wildcard ../serialization/*.cpp) $(wildcard ../ui/utility/*.cpp)
+CPP_FILES = $(wildcard *.cpp) $(wildcard ../src/*.cpp) $(wildcard ../src/components/*.cpp) $(wildcard ../src/creation/*.cpp) $(wildcard ../src/serialization/*.cpp) $(wildcard ../src/utility/*.cpp)
 
 OBJS =		$(CPP_FILES:.cpp=.o)
 
