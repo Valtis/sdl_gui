@@ -6,8 +6,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <string>
 
-#include "../ui/WindowBase.h"
-#include "../ui/HandlerManager.h"
+#include "../src/WindowBase.h"
+#include "../src/HandlerManager.h"
 
 namespace sdl_gui {
 // helper class for tests
