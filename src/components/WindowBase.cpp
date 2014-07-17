@@ -35,12 +35,22 @@ void WindowBase::draw() {
 }
 
 void WindowBase::do_draw(SDL_Rect destination_rect) {
-	if (m_parent != nullptr) {
-		m_renderer->draw(m_background, nullptr, &destination_rect);
-	} else {
-		m_renderer->draw(m_background, nullptr, &destination_rect);
-	}
+
+	SDL_Rect source_rect = {0, 0, relative_dimension().w, relative_dimension().h };
+	utility::clip_draw_rectangles(get_draw_area(), source_rect, destination_rect);
+
+	m_renderer->draw(m_background, &source_rect, &destination_rect);
 }
+
+SDL_Rect WindowBase::get_draw_area() {
+	if (m_parent == nullptr) {
+		return absolute_dimension();
+	}
+
+	return m_parent->get_draw_area();
+}
+
+
 /**
  * Returns rect where x/y-coordinates are actual screen coordinates
  */

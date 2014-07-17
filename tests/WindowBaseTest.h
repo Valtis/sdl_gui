@@ -8,9 +8,10 @@
 
 #include "../src/components/WindowBase.h"
 #include "../src/HandlerManager.h"
+#include "../src/rendering/Renderer.h"
 
 namespace sdl_gui {
-// helper class for tests
+// helper classes for tests
 class TestHandlerManager : public HandlerManager {
 public:
 	std::string m_called_handler;
@@ -19,6 +20,37 @@ public:
 	}
 };
 
+class TestRenderer : public rendering::Renderer {
+public:
+	TestRenderer() : m_source_is_set(false), m_destination_is_set(false) {}
+
+
+	// pointers may be released shortly after this call so we can't simply copy the pointer
+	void draw(const texture_ptr &texture, SDL_Rect *source_rect, SDL_Rect *destination_rect) {
+		m_source_is_set = false;
+		m_destination_is_set = false;
+
+		if (source_rect != nullptr) {
+			m_source_rect = *source_rect;
+			m_source_is_set = true;
+		}
+
+		if (destination_rect != nullptr) {
+			m_destination_rect = *destination_rect;
+			m_destination_is_set = true;
+		}
+
+	}
+
+	SDL_Rect m_source_rect;
+	bool m_source_is_set;
+
+	SDL_Rect m_destination_rect;
+	bool m_destination_is_set;
+};
+
+
+
 class WindowBaseTest : public CppUnit::TestFixture {
 
     CPPUNIT_TEST_SUITE(WindowBaseTest);
@@ -26,9 +58,25 @@ class WindowBaseTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(relative_dimension_returns_correct_value_if_no_parent);
     CPPUNIT_TEST(absolute_dimension_returns_correct_value_if_has_parent);
     CPPUNIT_TEST(relative_dimension_returns_correct_value_if_has_parent);
+
     CPPUNIT_TEST(on_click_handler_is_called_with_no_children);
     CPPUNIT_TEST(on_click_handler_is_called_with_child_when_not_clicking_child);
     CPPUNIT_TEST(child_on_click_handler_is_called_with_child_when_clicking_child);
+
+
+    CPPUNIT_TEST(child_window_is_drawn_fully_if_it_fits_parent);
+    CPPUNIT_TEST(grand_child_window_is_drawn_fully_if_it_fits_child_and_child_fits_parent);
+    CPPUNIT_TEST(grand_child_window_is_clipped_if_it_does_not_fit_child_and_child_fits_parent);
+
+    CPPUNIT_TEST(child_window_is_clipped_correctly_from_right);
+    CPPUNIT_TEST(grand_child_window_is_clipped_correctly_from_right_if_child_is_clipped);
+    CPPUNIT_TEST(child_window_is_clipped_correctly_from_top);
+    CPPUNIT_TEST(grand_child_window_is_clipped_correctly_from_top_if_child_is_clipped);
+    CPPUNIT_TEST(child_window_is_clipped_correctly_from_left);
+    CPPUNIT_TEST(grand_child_window_is_clipped_correctly_from_left_if_child_is_clipped);
+    CPPUNIT_TEST(child_window_is_clipped_correctly_from_bottom);
+    CPPUNIT_TEST(grand_child_window_is_clipped_correctly_from_bottom_if_child_is_clipped);
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -140,6 +188,234 @@ private:
 		base.on_click(60, 60);
 
 		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler);
+	}
+
+	void child_window_is_drawn_fully_if_it_fits_parent() {
+
+		auto renderer = std::make_shared<TestRenderer>();WindowBase base{};
+
+		base.set_relative_dimension({40, 40, 400, 400});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({10, 10, 200, 100});
+
+		base.add_child(std::move(child));
+
+		base.draw();
+		check_source_and_destination(renderer, {0, 0, 200, 100}, {50, 50, 200, 100});
+	}
+
+	void grand_child_window_is_drawn_fully_if_it_fits_child_and_child_fits_parent() {
+
+		auto renderer = std::make_shared<TestRenderer>();WindowBase base{};
+
+		base.set_relative_dimension({40, 40, 400, 400});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({20, 30, 100, 100});
+
+		std::unique_ptr<WindowBase> grand_child{new WindowBase{}};
+		grand_child->set_relative_dimension({10, 10, 80, 80});
+
+		child->add_child(std::move(grand_child));
+		base.add_child(std::move(child));
+
+		base.draw();
+
+		check_source_and_destination(renderer, {0, 0, 80, 80}, {70, 80, 80, 80});
+	}
+
+	void grand_child_window_is_clipped_if_it_does_not_fit_child_and_child_fits_parent() {
+		auto renderer = std::make_shared<TestRenderer>();
+		WindowBase base{};
+
+		base.set_relative_dimension({40, 40, 400, 400});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({20, 30, 40, 100});
+
+		std::unique_ptr<WindowBase> grand_child{new WindowBase{}};
+		grand_child->set_relative_dimension({-10, 10, 80, 80});
+
+		child->add_child(std::move(grand_child));
+		base.add_child(std::move(child));
+
+		base.draw();
+		check_source_and_destination(renderer, {10, 0, 50, 80}, {60, 80, 50, 80});
+	}
+
+	void child_window_is_clipped_correctly_from_right() {
+
+		auto renderer = std::make_shared<TestRenderer>();
+		WindowBase base{};
+
+		base.set_relative_dimension({40, 40, 400, 500});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({300, 10, 200, 100});
+
+		base.add_child(std::move(child));
+
+		base.draw();
+		check_source_and_destination(renderer, {0, 0, 100, 100}, {340, 50, 100, 100});
+	}
+
+	void grand_child_window_is_clipped_correctly_from_right_if_child_is_clipped() {
+
+		auto renderer = std::make_shared<TestRenderer>();
+		WindowBase base{};
+
+		base.set_relative_dimension({40, 40, 400, 500});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({300, 10, 200, 100});
+
+		std::unique_ptr<WindowBase> grand_child{new WindowBase{}};
+		grand_child->set_relative_dimension({10, 10, 160, 20});
+
+		child->add_child(std::move(grand_child));
+		base.add_child(std::move(child));
+
+		base.draw();
+		check_source_and_destination(renderer, {0, 0, 90, 20}, {350, 60, 90, 20});
+	}
+
+	void child_window_is_clipped_correctly_from_top() {
+
+		auto renderer = std::make_shared<TestRenderer>();
+		WindowBase base{};
+
+		base.set_relative_dimension({40, 60, 400, 300});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({10, -40, 200, 100});
+
+		base.add_child(std::move(child));
+
+		base.draw();
+
+		CPPUNIT_ASSERT(renderer->m_source_is_set);
+		CPPUNIT_ASSERT(renderer->m_destination_is_set);
+		check_source_and_destination(renderer, {0, 40, 200, 100}, {50, 60, 200, 60});
+	}
+
+	void grand_child_window_is_clipped_correctly_from_top_if_child_is_clipped() {
+
+		auto renderer = std::make_shared<TestRenderer>();
+		WindowBase base{};
+
+		base.set_relative_dimension({40, 60, 400, 400});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({10, -40, 200, 100});
+
+		std::unique_ptr<WindowBase> grand_child{new WindowBase{}};
+		grand_child->set_relative_dimension({10, 10, 160, 80});
+
+		child->add_child(std::move(grand_child));
+		base.add_child(std::move(child));
+
+		base.draw();
+		check_source_and_destination(renderer, {0, 30, 160, 80}, {60, 60, 160, 50});
+	}
+
+	void child_window_is_clipped_correctly_from_left() {
+
+		auto renderer = std::make_shared<TestRenderer>();
+		WindowBase base{};
+
+		base.set_relative_dimension({40, 60, 400, 300});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({-40, 10, 200, 100});
+
+		base.add_child(std::move(child));
+
+		base.draw();
+		check_source_and_destination(renderer, {40, 0, 200, 100}, {40, 70, 160, 100});
+	}
+
+	void grand_child_window_is_clipped_correctly_from_left_if_child_is_clipped() {
+
+		auto renderer = std::make_shared<TestRenderer>();
+		WindowBase base{};
+
+		base.set_relative_dimension({40, 60, 400, 300});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({-20, 10, 200, 100});
+
+		std::unique_ptr<WindowBase> grand_child{new WindowBase{}};
+		grand_child->set_relative_dimension({10, 10, 160, 80});
+
+		child->add_child(std::move(grand_child));
+		base.add_child(std::move(child));
+
+		base.draw();
+		check_source_and_destination(renderer, {10, 0, 160, 80}, {40, 80, 150, 80});
+	}
+
+	void child_window_is_clipped_correctly_from_bottom() {
+
+		auto renderer = std::make_shared<TestRenderer>();
+		WindowBase base{};
+
+		base.set_relative_dimension({40, 60, 400, 300});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({10, 250, 200, 100});
+
+		base.add_child(std::move(child));
+
+		base.draw();
+		check_source_and_destination(renderer, {0, 0, 200, 50}, {50, 310, 200, 50});
+	}
+
+	void grand_child_window_is_clipped_correctly_from_bottom_if_child_is_clipped() {
+
+		auto renderer = std::make_shared<TestRenderer>();WindowBase base{};
+
+		base.set_relative_dimension({40, 60, 400, 300});
+		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({10, 250, 200, 100});
+
+		std::unique_ptr<WindowBase> grand_child{new WindowBase{}};
+		grand_child->set_relative_dimension({10, 10, 160, 80});
+
+		child->add_child(std::move(grand_child));
+		base.add_child(std::move(child));
+
+		base.draw();
+		check_source_and_destination(renderer, {0, 0, 160, 40}, {60, 320, 160, 40});
+	}
+
+
+	void check_source_and_destination(std::shared_ptr<TestRenderer> renderer, SDL_Rect expected_source, SDL_Rect expected_destination) {
+
+		CPPUNIT_ASSERT(renderer->m_source_is_set);
+		CPPUNIT_ASSERT(renderer->m_destination_is_set);
+
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Source x coordinate incorrect", expected_source.x, renderer->m_source_rect.x);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Source y coordinate incorrect", expected_source.y, renderer->m_source_rect.y);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Source w coordinate incorrect", expected_source.w, renderer->m_source_rect.w);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Source h coordinate incorrect", expected_source.h, renderer->m_source_rect.h);
+
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination x coordinate incorrect", expected_destination.x, renderer->m_destination_rect.x);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination y coordinate incorrect", expected_destination.y, renderer->m_destination_rect.y);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination w coordinate incorrect", expected_destination.w, renderer->m_destination_rect.w);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination h coordinate incorrect", expected_destination.h, renderer->m_destination_rect.h);
 	}
 };
 

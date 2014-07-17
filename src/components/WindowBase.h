@@ -46,6 +46,9 @@ public:
 	void set_handler(HandlerType type, const std::string &handler_name);
 
 protected:
+
+	SDL_Rect get_draw_area();
+
 	friend class creation::WindowLoader;
 	WindowBase *child_under_coordinates(Sint16 x, Sint16 y);
 	void do_draw(SDL_Rect destination_rect);
