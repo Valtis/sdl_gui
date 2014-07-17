@@ -4,13 +4,16 @@
 #include "WindowBase.h"
 #include <string>
 
-
 namespace sdl_gui {
+
+namespace creation {
+	class TextureFactory;
+}
 
 class Button : public WindowBase {
 public:
-	Button();
-	Button(std::string text);
+	Button(const creation::TextureFactory &factory);
+	Button(const creation::TextureFactory &factory, std::string text);
 	virtual ~Button();
 
 	virtual void draw() override;

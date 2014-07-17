@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include "../Typedefs.h"
+#include "../rendering/Renderer.h"
 
 namespace sdl_gui {
 
@@ -21,7 +22,7 @@ public:
 	WindowBase();
 	virtual ~WindowBase();
 
-	void set_renderer(SDL_Renderer *renderer);
+	void set_renderer(std::shared_ptr<rendering::Renderer> renderer);
 
 	virtual void draw();
 
@@ -29,9 +30,9 @@ public:
 
 	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy);
 
-	SDL_Rect relative_dimension();
+	SDL_Rect relative_dimension() const;
 	void set_relative_dimension(SDL_Rect dimension) { m_dimension = dimension; }
-	SDL_Rect absolute_dimension();
+	SDL_Rect absolute_dimension() const;
 
 	void add_child(std::unique_ptr<WindowBase> child);
 	void set_parent(WindowBase *parent) {
@@ -56,7 +57,7 @@ protected:
 	SDL_Color m_color;
 	texture_ptr m_background;
 	WindowBase *m_parent;
-	SDL_Renderer *m_renderer;
+	std::shared_ptr<rendering::Renderer> m_renderer;
 	HandlerManager *m_handler_manager;
 
 	std::vector<std::unique_ptr<WindowBase>> m_children;

@@ -8,6 +8,7 @@
 #include "components/Window.h"
 #include "HandlerManager.h"
 #include "HandlerExceptionPolicy.h"
+#include "rendering/SDLRenderer.h"
 
 
 

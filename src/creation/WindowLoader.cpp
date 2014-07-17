@@ -15,8 +15,8 @@
 namespace sdl_gui {
 namespace creation {
 
-WindowLoader::WindowLoader(serialization::Serializer &serializer, SDL_Renderer *renderer, Window *window) :
-	m_serializer(serializer), m_renderer(renderer), m_window(window), m_factory{m_renderer} {
+WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_ptr<rendering::Renderer> renderer, Window *window, TextureFactory factory) :
+	m_serializer(serializer), m_renderer(renderer), m_window(window), m_factory{factory} {
 	if (renderer == nullptr) {
 		throw std::invalid_argument("Renderer must not be null");
 	} else if (window == nullptr) {
@@ -29,8 +29,9 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, SDL_Renderer *
 	};
 
 	m_loaders["button"] = [=](const serialization::Node &node) {
-		std::unique_ptr<Button> button{new Button{node.value("text")}};
+		std::unique_ptr<Button> button{new Button{m_factory, node.value("text")}};
 		set_generic_parameters(node, button.get());
+
 		button->set_renderer(m_renderer);
 		button->set_text(node.value("text"));
 		m_window->add_child(std::move(button));

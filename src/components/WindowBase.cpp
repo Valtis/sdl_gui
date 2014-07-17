@@ -14,7 +14,7 @@ WindowBase::~WindowBase() {
 	// do not delete the renderer, parent or HandlerManager; this class does not own these pointers
 }
 
-void WindowBase::set_renderer(SDL_Renderer *renderer) {
+void WindowBase::set_renderer(std::shared_ptr<rendering::Renderer> renderer) {
 	 m_renderer = renderer;
 	 for (const auto &child : m_children) {
 		 child->set_renderer(renderer);
@@ -36,15 +36,15 @@ void WindowBase::draw() {
 
 void WindowBase::do_draw(SDL_Rect destination_rect) {
 	if (m_parent != nullptr) {
-		SDL_RenderCopy(m_renderer, m_background.get(), nullptr, &destination_rect);
+		m_renderer->draw(m_background, nullptr, &destination_rect);
 	} else {
-		SDL_RenderCopy(m_renderer, m_background.get(), nullptr, &destination_rect);
+		m_renderer->draw(m_background, nullptr, &destination_rect);
 	}
 }
 /**
  * Returns rect where x/y-coordinates are actual screen coordinates
  */
-SDL_Rect WindowBase::absolute_dimension() {
+SDL_Rect WindowBase::absolute_dimension() const {
 	SDL_Rect r = m_dimension;
 
 	if (m_parent == nullptr) {
@@ -59,7 +59,7 @@ SDL_Rect WindowBase::absolute_dimension() {
 /**
  * Returns rect where x/y-coordinates are relative to its parents coordinates
  */
-SDL_Rect WindowBase::relative_dimension() {
+SDL_Rect WindowBase::relative_dimension() const {
 	return m_dimension;
 }
 

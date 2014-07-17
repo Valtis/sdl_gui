@@ -3,7 +3,9 @@
 #include <string>
 #include <functional>
 #include <unordered_map>
+#include <memory>
 #include "TextureFactory.h"
+#include "../rendering/Renderer.h"
 
 struct SDL_Renderer;
 struct SDL_Rect;
@@ -25,7 +27,8 @@ namespace creation {
 
 class WindowLoader {
 public:
-	WindowLoader(serialization::Serializer &serializer, SDL_Renderer *renderer, Window *window);
+	WindowLoader(serialization::Serializer &serializer, std::shared_ptr<rendering::Renderer> renderer, Window *window,
+			TextureFactory factory);
 	virtual ~WindowLoader();
 	void load();
 
@@ -40,7 +43,7 @@ private:
 	void set_handlers(const serialization::Node &node, WindowBase *base);
 
 	serialization::Serializer &m_serializer;
-	SDL_Renderer *m_renderer;
+	std::shared_ptr<rendering::Renderer> m_renderer;
 	Window *m_window;
 	TextureFactory m_factory;
 	std::unordered_map<std::string, std::function<void(const serialization::Node &node)>> m_loaders;

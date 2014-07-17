@@ -3,12 +3,12 @@
 
 namespace sdl_gui {
 
-Button::Button() :  Button{""} {
+Button::Button(const creation::TextureFactory &factory) : Button{factory, ""} {
 
 }
 
-Button::Button(std::string text) : m_text(text) {
-	std::unique_ptr<TextLabel> label{new TextLabel{text}};
+Button::Button(const creation::TextureFactory &factory, std::string text) : m_text(text) {
+	std::unique_ptr<TextLabel> label{new TextLabel{factory, text}};
 	add_child(std::move(label));
 }
 
