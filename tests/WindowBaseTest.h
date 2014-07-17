@@ -244,7 +244,7 @@ private:
 		base.add_child(std::move(child));
 
 		base.draw();
-		check_source_and_destination(renderer, {10, 0, 50, 80}, {60, 80, 50, 80});
+		check_source_and_destination(renderer, {10, 0, 40, 80}, {60, 80, 40, 80});
 	}
 
 	void child_window_is_clipped_correctly_from_right() {
