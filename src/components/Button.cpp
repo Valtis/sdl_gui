@@ -1,7 +1,5 @@
 #include "Button.h"
 #include "TextLabel.h"
-#include <iostream>
-
 namespace sdl_gui {
 
 Button::Button(std::shared_ptr<creation::ITextureFactory> factory) : Button{factory, ""} {
@@ -39,12 +37,9 @@ void Button::on_mouse_down(Sint16 mouse_x, Sint16 mouse_y) {
 }
 
 void Button::on_mouse_up(Sint16 mouse_x, Sint16 mouse_y) {
-	WindowBase::on_mouse_up(mouse_x, mouse_y);
 	m_current_texture = ButtonGraphics::DEFAULT;
+	call_handler(HandlerType::ON_CLICK);
 }
-
-
-
 
 void Button::on_losing_focus() {
 	WindowBase::on_losing_focus();

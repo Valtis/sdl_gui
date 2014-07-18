@@ -10,7 +10,6 @@
 #include "ThrowHandlerExceptionPolicy.h"
 #include "rendering/SDLRenderer.h"
 
-
 namespace sdl_gui {
 UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING),
 		m_has_initialized_ttf(false), m_handler_exception_policy{new ThrowHandlerExceptionPolicy{}},
@@ -118,7 +117,7 @@ void UI::handle_click(const SDL_Event &event) {
 	if (event.button.button == m_mouse_buttons.action_button) {
 		if (update_active_window(event.button.x, event.button.y)) {
 			if (event.button.state == SDL_RELEASED) {
-				m_windows.back()->on_mouse_up(event.button.x, event.button.x);
+				m_windows.back()->on_mouse_up(event.button.x, event.button.y);
 			} else if (event.button.state == SDL_PRESSED) {
 				m_windows.back()->on_mouse_down(event.button.x, event.button.y);
 			}
