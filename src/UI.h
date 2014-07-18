@@ -46,15 +46,6 @@ private:
 	void handle_motion(const SDL_Event &event);
 	bool update_active_window(int x, int y);
 	void update_mouse_position();
-
-	Sint16 relative_x(Sint16 x, SDL_Rect r) {
-		return x - r.x;
-	}
-
-	Sint16 relative_y(Sint16 y, SDL_Rect r) {
-		return y - r.y;
-	}
-
 	SDL_Renderer *m_renderer;
 
 	enum class Drag_Status { NOT_DRAGGING, DRAGGING, FAILED_DRAG };

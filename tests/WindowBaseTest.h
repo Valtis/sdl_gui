@@ -7,23 +7,16 @@
 #include <string>
 
 #include "../src/components/WindowBase.h"
-#include "../src/HandlerManager.h"
+#include "TestHandlerManager.h"
 #include "../src/rendering/Renderer.h"
 
 namespace sdl_gui {
 // helper classes for tests
-class TestHandlerManager : public HandlerManager {
-public:
-	std::string m_called_handler;
-	void call_handler(const std::string &handler_name) {
-		m_called_handler = handler_name;
-	}
-};
+
 
 class TestRenderer : public rendering::Renderer {
 public:
 	TestRenderer() : m_source_is_set(false), m_destination_is_set(false) {}
-
 
 	// pointers may be released shortly after this call so we can't simply copy the pointer
 	void draw(const texture_ptr &texture, SDL_Rect *source_rect, SDL_Rect *destination_rect) {

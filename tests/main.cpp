@@ -12,6 +12,7 @@
 #include <cppunit/XmlOutputter.h>
 
 #include "WindowBaseTest.h"
+#include "ButtonTest.h"
 
 using namespace CppUnit;
 using namespace std;

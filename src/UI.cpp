@@ -118,14 +118,10 @@ void UI::handle_click(const SDL_Event &event) {
 
 	if (event.button.button == m_mouse_buttons.action_button) {
 		if (update_active_window(event.button.x, event.button.y)) {
-			SDL_Rect r = m_windows.back()->absolute_dimension();
-
-			Sint16 x = relative_x(event.button.x, r);
-			Sint16 y = relative_y(event.button.y, r);
 			if (event.button.state == SDL_RELEASED) {
-				m_windows.back()->on_mouse_up(x, y);
+				m_windows.back()->on_mouse_up(event.button.x, event.button.x);
 			} else if (event.button.state == SDL_PRESSED) {
-				m_windows.back()->on_mouse_down(x, y);
+				m_windows.back()->on_mouse_down(event.button.x, event.button.y);
 			}
 		}
 	}
@@ -134,15 +130,13 @@ void UI::handle_click(const SDL_Event &event) {
 void UI::handle_motion(const SDL_Event &event) {
 	if (m_action_button_pressed && m_dragging != Drag_Status::FAILED_DRAG) {
 		if (update_active_window(event.motion.x, event.motion.y)) {
-			SDL_Rect r = m_windows.back()->absolute_dimension();
-			m_windows.back()->on_drag(relative_x(event.motion.x, r), relative_y(event.motion.y, r), event.motion.xrel, event.motion.yrel);
+			m_windows.back()->on_drag(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel);
 			m_dragging = Drag_Status::DRAGGING;
 		} else {
 			m_dragging = Drag_Status::FAILED_DRAG;
 		}
 	} else {
-		SDL_Rect r = m_windows.back()->absolute_dimension();
-		m_windows.back()->on_mouse_over(relative_x(event.motion.x, r), relative_y(event.motion.y, r));
+		m_windows.back()->on_mouse_over(event.motion.x, event.motion.y);
 	}
 }
 

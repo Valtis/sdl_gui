@@ -34,6 +34,7 @@ void Button::on_mouse_over(Sint16 mouse_x, Sint16 mouse_y) {
 }
 
 void Button::on_mouse_down(Sint16 mouse_x, Sint16 mouse_y) {
+	WindowBase::on_mouse_down(mouse_x, mouse_y);
 	m_current_texture = ButtonGraphics::PRESSED_DOWN;
 }
 

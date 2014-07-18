@@ -1,7 +1,7 @@
 #include "WindowBase.h"
 #include "../utility/Helpers.h"
 #include "../HandlerManager.h"
-
+#include "../utility/Helpers.h"
 namespace sdl_gui {
 
 WindowBase::WindowBase() : m_dimension{0, 0, 0, 0}, m_color{0, 0, 0, 0},
@@ -139,7 +139,7 @@ void WindowBase::on_gaining_focus() {
 
 WindowBase *WindowBase::child_under_coordinates(Sint16 x, Sint16 y) {
 	for (const auto &child : m_children) {
-		if (utility::point_inside_rect({x, y}, child->relative_dimension())) {
+		if (utility::point_inside_rect({x, y}, child->absolute_dimension())) {
 			if (m_focused_child != child.get() && m_focused_child != nullptr) {
 				m_focused_child->on_losing_focus();
 			}
