@@ -1,5 +1,6 @@
 #include "Button.h"
 #include "TextLabel.h"
+#include <iostream>
 
 namespace sdl_gui {
 
@@ -18,6 +19,17 @@ Button::~Button() {
 
 void Button::draw() {
 	WindowBase::draw();
+}
+
+void Button::on_mouse_over(Sint16 mouse_x, Sint16 mouse_y) {
+	WindowBase::on_mouse_over(mouse_x, mouse_y);
+	std::cout << "Button mouse over event\n";
+}
+
+void Button::on_losing_focus() {
+	WindowBase::on_losing_focus();
+
+	std::cout << "Button lost focus!\n";
 }
 
 void Button::set_text(std::string text) {

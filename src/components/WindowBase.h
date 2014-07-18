@@ -15,7 +15,7 @@ namespace creation {
 	class WindowLoader;
 }
 
-enum class HandlerType { ON_CLICK };
+enum class HandlerType { ON_CLICK, ON_MOUSE_OVER, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS };
 
 class WindowBase {
 public:
@@ -27,8 +27,10 @@ public:
 	virtual void draw();
 
 	virtual void on_click(Sint16 mouse_x, Sint16 mouse_y);
-
+	virtual void on_mouse_over(Sint16 mouse_x, Sint16 mouse_y);
 	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy);
+	virtual void on_losing_focus();
+	virtual void on_gaining_focus();
 
 	SDL_Rect relative_dimension() const;
 	void set_relative_dimension(SDL_Rect dimension) { m_dimension = dimension; }
@@ -46,9 +48,7 @@ public:
 	void set_handler(HandlerType type, const std::string &handler_name);
 
 protected:
-
 	SDL_Rect get_draw_area();
-
 	friend class creation::WindowLoader;
 	WindowBase *child_under_coordinates(Sint16 x, Sint16 y);
 	void do_draw(SDL_Rect destination_rect);
@@ -64,6 +64,7 @@ protected:
 	HandlerManager *m_handler_manager;
 
 	std::vector<std::unique_ptr<WindowBase>> m_children;
+	WindowBase *m_focused_child;
 	std::map<HandlerType, std::string> m_handlers;
 };
 
