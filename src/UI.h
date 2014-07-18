@@ -77,9 +77,7 @@ private:
 	};
 
 	Buttons m_mouse_buttons;
-
-
-
+	bool m_action_button_pressed;
 };
 }
 #endif /* UI_H_ */

@@ -13,7 +13,8 @@
 
 namespace sdl_gui {
 UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING),
-		m_has_initialized_ttf(false), m_handler_exception_policy{new ThrowHandlerExceptionPolicy{}} {
+		m_has_initialized_ttf(false), m_handler_exception_policy{new ThrowHandlerExceptionPolicy{}},
+		m_action_button_pressed(false) {
 	set_handedness(Handedness::RIGHT);
 
 	if (!TTF_WasInit()) {
@@ -62,9 +63,16 @@ void UI::update(const SDL_Event &event) {
 	switch (event.type) {
 
 	case SDL_MOUSEBUTTONDOWN:
-
+		if (event.button.button == m_mouse_buttons.action_button) {
+			m_action_button_pressed = true;
+		}
 		break;
 	case SDL_MOUSEBUTTONUP:
+
+		if (event.button.button == m_mouse_buttons.action_button) {
+				m_action_button_pressed = false;
+		}
+
 		m_dragging = Drag_Status::NOT_DRAGGING;
 		handle_click(event);
 		break;
@@ -113,9 +121,8 @@ void UI::handle_click(const SDL_Event &event) {
 }
 
 void UI::handle_drag(const SDL_Event &event) {
-	auto state = SDL_GetMouseState(nullptr, nullptr);
 
-	if ((state & SDL_BUTTON(m_mouse_buttons.action_button)) && m_dragging != Drag_Status::FAILED_DRAG) {
+	if (m_action_button_pressed && m_dragging != Drag_Status::FAILED_DRAG) {
 		if (update_active_window(event.motion.x, event.motion.y)) {
 			m_windows.back()->on_drag(event.motion.x, event.motion.yrel, event.motion.xrel, event.motion.yrel);
 			m_dragging = Drag_Status::DRAGGING;
