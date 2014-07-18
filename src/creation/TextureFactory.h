@@ -5,20 +5,21 @@
 #include <memory>
 #include <string>
 #include "../Typedefs.h"
+#include "ITextureFactory.h"
 
 
 namespace sdl_gui {
 namespace creation {
 
-class TextureFactory {
+class TextureFactory : public ITextureFactory {
 
 public:
 	TextureFactory(SDL_Renderer *renderer);
 	virtual ~TextureFactory();
 
-	texture_ptr create_window(const int width, const int height, const SDL_Color &color);
-	texture_ptr create_button(const int width, const int height, const SDL_Color &color);
-	texture_ptr create_text(std::string text);
+	texture_ptr create_window(const int width, const int height, const SDL_Color &color) override;
+	texture_ptr create_button(const int width, const int height, const SDL_Color &color) override;
+	texture_ptr create_text(std::string text) override;
 
 private:
 	surface_ptr create_surface(const int width, const int height, const SDL_Color &color);
