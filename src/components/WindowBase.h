@@ -26,7 +26,9 @@ public:
 
 	virtual void draw();
 
-	virtual void on_click(Sint16 mouse_x, Sint16 mouse_y);
+
+	virtual void on_mouse_down(Sint16 mouse_x, Sint16 mouse_y);
+	virtual void on_mouse_up(Sint16 mouse_x, Sint16 mouse_y);
 	virtual void on_mouse_over(Sint16 mouse_x, Sint16 mouse_y);
 	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy);
 	virtual void on_losing_focus();
@@ -48,10 +50,12 @@ public:
 	void set_handler(HandlerType type, const std::string &handler_name);
 
 protected:
+
+	void draw(const texture_ptr &ptr);
 	SDL_Rect get_draw_area();
 	friend class creation::WindowLoader;
 	WindowBase *child_under_coordinates(Sint16 x, Sint16 y);
-	void do_draw(SDL_Rect destination_rect);
+	void do_draw(const texture_ptr &ptr, SDL_Rect destination_rect);
 	void call_handler(HandlerType type);
 
 

@@ -25,6 +25,30 @@ void clip_draw_rectangles(const SDL_Rect &draw_area, SDL_Rect &source_rect, SDL_
 
 }
 
+Uint8 scale_color(double bottom_color, double top_color) {
+	bottom_color /= 255;
+	top_color /= 255;
+
+	return 255.0*(1 - (1-bottom_color)*(1-top_color));
+}
+
+SDL_Color lighter_color(const SDL_Color &color, double amount) {
+	return {
+		scale_color(color.r, amount*255),
+		scale_color(color.g, amount*255),
+		scale_color(color.b, amount*255),
+		color.a
+	};
+}
+
+SDL_Color darker_color(const SDL_Color &color, double amount) {
+	return { (Uint8)(color.r*amount),
+		(Uint8)(color.g*amount),
+		(Uint8)(color.b*amount),
+		color.a
+	};
+}
+
 } /* namespace utility */
 
 } /* namespace sdl_gui */

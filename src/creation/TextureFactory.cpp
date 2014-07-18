@@ -1,9 +1,9 @@
 #include "TextureFactory.h"
 #include "SurfaceOperations.h"
+#include "../utility/Helpers.h"
 #include <SDL2/SDL_ttf.h>
 #include <stdexcept>
 #include <algorithm>
-#include <iostream>
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 #define RMASK 0xff000000
@@ -43,19 +43,13 @@ texture_ptr TextureFactory::create_window(const int width, const int height, con
 texture_ptr TextureFactory::create_button(const int width, const int height, const SDL_Color &color) {
 	auto surface = create_surface(width, height, color);
 
-	SDL_Color bottom_color = { 0, 0, 255, color.a};
-
-	bottom_color.r=std::max(0.0, color.r*0.75);
-	bottom_color.g=std::max(0.0, color.g*0.75);
-	bottom_color.b=std::max(0.0, color.b*0.75);
-	bottom_color.a= color.a;
+	SDL_Color bottom_color = utility::darker_color(color, 0.75);
 
 
 
 	SDL_Rect area = { 0, height/2, width, height/2-1 };
 	fill_surface_with_color(surface.get(), bottom_color, &area);
 
-	SDL_Color lighter_box_color = color;
 	draw_box(surface.get(), {0, 0, width, height }, {0, 0, 0, 255 });
 	return create_texture(surface.get());
 }

@@ -9,6 +9,7 @@
 #include "../components/Window.h"
 #include "../components/Button.h"
 #include "../serialization/Serializer.h"
+#include "../utility/Helpers.h"
 #include <SDL2/SDL.h>
 #include <stdexcept>
 
@@ -34,6 +35,14 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 		set_generic_parameters(node, button.get());
 		button->set_renderer(m_renderer);
 		button->m_background = m_factory.create_button(button->m_dimension.w, button->m_dimension.h, button->m_color);
+
+
+		SDL_Color hover_over_color = utility::lighter_color(button->m_color, 0.4);
+		button->m_additional_textures[static_cast<int>(ButtonGraphics::HOVER_OVER)] = m_factory.create_button(button->m_dimension.w, button->m_dimension.h, hover_over_color);
+		SDL_Color pressed_down_color = utility::darker_color(button->m_color, 0.5);
+		button->m_additional_textures[static_cast<int>(ButtonGraphics::PRESSED_DOWN)] = m_factory.create_button(button->m_dimension.w, button->m_dimension.h, pressed_down_color);
+
+
 		button->set_text(node.value("text"));
 		m_window->add_child(std::move(button));
 	};

@@ -143,7 +143,7 @@ private:
 		base.set_handler_manager(&manager);
 		std::string handler_name = "my_click_handler";
 		base.set_handler(HandlerType::ON_CLICK, handler_name);
-		base.on_click(0, 0);
+		base.on_mouse_up(0, 0);
 
 		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
 	}
@@ -164,7 +164,7 @@ private:
 		child->set_handler(HandlerType::ON_CLICK, child_handler_name);
 		base.add_child(std::move(child));
 
-		base.on_click(0, 0);
+		base.on_mouse_up(0, 0);
 
 		CPPUNIT_ASSERT_EQUAL(parent_handler_name, manager.m_called_handler);
 	}
@@ -185,7 +185,7 @@ private:
 		child->set_handler(HandlerType::ON_CLICK, child_handler_name);
 		base.add_child(std::move(child));
 
-		base.on_click(60, 60);
+		base.on_mouse_up(60, 60);
 
 		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler);
 	}

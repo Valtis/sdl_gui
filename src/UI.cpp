@@ -70,6 +70,7 @@ void UI::update(const SDL_Event &event) {
 		if (event.button.button == m_mouse_buttons.action_button) {
 			m_action_button_pressed = true;
 		}
+		handle_click(event);
 		break;
 	case SDL_MOUSEBUTTONUP:
 
@@ -118,8 +119,14 @@ void UI::handle_click(const SDL_Event &event) {
 	if (event.button.button == m_mouse_buttons.action_button) {
 		if (update_active_window(event.button.x, event.button.y)) {
 			SDL_Rect r = m_windows.back()->absolute_dimension();
-			m_windows.back()->on_click(relative_x(event.button.x, r),
-					relative_y(event.button.y, r));
+
+			Sint16 x = relative_x(event.button.x, r);
+			Sint16 y = relative_y(event.button.y, r);
+			if (event.button.state == SDL_RELEASED) {
+				m_windows.back()->on_mouse_up(x, y);
+			} else if (event.button.state == SDL_PRESSED) {
+				m_windows.back()->on_mouse_down(x, y);
+			}
 		}
 	}
 }
@@ -147,8 +154,6 @@ bool UI::update_active_window(int x, int y) {
 	for (auto iter = m_windows.rbegin(); iter != m_windows.rend(); ++iter) {
 		SDL_Rect r = (*iter)->absolute_dimension();
 		if (utility::point_inside_rect({x, y}, r)) {
-
-
 
 			auto window = *iter;
 			if (iter != m_windows.rbegin()) {

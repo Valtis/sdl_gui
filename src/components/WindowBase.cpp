@@ -23,23 +23,27 @@ void WindowBase::set_renderer(std::shared_ptr<rendering::Renderer> renderer) {
 
 
 void WindowBase::draw() {
-	if (m_renderer == nullptr && m_background == nullptr) {
+	draw(m_background);
+}
+
+void WindowBase::draw(const texture_ptr &texture) {
+	if (m_renderer == nullptr && texture == nullptr) {
 		return;
 	}
 
-	do_draw(absolute_dimension());
+	do_draw(texture, absolute_dimension());
 
 	for (const auto &child : m_children) {
 		child->draw();
 	}
 }
 
-void WindowBase::do_draw(SDL_Rect destination_rect) {
+void WindowBase::do_draw(const texture_ptr &texture, SDL_Rect destination_rect) {
 
 	SDL_Rect source_rect = {0, 0, relative_dimension().w, relative_dimension().h };
 	utility::clip_draw_rectangles(get_draw_area(), source_rect, destination_rect);
 
-	m_renderer->draw(m_background, &source_rect, &destination_rect);
+	m_renderer->draw(texture, &source_rect, &destination_rect);
 }
 
 SDL_Rect WindowBase::get_draw_area() {
@@ -85,10 +89,18 @@ void WindowBase::add_child(std::unique_ptr<WindowBase> child) {
 	m_children.push_back(std::move(child));
 }
 
-void WindowBase::on_click(Sint16 mouse_x, Sint16 mouse_y) {
+void WindowBase::on_mouse_down(Sint16 mouse_x, Sint16 mouse_y) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
 	if (child != nullptr) {
-		child->on_click(mouse_x, mouse_y);
+		child->on_mouse_down(mouse_x, mouse_y);
+	}
+
+}
+
+void WindowBase::on_mouse_up(Sint16 mouse_x, Sint16 mouse_y) {
+	auto child = child_under_coordinates(mouse_x, mouse_y);
+	if (child != nullptr) {
+		child->on_mouse_up(mouse_x, mouse_y);
 	} else {
 		call_handler(HandlerType::ON_CLICK);
 	}
