@@ -161,8 +161,8 @@ void set_color(SDL_Surface *surface, int x, int y, SDL_Color color)
 	set_alpha(surface, x, y, color.a);
 }
 
-void fill_surface_with_color(SDL_Surface *surface, const SDL_Color &color) {
-	SDL_FillRect(surface, nullptr, SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a));
+int fill_surface_with_color(SDL_Surface *surface, const SDL_Color &color, SDL_Rect *area) {
+	return SDL_FillRect(surface, area, SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a));
 }
 
 } /* namespace creation */

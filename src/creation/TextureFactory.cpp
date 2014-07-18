@@ -2,6 +2,8 @@
 #include "SurfaceOperations.h"
 #include <SDL2/SDL_ttf.h>
 #include <stdexcept>
+#include <algorithm>
+#include <iostream>
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
 #define RMASK 0xff000000
@@ -30,7 +32,7 @@ TextureFactory::~TextureFactory() {
 	// do not delete the renderer; this class does not own the pointer
 }
 
-texture_ptr TextureFactory::create_window(int width, int height, const SDL_Color &color) {
+texture_ptr TextureFactory::create_window(const int width, const int height, const SDL_Color &color) {
 	auto surface = create_surface(width, height, color);
 	draw_box(surface.get(), {0, 0, width, height }, {0, 0, 0, 255 });
 	return create_texture(surface.get());
@@ -38,8 +40,22 @@ texture_ptr TextureFactory::create_window(int width, int height, const SDL_Color
 
 
 
-texture_ptr TextureFactory::create_button(int width, int height, const SDL_Color &color) {
+texture_ptr TextureFactory::create_button(const int width, const int height, const SDL_Color &color) {
 	auto surface = create_surface(width, height, color);
+
+	SDL_Color bottom_color = { 0, 0, 255, color.a};
+
+	bottom_color.r=std::max(0.0, color.r*0.75);
+	bottom_color.g=std::max(0.0, color.g*0.75);
+	bottom_color.b=std::max(0.0, color.b*0.75);
+	bottom_color.a= color.a;
+
+
+
+	SDL_Rect area = { 0, height/2, width, height/2-1 };
+	fill_surface_with_color(surface.get(), bottom_color, &area);
+
+	SDL_Color lighter_box_color = color;
 	draw_box(surface.get(), {0, 0, width, height }, {0, 0, 0, 255 });
 	return create_texture(surface.get());
 }
@@ -49,7 +65,6 @@ texture_ptr TextureFactory::create_button(int width, int height, const SDL_Color
 texture_ptr TextureFactory::create_text(std::string text) {
 	font_ptr font{TTF_OpenFont("FreeMono.ttf", 12), TTF_CloseFont};
 	if (font == nullptr) {
-		// TODO: replace with appropriate exception type
 		throw CreationFailureException(std::string("Failed to open font file: ") + TTF_GetError());
 
 	}
@@ -63,7 +78,7 @@ texture_ptr TextureFactory::create_text(std::string text) {
 	return create_texture(font_surface.get());
 }
 
-surface_ptr TextureFactory::create_surface(int width, int height, const SDL_Color &color) {
+surface_ptr TextureFactory::create_surface(const int width, const int height, const SDL_Color &color) {
 	surface_ptr surface{SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK), SDL_FreeSurface};
 
 	if (surface == nullptr) {
@@ -85,12 +100,12 @@ texture_ptr TextureFactory::create_texture(SDL_Surface *surface) {
 
 void TextureFactory::draw_box(SDL_Surface *surface, SDL_Rect dimension, SDL_Color color) {
 	for (int x = dimension.x; x < dimension.w; ++x) {
-		set_color(surface, x, 0, color);
+		set_color(surface, x, dimension.y, color);
 		set_color(surface, x, dimension.h-1, color);
 	}
 
 	for (int y = dimension.y; y < dimension.h; ++y) {
-		set_color(surface, 0, y, color);
+		set_color(surface, dimension.x, y, color);
 		set_color(surface, dimension.w-1, y, color);
 	}
 }

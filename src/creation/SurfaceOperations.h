@@ -15,7 +15,7 @@ void set_green(SDL_Surface *surface, int x, int y, Uint32 color);
 void set_blue(SDL_Surface *surface, int x, int y, Uint32 _color);
 void set_color(SDL_Surface *surface, int x, int y, SDL_Color color);
 
-void fill_surface_with_color(SDL_Surface *surface, const SDL_Color &color);
+int fill_surface_with_color(SDL_Surface *surface, const SDL_Color &color, SDL_Rect *area = nullptr);
 
 } /* namespace creation */
 } /* namespace sdl_gui */

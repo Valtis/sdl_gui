@@ -25,14 +25,15 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 
 	m_loaders["window"] = [=](const serialization::Node &node) {
 		set_generic_parameters(node, m_window);
+		m_window->m_background = m_factory.create_window(m_window->m_dimension.w, m_window->m_dimension.h, m_window->m_color);
 		m_window->m_title = node.value("title");
 	};
 
 	m_loaders["button"] = [=](const serialization::Node &node) {
 		std::unique_ptr<Button> button{new Button{m_factory, node.value("text")}};
 		set_generic_parameters(node, button.get());
-
 		button->set_renderer(m_renderer);
+		button->m_background = m_factory.create_button(button->m_dimension.w, button->m_dimension.h, button->m_color);
 		button->set_text(node.value("text"));
 		m_window->add_child(std::move(button));
 	};
@@ -65,7 +66,7 @@ void WindowLoader::set_generic_parameters(const serialization::Node &node, Windo
 	set_dimensions(node, base->m_dimension);
 	set_color(node, base->m_color);
 	set_handlers(node, base);
-	base->m_background = m_factory.create_window(base->m_dimension.w, base->m_dimension.h, base->m_color);
+
 }
 
 void WindowLoader::set_dimensions(const serialization::Node &node, SDL_Rect &dimension) {
