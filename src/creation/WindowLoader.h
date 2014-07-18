@@ -28,7 +28,7 @@ namespace creation {
 class WindowLoader {
 public:
 	WindowLoader(serialization::Serializer &serializer, std::shared_ptr<rendering::Renderer> renderer, Window *window,
-			TextureFactory factory);
+			std::shared_ptr<ITextureFactory> factory);
 	virtual ~WindowLoader();
 	void load();
 
@@ -45,7 +45,7 @@ private:
 	serialization::Serializer &m_serializer;
 	std::shared_ptr<rendering::Renderer> m_renderer;
 	Window *m_window;
-	TextureFactory m_factory;
+	std::shared_ptr<ITextureFactory> m_factory;
 	std::unordered_map<std::string, std::function<void(const serialization::Node &node)>> m_loaders;
 
 };

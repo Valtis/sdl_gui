@@ -7,13 +7,13 @@
 namespace sdl_gui {
 
 namespace creation {
-	class TextureFactory;
+	class ITextureFactory;
 }
 enum class ButtonGraphics : int  { HOVER_OVER, PRESSED_DOWN, DEFAULT };
 class Button : public WindowBase {
 public:
-	Button(const creation::TextureFactory &factory);
-	Button(const creation::TextureFactory &factory, std::string text);
+	Button(std::shared_ptr<creation::ITextureFactory> factory);
+	Button(std::shared_ptr<creation::ITextureFactory> factory, std::string text);
 	virtual ~Button();
 
 	virtual void draw() override;

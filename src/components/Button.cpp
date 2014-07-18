@@ -4,11 +4,11 @@
 
 namespace sdl_gui {
 
-Button::Button(const creation::TextureFactory &factory) : Button{factory, ""} {
+Button::Button(std::shared_ptr<creation::ITextureFactory> factory) : Button{factory, ""} {
 
 }
 
-Button::Button(const creation::TextureFactory &factory, std::string text) :	m_current_texture(ButtonGraphics::DEFAULT),
+Button::Button(std::shared_ptr<creation::ITextureFactory> factory, std::string text) : m_current_texture(ButtonGraphics::DEFAULT),
 		m_additional_textures{ texture_ptr{nullptr, SDL_DestroyTexture}, texture_ptr{ nullptr, SDL_DestroyTexture} },
 			m_text(text) {
 

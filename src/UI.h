@@ -9,6 +9,7 @@
 #include "HandlerManager.h"
 #include "HandlerExceptionPolicy.h"
 #include "rendering/SDLRenderer.h"
+#include "creation/ITextureFactory.h"
 
 
 
@@ -60,8 +61,6 @@ private:
 	std::unordered_map<std::string, std::function<void()>> m_handlers;
 	std::shared_ptr<HandlerExceptionPolicy> m_handler_exception_policy;
 
-
-
 	struct Buttons {
 		Uint8 action_button;
 		Uint8 menu_button;
@@ -69,6 +68,8 @@ private:
 
 	Buttons m_mouse_buttons;
 	bool m_action_button_pressed;
+
+	std::shared_ptr<creation::ITextureFactory> m_factory;
 };
 }
 #endif /* UI_H_ */

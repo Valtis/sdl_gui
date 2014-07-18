@@ -16,7 +16,7 @@
 namespace sdl_gui {
 namespace creation {
 
-WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_ptr<rendering::Renderer> renderer, Window *window, TextureFactory factory) :
+WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_ptr<rendering::Renderer> renderer, Window *window, std::shared_ptr<ITextureFactory> factory) :
 	m_serializer(serializer), m_renderer(renderer), m_window(window), m_factory{factory} {
 	if (renderer == nullptr) {
 		throw std::invalid_argument("Renderer must not be null");
@@ -26,21 +26,21 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 
 	m_loaders["window"] = [=](const serialization::Node &node) {
 		set_generic_parameters(node, m_window);
-		m_window->m_background = m_factory.create_window(m_window->m_dimension.w, m_window->m_dimension.h, m_window->m_color);
+		m_window->m_background = m_factory->create_window(m_window->m_dimension.w, m_window->m_dimension.h, m_window->m_color);
 		m_window->m_title = node.value("title");
 	};
 
 	m_loaders["button"] = [=](const serialization::Node &node) {
-		std::unique_ptr<Button> button{new Button{m_factory, node.value("text")}};
+		std::unique_ptr<Button> button{new Button{m_factory, node.value("text") } };
 		set_generic_parameters(node, button.get());
 		button->set_renderer(m_renderer);
-		button->m_background = m_factory.create_button(button->m_dimension.w, button->m_dimension.h, button->m_color);
+		button->m_background = m_factory->create_button(button->m_dimension.w, button->m_dimension.h, button->m_color);
 
 
 		SDL_Color hover_over_color = utility::lighter_color(button->m_color, 0.4);
-		button->m_additional_textures[static_cast<int>(ButtonGraphics::HOVER_OVER)] = m_factory.create_button(button->m_dimension.w, button->m_dimension.h, hover_over_color);
+		button->m_additional_textures[static_cast<int>(ButtonGraphics::HOVER_OVER)] = m_factory->create_button(button->m_dimension.w, button->m_dimension.h, hover_over_color);
 		SDL_Color pressed_down_color = utility::darker_color(button->m_color, 0.5);
-		button->m_additional_textures[static_cast<int>(ButtonGraphics::PRESSED_DOWN)] = m_factory.create_button(button->m_dimension.w, button->m_dimension.h, pressed_down_color);
+		button->m_additional_textures[static_cast<int>(ButtonGraphics::PRESSED_DOWN)] = m_factory->create_button(button->m_dimension.w, button->m_dimension.h, pressed_down_color);
 
 
 		button->set_text(node.value("text"));

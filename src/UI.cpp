@@ -14,7 +14,7 @@
 namespace sdl_gui {
 UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING),
 		m_has_initialized_ttf(false), m_handler_exception_policy{new ThrowHandlerExceptionPolicy{}},
-		m_action_button_pressed(false) {
+		m_action_button_pressed(false), m_factory{new creation::TextureFactory{renderer}} {
 	set_handedness(Handedness::RIGHT);
 
 	if (!TTF_WasInit()) {
@@ -108,8 +108,7 @@ void UI::load_window(const std::string &file_name) {
 	window->set_handler_manager(this);
 	serialization::XMLSerializer serializer{file_name};
 
-	creation::TextureFactory factory{m_renderer};
-	creation::WindowLoader loader{serializer, renderer_ptr, window.get(), factory};
+	creation::WindowLoader loader{serializer, renderer_ptr, window.get(), m_factory};
 	loader.load();
 	m_windows.push_back(window);
 }
