@@ -12,6 +12,7 @@ class Renderer {
 public:
 	virtual ~Renderer() { }
 	virtual void draw(const texture_ptr &ptr, SDL_Rect *source_rect, SDL_Rect *destination_rect) = 0;
+	virtual void texture_width_and_height(const texture_ptr &ptr, int &width, int &height) = 0;
 };
 
 

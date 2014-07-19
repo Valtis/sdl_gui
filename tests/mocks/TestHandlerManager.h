@@ -1,7 +1,7 @@
 #ifndef TESTHANDLERMANAGER_H_
 #define TESTHANDLERMANAGER_H_
 
-#include "../src/HandlerManager.h"
+#include "../../src/HandlerManager.h"
 namespace sdl_gui {
 
 

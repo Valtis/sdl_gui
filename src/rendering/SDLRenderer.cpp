@@ -16,5 +16,9 @@ void SDLRenderer::draw(const texture_ptr &texture, SDL_Rect *source_rect, SDL_Re
 	SDL_RenderCopy(m_renderer, texture.get(), source_rect, destination_rect);
 }
 
+void SDLRenderer::texture_width_and_height(const texture_ptr &ptr, int &width, int &height) {
+	SDL_QueryTexture(ptr.get(), nullptr, nullptr, &width, &height);
+}
+
 } /* namespace rendering */
 } /* namespace sdl_gui */

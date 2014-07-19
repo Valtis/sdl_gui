@@ -7,41 +7,10 @@
 #include <string>
 
 #include "../src/components/WindowBase.h"
-#include "TestHandlerManager.h"
-#include "../src/rendering/Renderer.h"
+#include "mocks/TestHandlerManager.h"
+#include "mocks/TestRenderer.h"
 
 namespace sdl_gui {
-// helper classes for tests
-
-
-class TestRenderer : public rendering::Renderer {
-public:
-	TestRenderer() : m_source_is_set(false), m_destination_is_set(false) {}
-
-	// pointers may be released shortly after this call so we can't simply copy the pointer
-	void draw(const texture_ptr &texture, SDL_Rect *source_rect, SDL_Rect *destination_rect) {
-		m_source_is_set = false;
-		m_destination_is_set = false;
-
-		if (source_rect != nullptr) {
-			m_source_rect = *source_rect;
-			m_source_is_set = true;
-		}
-
-		if (destination_rect != nullptr) {
-			m_destination_rect = *destination_rect;
-			m_destination_is_set = true;
-		}
-
-	}
-
-	SDL_Rect m_source_rect;
-	bool m_source_is_set;
-
-	SDL_Rect m_destination_rect;
-	bool m_destination_is_set;
-};
-
 
 
 class WindowBaseTest : public CppUnit::TestFixture {

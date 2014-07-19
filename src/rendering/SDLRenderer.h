@@ -11,9 +11,12 @@ public:
 	SDLRenderer(SDL_Renderer *renderer);
 	virtual ~SDLRenderer();
 
-
 	virtual void draw(const texture_ptr &ptr, SDL_Rect *source_rect, SDL_Rect *destination_rect) override;
+
+	virtual void texture_width_and_height(const texture_ptr &ptr, int &width, int &height) override;
+
 	SDL_Renderer *get_renderer() const { return m_renderer; }
+
 private:
 	SDL_Renderer *m_renderer;
 };
