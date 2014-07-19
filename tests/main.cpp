@@ -12,6 +12,7 @@
 
 #include "WindowBaseTest.h"
 #include "ButtonTest.h"
+#include "WindowTest.h"
 
 using namespace CppUnit;
 using namespace std;
