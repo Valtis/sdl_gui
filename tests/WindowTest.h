@@ -14,6 +14,7 @@ namespace sdl_gui {
 class WindowTest : public CppUnit::TestFixture {
     CPPUNIT_TEST_SUITE(WindowTest);
     CPPUNIT_TEST(drag_that_starts_on_child_window_does_not_drag_actual_window_if_cursor_moves_outside_child_region);
+    CPPUNIT_TEST(window_position_is_changed_on_drag_that_follows_child_window_drag);
     CPPUNIT_TEST_SUITE_END();
 
 public:
