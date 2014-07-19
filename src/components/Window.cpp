@@ -4,7 +4,7 @@
 
 namespace sdl_gui {
 
-Window::Window() : m_title{""} {
+Window::Window() : m_title{""}, m_child_is_being_dragged(false) {
 
 }
 
@@ -15,10 +15,20 @@ void Window::on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
 	if (child) {
 		child->on_drag(mouse_x, mouse_y, dx, dy);
+		m_child_is_being_dragged = true;
 		return;
 	}
-	m_dimension.x += dx;
-	m_dimension.y += dy;
+
+	if (!m_child_is_being_dragged) {
+		m_dimension.x += dx;
+		m_dimension.y += dy;
+	}
 }
+
+void Window::on_mouse_up(Sint16 mouse_x, Sint16 mouse_y) {
+	WindowBase::on_mouse_up(mouse_x, mouse_y);
+	m_child_is_being_dragged = false;
+}
+
 
 } /* namespace sdl_gui */
