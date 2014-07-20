@@ -19,10 +19,14 @@ enum class Handedness { LEFT, RIGHT };
 
 class UI : public HandlerManager {
 public:
-	static UI make_ui(SDL_Renderer *renderer);
 
+	explicit UI(SDL_Renderer *renderer);
 	virtual ~UI();
 
+	// copying the UI may lead to releasing font support too early (when first destructor runs)
+	// so copying is disabled
+	UI &operator=(const UI &ui) = delete;
+	UI(const UI &ui) = default;
 	void set_handedness(Handedness h);
 
 	void set_renderer(SDL_Renderer *renderer);
@@ -33,6 +37,8 @@ public:
 
 	void load_window(const std::string &file_name);
 
+	void add_window(std::shared_ptr<Window> window);
+
 	void register_handler(const std::string &name, std::function<void()> handler) {
 		m_handlers[name] = handler;
  	}
@@ -42,7 +48,7 @@ public:
 	void call_handler(const std::string &name) override;
 
 private:
-	UI(SDL_Renderer *renderer);
+	std::shared_ptr<rendering::Renderer> initialize_window(std::shared_ptr<Window> window);
 	void handle_click(const SDL_Event &event);
 	void handle_motion(const SDL_Event &event);
 	bool update_active_window(int x, int y);
@@ -56,7 +62,6 @@ private:
 	bool m_has_initialized_ttf;
 
 	// Window is non-copyable, hence we must store it as a pointer as stl requires copyability for container reallocations
-	// shared_ptr is used for same reason, as unique_ptr would make UI non-copyable which might be too restricting
 	std::vector<std::shared_ptr<Window>> m_windows;
 	std::unordered_map<std::string, std::function<void()>> m_handlers;
 	std::shared_ptr<HandlerExceptionPolicy> m_handler_exception_policy;

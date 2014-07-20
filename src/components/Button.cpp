@@ -27,16 +27,16 @@ void Button::draw() {
 	}
 }
 
-void Button::on_mouse_over(Sint16 mouse_x, Sint16 mouse_y) {
+void Button::on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) {
 	m_current_texture = ButtonGraphics::HOVER_OVER;
 }
 
-void Button::on_mouse_down(Sint16 mouse_x, Sint16 mouse_y) {
+void Button::on_mouse_down(Sint32 mouse_x, Sint32 mouse_y) {
 	WindowBase::on_mouse_down(mouse_x, mouse_y);
 	m_current_texture = ButtonGraphics::PRESSED_DOWN;
 }
 
-void Button::on_mouse_up(Sint16 mouse_x, Sint16 mouse_y) {
+void Button::on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) {
 	m_current_texture = ButtonGraphics::DEFAULT;
 	call_handler(HandlerType::ON_CLICK);
 }

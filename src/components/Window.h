@@ -16,8 +16,8 @@ public:
 
 	virtual ~Window();
 
-	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy);
-	virtual void on_mouse_up(Sint16 mouse_x, Sint16 mouse_y) override;
+	virtual void on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy);
+	virtual void on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) override;
 
 private:
 	friend class creation::WindowLoader;

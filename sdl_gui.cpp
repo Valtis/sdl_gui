@@ -32,7 +32,7 @@ int main() {
 		std::cout << "Failed to create SDL renderer: " << SDL_GetError() << "\n";
 	}
 	try {
-		UI ui = UI::make_ui(renderer.get());
+		UI ui{renderer.get()};
 		ui.load_window("foobar.xml");
 		ui.load_window("bazqux.xml");
 		ui.load_window("abcd.xml");

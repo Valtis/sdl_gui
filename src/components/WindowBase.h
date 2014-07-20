@@ -27,10 +27,10 @@ public:
 	virtual void draw();
 
 
-	virtual void on_mouse_down(Sint16 mouse_x, Sint16 mouse_y);
-	virtual void on_mouse_up(Sint16 mouse_x, Sint16 mouse_y);
-	virtual void on_mouse_over(Sint16 mouse_x, Sint16 mouse_y);
-	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy);
+	virtual void on_mouse_down(Sint32 mouse_x, Sint32 mouse_y);
+	virtual void on_mouse_up(Sint32 mouse_x, Sint32 mouse_y);
+	virtual void on_mouse_over(Sint32 mouse_x, Sint32 mouse_y);
+	virtual void on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy);
 	virtual void on_losing_focus();
 	virtual void on_gaining_focus();
 

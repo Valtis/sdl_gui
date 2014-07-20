@@ -17,12 +17,12 @@ public:
 	virtual ~Button();
 
 	virtual void draw() override;
-	virtual void on_mouse_over(Sint16 mouse_x, Sint16 mouse_y) override;
-	virtual void on_mouse_down(Sint16 mouse_x, Sint16 mouse_y) override;
-	virtual void on_mouse_up(Sint16 mouse_x, Sint16 mouse_y) override;
+	virtual void on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) override;
+	virtual void on_mouse_down(Sint32 mouse_x, Sint32 mouse_y) override;
+	virtual void on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) override;
 
 	virtual void on_losing_focus() override;
-	virtual void on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy) override {} // do nothing if dragged
+	virtual void on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) override {} // do nothing if dragged
 
 	void set_text(std::string text);
 	std::string get_text() { return m_text; }

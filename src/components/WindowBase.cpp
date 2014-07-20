@@ -89,7 +89,7 @@ void WindowBase::add_child(std::unique_ptr<WindowBase> child) {
 	m_children.push_back(std::move(child));
 }
 
-void WindowBase::on_mouse_down(Sint16 mouse_x, Sint16 mouse_y) {
+void WindowBase::on_mouse_down(Sint32 mouse_x, Sint32 mouse_y) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
 	if (child != nullptr) {
 		child->on_mouse_down(mouse_x, mouse_y);
@@ -97,7 +97,7 @@ void WindowBase::on_mouse_down(Sint16 mouse_x, Sint16 mouse_y) {
 
 }
 
-void WindowBase::on_mouse_up(Sint16 mouse_x, Sint16 mouse_y) {
+void WindowBase::on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
 	if (child != nullptr) {
 		child->on_mouse_up(mouse_x, mouse_y);
@@ -106,7 +106,7 @@ void WindowBase::on_mouse_up(Sint16 mouse_x, Sint16 mouse_y) {
 	}
 }
 
-void WindowBase::on_mouse_over(Sint16 mouse_x, Sint16 mouse_y) {
+void WindowBase::on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
     if (child != nullptr) {
     	child->on_mouse_over(mouse_x, mouse_y);
@@ -114,7 +114,7 @@ void WindowBase::on_mouse_over(Sint16 mouse_x, Sint16 mouse_y) {
     call_handler(HandlerType::ON_MOUSE_OVER);
 }
 
-void WindowBase::on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy) {
+void WindowBase::on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
 	if (child != nullptr) {
 		child->on_drag(mouse_x, mouse_y, dx, dy);

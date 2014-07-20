@@ -11,7 +11,7 @@ Window::Window() : m_title{""}, m_child_is_being_dragged(false) {
 Window::~Window() {
 }
 
-void Window::on_drag(Sint16 mouse_x, Sint16 mouse_y, Sint16 dx, Sint16 dy) {
+void Window::on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
 	if (child) {
 		child->on_drag(mouse_x, mouse_y, dx, dy);

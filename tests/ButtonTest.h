@@ -1,7 +1,6 @@
 #ifndef BUTTONTEST_H_
 #define BUTTONTEST_H_
 #include <cppunit/TestFixture.h>
-#include <cppunit/TestSuite.h>
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "../src/components/Button.h"
