@@ -13,7 +13,7 @@
 namespace sdl_gui {
 UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING),
 		m_has_initialized_ttf(false), m_handler_exception_policy{new ThrowHandlerExceptionPolicy{}},
-		m_action_button_pressed(false), m_factory{new creation::TextureFactory{renderer}} {
+		m_factory{new creation::TextureFactory{renderer}} {
 
 	set_handedness(Handedness::RIGHT);
 
@@ -34,9 +34,9 @@ UI::~UI() {
 
 void UI::set_handedness(Handedness h) {
 	if (h == Handedness::RIGHT) {
-		m_mouse_buttons = { SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT };
+		m_mouse_buttons = { SDL_BUTTON_LEFT, SDL_BUTTON_RIGHT, SDL_BUTTON_LMASK, SDL_BUTTON_RMASK };
 	} else {
-		m_mouse_buttons = { SDL_BUTTON_RIGHT, SDL_BUTTON_LEFT };
+		m_mouse_buttons = { SDL_BUTTON_RIGHT, SDL_BUTTON_LEFT, SDL_BUTTON_RMASK, SDL_BUTTON_LMASK };
 	}
 }
 
@@ -60,17 +60,9 @@ void UI::update(const SDL_Event &event) {
 	switch (event.type) {
 
 	case SDL_MOUSEBUTTONDOWN:
-		if (event.button.button == m_mouse_buttons.action_button) {
-			m_action_button_pressed = true;
-		}
 		handle_click(event);
 		break;
 	case SDL_MOUSEBUTTONUP:
-
-		if (event.button.button == m_mouse_buttons.action_button) {
-				m_action_button_pressed = false;
-		}
-
 		m_dragging = Drag_Status::NOT_DRAGGING;
 		handle_click(event);
 		break;
@@ -131,7 +123,9 @@ void UI::handle_click(const SDL_Event &event) {
 }
 
 void UI::handle_motion(const SDL_Event &event) {
-	if (m_action_button_pressed && m_dragging != Drag_Status::FAILED_DRAG) {
+	bool action_button_pressed = event.motion.state & m_mouse_buttons.action_button_mask;
+
+	if (action_button_pressed && m_dragging != Drag_Status::FAILED_DRAG) {
 		if (update_active_window(event.motion.x, event.motion.y)) {
 			m_windows.back()->on_drag(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel);
 			m_dragging = Drag_Status::DRAGGING;

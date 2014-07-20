@@ -25,7 +25,7 @@ void Window::on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) {
 	}
 }
 
-void Window::on_mouse_up(Sint16 mouse_x, Sint16 mouse_y) {
+void Window::on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) {
 	WindowBase::on_mouse_up(mouse_x, mouse_y);
 	m_child_is_being_dragged = false;
 }

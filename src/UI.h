@@ -69,10 +69,11 @@ private:
 	struct Buttons {
 		Uint8 action_button;
 		Uint8 menu_button;
+		Uint32 action_button_mask;
+		Uint32 menu_button_mask;
 	};
 
 	Buttons m_mouse_buttons;
-	bool m_action_button_pressed;
 
 	std::shared_ptr<creation::ITextureFactory> m_factory;
 };
