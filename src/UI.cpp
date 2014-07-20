@@ -11,8 +11,8 @@
 #include "rendering/SDLRenderer.h"
 
 namespace sdl_gui {
-UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_dragging(Drag_Status::NOT_DRAGGING),
-		m_has_initialized_ttf(false), m_handler_exception_policy{new ThrowHandlerExceptionPolicy{}},
+UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_has_initialized_ttf(false), m_dragging(Drag_Status::NOT_DRAGGING),
+		m_window_has_focus(false), m_handler_exception_policy{new ThrowHandlerExceptionPolicy{}},
 		m_factory{new creation::TextureFactory{renderer}} {
 
 	set_handedness(Handedness::RIGHT);
@@ -125,7 +125,9 @@ void UI::handle_click(const SDL_Event &event) {
 void UI::handle_motion(const SDL_Event &event) {
 	bool action_button_pressed = event.motion.state & m_mouse_buttons.action_button_mask;
 
-	if (action_button_pressed && m_dragging != Drag_Status::FAILED_DRAG) {
+	if ( action_button_pressed && m_dragging == Drag_Status::DRAGGING) {
+		m_windows.back()->on_drag(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel);
+	} else if (action_button_pressed && m_dragging == Drag_Status::NOT_DRAGGING) {
 		if (update_active_window(event.motion.x, event.motion.y)) {
 			m_windows.back()->on_drag(event.motion.x, event.motion.y, event.motion.xrel, event.motion.yrel);
 			m_dragging = Drag_Status::DRAGGING;
@@ -146,6 +148,7 @@ bool UI::update_active_window(int x, int y) {
 		SDL_Rect r = (*iter)->absolute_dimension();
 		if (utility::point_inside_rect({x, y}, r)) {
 
+			m_window_has_focus = true;
 			auto window = *iter;
 			if (iter != m_windows.rbegin()) {
 				m_windows.back()->on_losing_focus();
@@ -158,6 +161,10 @@ bool UI::update_active_window(int x, int y) {
 		 }
 	}
 
+	if (m_window_has_focus == true) {
+		m_window_has_focus = false;
+		m_windows.back()->on_losing_focus();
+	}
 
 	return false;
 }

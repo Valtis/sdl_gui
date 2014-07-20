@@ -6,6 +6,7 @@
 #include <SDL2/SDL.h>
 
 #include "../src/components/Window.h"
+#include "../src/components/Button.h"
 #include "../src/UI.h"
 
 namespace sdl_gui {
@@ -21,6 +22,7 @@ class UITest : public CppUnit::TestFixture {
     CPPUNIT_TEST(window_is_not_moved_if_drag_starts_when_cursor_is_not_on_any_window);
     CPPUNIT_TEST(second_window_is_not_dragged_if_dragging_first_one_and_cursor_moves_on_second);
     CPPUNIT_TEST(second_window_is_dragged_if_dragging_first_one_but_button_is_released_before_new_drag);
+    CPPUNIT_TEST(window_position_is_changed_on_drag_if_first_dragging_on_child_and_drag_is_terminated_outside_window_area);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -66,8 +68,8 @@ private:
 
     	ui.update(mouse_up_event(65, 65));
 
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has not changed correctly", 45, window->relative_dimension().x);
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has not changed correctly", 52, window->relative_dimension().y);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has not changed correctly", 45, window->absolute_dimension().x);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has not changed correctly", 52, window->absolute_dimension().y);
     }
 
     void window_is_not_moved_with_right_button_and_right_handed_profile() {
@@ -81,8 +83,8 @@ private:
 
     	ui.update(mouse_up_event(65, 65));
 
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has changed", 40, window->relative_dimension().x);
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has changed", 50, window->relative_dimension().y);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has changed", 40, window->absolute_dimension().x);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has changed", 50, window->absolute_dimension().y);
     }
 
     void window_is_moved_when_dragging_with_right_button_and_left_handed_profile() {
@@ -97,8 +99,8 @@ private:
     	ui.update(mouse_up_event(65, 65));
 
 
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has not changed correctly", 37, window->relative_dimension().x);
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has not changed correctly", 48, window->relative_dimension().y);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has not changed correctly", 37, window->absolute_dimension().x);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has not changed correctly", 48, window->absolute_dimension().y);
     }
 
     void window_is_not_moved_with_left_button_and_left_handed_profile() {
@@ -111,8 +113,8 @@ private:
     	ui.update(mouse_motion_event(65, 62, 5, 2, SDL_BUTTON_LMASK));
     	ui.update(mouse_up_event(65, 65));
 
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has changed", 40, window->relative_dimension().x);
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has changed", 50, window->relative_dimension().y);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has changed", 40, window->absolute_dimension().x);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has changed", 50, window->absolute_dimension().y);
     }
 
     void window_is_not_moved_if_drag_starts_when_cursor_is_not_on_any_window() {
@@ -127,8 +129,8 @@ private:
     	ui.update(mouse_motion_event(45, 45, 5, 5, SDL_BUTTON_LMASK));
     	ui.update(mouse_motion_event(41, 41, -4, -4, SDL_BUTTON_LMASK));
 
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has changed", 40, window->relative_dimension().x);
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has changed", 50, window->relative_dimension().y);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has changed", 40, window->absolute_dimension().x);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has changed", 50, window->absolute_dimension().y);
     }
 
     void second_window_is_not_dragged_if_dragging_first_one_and_cursor_moves_on_second() {
@@ -146,8 +148,8 @@ private:
     	ui.update(mouse_motion_event(60, 60, 3, 3, SDL_BUTTON_LMASK));
     	ui.update(mouse_motion_event(305, 405, 3, 3, SDL_BUTTON_LMASK));
 
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Second window x coordinate has changed", 300, second_window->relative_dimension().x);
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Second window y coordinate has changed", 400, second_window->relative_dimension().y);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Second window x coordinate has changed", 300, second_window->absolute_dimension().x);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Second window y coordinate has changed", 400, second_window->absolute_dimension().y);
     }
 
     void second_window_is_dragged_if_dragging_first_one_but_button_is_released_before_new_drag() {
@@ -165,9 +167,31 @@ private:
         	ui.update(mouse_up_event(53, 53));
         	ui.update(mouse_motion_event(305, 405, 3, -4, SDL_BUTTON_LMASK));
 
-        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Second window x coordinate has not changed correctly", 303, second_window->relative_dimension().x);
-        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Second window y coordinate has not changed correctly", 396, second_window->relative_dimension().y);
-        }
+        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Second window x coordinate has not changed correctly", 303, second_window->absolute_dimension().x);
+        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Second window y coordinate has not changed correctly", 396, second_window->absolute_dimension().y);
+     }
+
+
+    void window_position_is_changed_on_drag_if_first_dragging_on_child_and_drag_is_terminated_outside_window_area() {
+    	auto window = std::make_shared<Window>();
+    	window->set_relative_dimension({ 40, 50, 120, 140 });
+
+		std::unique_ptr<Button> button(new Button{std::shared_ptr<creation::ITextureFactory>{ new TestTextureFactory{} }});
+		button->set_relative_dimension({ 10, 10, 120, 120 });
+
+		window->add_child(std::move(button));
+
+		UI ui{nullptr};
+		ui.add_window(window);
+
+		ui.update(mouse_motion_event(70, 70, 3, 3, SDL_BUTTON_LMASK));
+		ui.update(mouse_up_event(0, 0));
+		ui.update(mouse_motion_event(41, 51, 3, -4, SDL_BUTTON_LMASK));
+
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has not changed correctly", 43, window->absolute_dimension().x);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has not changed correctly", 46, window->absolute_dimension().y);
+    }
+
 
 };
 

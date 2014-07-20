@@ -55,12 +55,14 @@ private:
 	void update_mouse_position();
 	SDL_Renderer *m_renderer;
 
-	enum class Drag_Status { NOT_DRAGGING, DRAGGING, FAILED_DRAG };
-	Drag_Status m_dragging;
 	// whether or not this class is responsible for initializing font support; if so, it must also
 	// shut it down on destruction
+
 	bool m_has_initialized_ttf;
 
+	enum class Drag_Status { NOT_DRAGGING, DRAGGING, FAILED_DRAG };
+	Drag_Status m_dragging;
+	bool m_window_has_focus;
 	// Window is non-copyable, hence we must store it as a pointer as stl requires copyability for container reallocations
 	std::vector<std::shared_ptr<Window>> m_windows;
 	std::unordered_map<std::string, std::function<void()>> m_handlers;

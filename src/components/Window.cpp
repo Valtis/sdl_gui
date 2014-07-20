@@ -30,5 +30,9 @@ void Window::on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) {
 	m_child_is_being_dragged = false;
 }
 
+void Window::on_losing_focus() {
+	WindowBase::on_losing_focus();
+	m_child_is_being_dragged = false;
+}
 
 } /* namespace sdl_gui */
