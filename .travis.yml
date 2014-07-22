@@ -11,6 +11,9 @@ install:
 - sudo apt-get install -qq g++-4.8
 - sudo apt-get install -qq libcppunit-dev
 - export CXX="g++-4.8"
+- gcov --version
+- export gcov="gcov-4.8"
+- gcov --version
 - ./install-pugixml.sh
 - ./install-sdl2.sh
 - ./install-sdl_ttf.sh 
@@ -23,5 +26,4 @@ script:
 - ./sdl_gui
 
 after_success:
-- gcov --version
 - coveralls
