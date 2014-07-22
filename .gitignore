@@ -4,3 +4,6 @@
 .settings/*
 sdl_gui
 *.ttf
+*.gcno
+*.gcda
+*.gcov
