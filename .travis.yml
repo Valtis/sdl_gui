@@ -12,7 +12,7 @@ install:
 - sudo apt-get install -qq libcppunit-dev
 - export CXX="g++-4.8"
 - gcov --version
-- alias gcov=gcov-4.8
+- sudo ln -fs /usr/bin/gcov-4.8 /usr/bin/gcov
 - gcov --version
 - ./install-pugixml.sh
 - ./install-sdl2.sh
