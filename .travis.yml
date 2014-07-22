@@ -23,4 +23,5 @@ script:
 - ./sdl_gui
 
 after_success:
+- gcov --version
 - coveralls
