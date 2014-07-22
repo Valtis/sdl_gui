@@ -26,4 +26,4 @@ script:
 - ./sdl_gui
 
 after_success:
-- coveralls
+- coveralls --exclude tests --gcov-options '\-r' -b ./src
