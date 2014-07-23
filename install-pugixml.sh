@@ -11,3 +11,6 @@ cd src
 sudo mkdir /usr/local/include/pugixml
 sudo cp pugixml.hpp /usr/local/include/pugixml/pugixml.hpp
 sudo cp pugiconfig.hpp /usr/local/include/pugixml/pugiconfig.hpp
+cd ..
+cd ..
+rm -rf pugixml-1.4
