@@ -8,6 +8,7 @@
 #include "WindowLoader.h"
 #include "../components/Window.h"
 #include "../components/Button.h"
+#include "../components/TextLabel.h"
 #include "../serialization/Serializer.h"
 #include "../serialization/ParseException.h"
 #include "../utility/Helpers.h"
@@ -16,6 +17,8 @@
 
 #define WINDOW "window"
 #define BUTTON "button"
+#define TEXT_LABEL "text"
+#define TEXT "text"
 #define NAME "name"
 
 namespace sdl_gui {
@@ -40,9 +43,8 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 
 	m_loaders[BUTTON] = [=](const serialization::Node &node) {
 
-		std::unique_ptr<Button> button{new Button{m_factory, node.value("text") } };
+		std::unique_ptr<Button> button{new Button{m_factory}};
 		set_generic_parameters(node, button.get());
-		button->set_renderer(m_renderer);
 		button->m_background = m_factory->create_button(button->m_dimension.w, button->m_dimension.h, button->m_color);
 
 
@@ -51,11 +53,16 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 		SDL_Color pressed_down_color = utility::darker_color(button->m_color, 0.5);
 		button->m_additional_textures[static_cast<int>(ButtonGraphics::PRESSED_DOWN)] = m_factory->create_button(button->m_dimension.w, button->m_dimension.h, pressed_down_color);
 
-
-		button->set_text(node.value("text"));
 		m_parent_windows[BUTTON][node.value(NAME)] = button.get();
 		m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->add_child(std::move(button));
+	};
 
+	m_loaders[TEXT_LABEL] = [=](const serialization::Node &node) {
+		std::unique_ptr<TextLabel> label{new TextLabel{m_factory}};
+		set_generic_parameters(node, label.get());
+		label->set_text(node.value(TEXT));
+		m_parent_windows[TEXT_LABEL][node.value(NAME)] = label.get();
+		m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->add_child(std::move(label));
 	};
 }
 
@@ -91,6 +98,7 @@ void WindowLoader::visitor(const serialization::Node &node) {
 void WindowLoader::set_generic_parameters(const serialization::Node &node, WindowBase *base) {
 	set_dimensions(node, base->m_dimension);
 	set_color(node, base->m_color);
+	base->set_renderer(m_renderer);
 	set_handlers(node, base);
 
 }

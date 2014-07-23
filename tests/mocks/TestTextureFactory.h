@@ -14,7 +14,7 @@ public:
 		return texture_ptr{ nullptr, SDL_DestroyTexture };
 	}
 
-	virtual texture_ptr create_text(std::string text) {
+	virtual texture_ptr create_text(std::string text, const SDL_Color &color, int font_size) {
 		return texture_ptr{ nullptr, SDL_DestroyTexture };
 	}
 };

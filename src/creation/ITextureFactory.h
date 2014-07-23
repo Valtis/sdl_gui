@@ -11,7 +11,7 @@ public:
 	virtual ~ITextureFactory() { }
 	virtual texture_ptr create_window(const int width, const int height, const SDL_Color &color) = 0;
 	virtual texture_ptr create_button(const int width, const int height, const SDL_Color &color) = 0;
-	virtual texture_ptr create_text(std::string text) = 0;
+	virtual texture_ptr create_text(std::string text, const SDL_Color &color, int font_size) = 0;
 
 };
 

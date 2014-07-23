@@ -8,8 +8,6 @@ namespace sdl_gui {
 class TextLabel : public WindowBase {
 public:
 	TextLabel(std::shared_ptr<creation::ITextureFactory> factory);
-
-	TextLabel(std::shared_ptr<creation::ITextureFactory> factory, std::string text);
 	virtual ~TextLabel();
 
 	void set_text(std::string text);
@@ -17,6 +15,7 @@ public:
 
 private:
 	std::string m_text;
+	int m_font_size;
 	std::shared_ptr<creation::ITextureFactory> m_factory;
 };
 

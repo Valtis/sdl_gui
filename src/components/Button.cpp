@@ -2,15 +2,10 @@
 #include "TextLabel.h"
 namespace sdl_gui {
 
-Button::Button(std::shared_ptr<creation::ITextureFactory> factory) : Button{factory, ""} {
 
-}
-
-Button::Button(std::shared_ptr<creation::ITextureFactory> factory, std::string text) : m_current_texture(ButtonGraphics::DEFAULT),
-		m_additional_textures{ texture_ptr{nullptr, SDL_DestroyTexture}, texture_ptr{ nullptr, SDL_DestroyTexture} },
-			m_text(text) {
-
-	std::unique_ptr<TextLabel> label{new TextLabel{factory, text}};
+Button::Button(std::shared_ptr<creation::ITextureFactory> factory) : m_current_texture(ButtonGraphics::DEFAULT),
+		m_additional_textures{ texture_ptr{nullptr, SDL_DestroyTexture}, texture_ptr{ nullptr, SDL_DestroyTexture} } {
+	std::unique_ptr<TextLabel> label{new TextLabel{factory}};
 	add_child(std::move(label));
 }
 
@@ -44,17 +39,6 @@ void Button::on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) {
 void Button::on_losing_focus() {
 	WindowBase::on_losing_focus();
 	m_current_texture = ButtonGraphics::DEFAULT;
-}
-
-void Button::set_text(std::string text) {
-	m_text = text;
-	TextLabel *label = static_cast<TextLabel *>(m_children[0].get());
-	label->set_text(text);
-	SDL_Rect r = label->absolute_dimension();
-
-	r.x = m_dimension.w/2 - r.w/2;
-	r.y = m_dimension.h/2 - r.h/2;
-	label->set_relative_dimension(r);
 }
 
 } /* namespace SDL_GUI */

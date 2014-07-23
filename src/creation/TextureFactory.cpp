@@ -54,16 +54,15 @@ texture_ptr TextureFactory::create_button(const int width, const int height, con
 	return create_texture(surface.get());
 }
 
-
-// TODO: allow size & color to be controlled by the caller
-texture_ptr TextureFactory::create_text(std::string text) {
-	font_ptr font{TTF_OpenFont("FreeMono.ttf", 12), TTF_CloseFont};
+// Todo: Remove hardcoded font name
+texture_ptr TextureFactory::create_text(std::string text, const SDL_Color &color, int font_size) {
+	font_ptr font{TTF_OpenFont("FreeMono.ttf", font_size), TTF_CloseFont};
 	if (font == nullptr) {
 		throw CreationFailureException(std::string("Failed to open font file: ") + TTF_GetError());
 
 	}
 
-	surface_ptr font_surface{TTF_RenderText_Blended(font.get(), text.c_str(), {0, 0, 0, 255}), SDL_FreeSurface};
+	surface_ptr font_surface{TTF_RenderText_Blended(font.get(), text.c_str(), color), SDL_FreeSurface};
 
 	if (font_surface == nullptr) {
 		throw CreationFailureException(std::string("Failed to create surface for text: ") + TTF_GetError());
