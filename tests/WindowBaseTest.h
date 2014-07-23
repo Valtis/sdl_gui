@@ -143,7 +143,7 @@ private:
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({40, 40, 100, 100});
-		child->set_handler(HandlerType::ON_CLICK, child_handler_name);
+		child->set_handler(Handler_Type::ON_CLICK, child_handler_name);
 		base.add_child(std::move(child));
 
 		base.on_mouse_up(60, 60);

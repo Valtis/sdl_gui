@@ -198,7 +198,7 @@ private:
     	auto window = std::make_shared<Window>();
     	window->set_relative_dimension({ 40, 50, 120, 140 });
 
-		std::unique_ptr<Button> button(new Button{std::shared_ptr<creation::ITextureFactory>{ new TestTextureFactory{} }});
+		std::unique_ptr<Button> button{new Button{}};
 		button->set_relative_dimension({ 10, 10, 120, 120 });
 
 		window->add_child(std::move(button));

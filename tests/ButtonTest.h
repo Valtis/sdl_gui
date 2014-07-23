@@ -26,27 +26,25 @@ public:
 
 private:
     void button_on_click_handler_is_called_when_not_clicking_on_text() {
-    	Button button{std::shared_ptr<creation::ITextureFactory>{new TestTextureFactory{} }, "Let there be text!"};
+    	Button button{};
     	button.set_relative_dimension({40, 40, 100, 100});
 		TestHandlerManager manager;
 
 		button.set_handler_manager(&manager);
 		std::string handler_name = "my_click_handler";
 		button.set_handler(Handler_Type::ON_CLICK, handler_name);
+		button.add_child(create_label(80, 60));
 
 		button.on_mouse_up(41, 41);
 		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
     }
 
     void button_on_click_handler_is_called_when_clicking_on_text() {
-      	Button button{std::shared_ptr<creation::ITextureFactory>{new TestTextureFactory{} }, ""};
-
-      	auto renderer = std::make_shared<TestRenderer>();
-      	renderer->m_texture_width = 80;
-      	renderer->m_texture_height= 60;
-      	button.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+      	Button button{};
       	button.set_relative_dimension({40, 40, 100, 100});
-      	button.set_text("Let there be text!");
+
+
+      	button.add_child(create_label(80, 60));
 
       	TestHandlerManager manager;
 
@@ -57,6 +55,21 @@ private:
   		button.on_mouse_up(80, 70);
   		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
       }
+
+
+    std::unique_ptr<TextLabel> create_label(int width, int height) {
+    	auto renderer = std::make_shared<TestRenderer>();
+		renderer->m_texture_width = width;
+		renderer->m_texture_height= height;
+
+
+		std::unique_ptr<TextLabel> label{new TextLabel{std::shared_ptr<creation::ITextureFactory>{new TestTextureFactory{} }}};
+		label->set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		label->set_text("Let there be text!");
+		label->set_horizontal_alignment(Text_Alignment::CENTER, 0);
+		label->set_vertical_alignment(Text_Alignment::CENTER, 0);
+		return label;
+    }
 
 };
 CPPUNIT_TEST_SUITE_REGISTRATION( ButtonTest);
