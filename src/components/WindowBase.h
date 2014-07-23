@@ -34,7 +34,7 @@ public:
 	virtual void on_losing_focus();
 	virtual void on_gaining_focus();
 
-	SDL_Rect relative_dimension() const;
+	virtual SDL_Rect relative_dimension() const;
 	void set_relative_dimension(SDL_Rect dimension) { m_dimension = dimension; }
 	SDL_Rect absolute_dimension() const;
 

@@ -19,6 +19,11 @@
 #define BUTTON "button"
 #define TEXT_LABEL "text"
 
+
+#define HORIZONTAL_ALIGNMENT "halign"
+#define VERTICAL_ALIGNMENT "valign"
+#define HORIZONTAL_OFFSET "horizontal_offset"
+#define VERTICAL_OFFSET "vertical_offset"
 #define FONT_SIZE "font_size"
 #define TEXT "text"
 #define NAME "name"
@@ -63,7 +68,22 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 		std::unique_ptr<TextLabel> label{new TextLabel{m_factory}};
 		set_generic_parameters(node, label.get());
 
+
+		auto get_alignment = [](const std::string &align) -> Text_Alignment {
+			if (align == "center") {
+				return Text_Alignment::CENTER;
+			} else if (align == "right") {
+				return Text_Alignment::RIGHT;
+			} else {
+				return Text_Alignment::LEFT;
+			}
+		};
+
 		label->set_font_size(stoi(node.value(FONT_SIZE), DEFAULT_FONT_SIZE));
+
+		label->set_horizontal_alignment(get_alignment(node.value(HORIZONTAL_ALIGNMENT)), stoi(node.value(HORIZONTAL_OFFSET)));
+		label->set_vertical_alignment(get_alignment(node.value(VERTICAL_ALIGNMENT)), stoi(node.value(VERTICAL_OFFSET)));
+
 		label->set_text(node.value(TEXT));
 		m_parent_windows[TEXT_LABEL][node.value(NAME)] = label.get();
 		m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->add_child(std::move(label));

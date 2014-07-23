@@ -63,7 +63,7 @@ SDL_Rect WindowBase::get_draw_area() {
  * Returns rect where x/y-coordinates are actual screen coordinates
  */
 SDL_Rect WindowBase::absolute_dimension() const {
-	SDL_Rect r = m_dimension;
+	SDL_Rect r = relative_dimension();
 
 	if (m_parent == nullptr) {
 		return r;
