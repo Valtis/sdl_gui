@@ -103,7 +103,7 @@ private:
 
 		base.set_handler_manager(&manager);
 		std::string handler_name = "my_click_handler";
-		base.set_handler(HandlerType::ON_CLICK, handler_name);
+		base.set_handler(Handler_Type::ON_CLICK, handler_name);
 		base.on_mouse_up(0, 0);
 
 		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
@@ -117,12 +117,12 @@ private:
 		std::string parent_handler_name = "my_click_handler";
 		std::string child_handler_name = "child_click_handler";
 
-		base.set_handler(HandlerType::ON_CLICK, parent_handler_name);
+		base.set_handler(Handler_Type::ON_CLICK, parent_handler_name);
 		base.set_relative_dimension({0,0, 400, 400});
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({40, 40, 100, 100});
-		child->set_handler(HandlerType::ON_CLICK, child_handler_name);
+		child->set_handler(Handler_Type::ON_CLICK, child_handler_name);
 		base.add_child(std::move(child));
 
 		base.on_mouse_up(0, 0);
@@ -138,7 +138,7 @@ private:
 		std::string parent_handler_name = "my_click_handler";
 		std::string child_handler_name = "child_click_handler";
 
-		base.set_handler(HandlerType::ON_CLICK, parent_handler_name);
+		base.set_handler(Handler_Type::ON_CLICK, parent_handler_name);
 		base.set_relative_dimension({0,0, 400, 400});
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};

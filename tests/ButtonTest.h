@@ -4,6 +4,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include "../src/components/Button.h"
+#include "../src/components/TextLabel.h"
 #include "mocks/TestHandlerManager.h"
 #include "mocks/TestTextureFactory.h"
 #include "mocks/TestRenderer.h"
@@ -31,7 +32,7 @@ private:
 
 		button.set_handler_manager(&manager);
 		std::string handler_name = "my_click_handler";
-		button.set_handler(HandlerType::ON_CLICK, handler_name);
+		button.set_handler(Handler_Type::ON_CLICK, handler_name);
 
 		button.on_mouse_up(41, 41);
 		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
@@ -51,7 +52,7 @@ private:
 
   		button.set_handler_manager(&manager);
   		std::string handler_name = "my_click_handler";
-  		button.set_handler(HandlerType::ON_CLICK, handler_name);
+  		button.set_handler(Handler_Type::ON_CLICK, handler_name);
 
   		button.on_mouse_up(80, 70);
   		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);

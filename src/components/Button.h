@@ -12,8 +12,7 @@ namespace creation {
 enum class Button_Graphics : int  { HOVER_OVER, PRESSED_DOWN, DEFAULT };
 class Button : public WindowBase {
 public:
-	Button(std::shared_ptr<creation::ITextureFactory> factory);
-	Button(std::shared_ptr<creation::ITextureFactory> factory, std::string text);
+	Button();
 	virtual ~Button();
 
 	virtual void draw() override;

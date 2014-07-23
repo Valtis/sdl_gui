@@ -3,10 +3,8 @@
 namespace sdl_gui {
 
 
-Button::Button(std::shared_ptr<creation::ITextureFactory> factory) : m_current_texture(Button_Graphics::DEFAULT),
+Button::Button() : m_current_texture(Button_Graphics::DEFAULT),
 		m_additional_textures{ texture_ptr{nullptr, SDL_DestroyTexture}, texture_ptr{ nullptr, SDL_DestroyTexture} } {
-	std::unique_ptr<TextLabel> label{new TextLabel{factory}};
-	add_child(std::move(label));
 }
 
 Button::~Button() {

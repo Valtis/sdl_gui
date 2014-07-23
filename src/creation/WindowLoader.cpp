@@ -50,7 +50,7 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 
 	m_loaders[BUTTON] = [=](const serialization::Node &node) {
 
-		std::unique_ptr<Button> button{new Button{m_factory}};
+		std::unique_ptr<Button> button{new Button{}};
 		set_generic_parameters(node, button.get());
 		button->m_background = m_factory->create_button(button->m_dimension.w, button->m_dimension.h, button->m_color);
 
