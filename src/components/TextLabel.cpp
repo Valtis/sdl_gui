@@ -1,7 +1,7 @@
 #include "TextLabel.h"
 #include "../creation/TextureFactory.h"
 
-#define DEFAULT_FONT_SIZE 12
+
 namespace sdl_gui {
 
 TextLabel::TextLabel(std::shared_ptr<creation::ITextureFactory> factory) :
@@ -24,6 +24,13 @@ void TextLabel::set_text(std::string text) {
 
 	if (m_dimension.h == 0) {
 		m_dimension.h = h;
+	}
+}
+
+void TextLabel::set_font_size(int size) {
+	m_font_size = size;
+	if (!m_text.empty()) {
+		set_text(m_text);
 	}
 }
 

@@ -18,6 +18,8 @@
 #define WINDOW "window"
 #define BUTTON "button"
 #define TEXT_LABEL "text"
+
+#define FONT_SIZE "font_size"
 #define TEXT "text"
 #define NAME "name"
 
@@ -60,6 +62,8 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 	m_loaders[TEXT_LABEL] = [=](const serialization::Node &node) {
 		std::unique_ptr<TextLabel> label{new TextLabel{m_factory}};
 		set_generic_parameters(node, label.get());
+
+		label->set_font_size(stoi(node.value(FONT_SIZE), DEFAULT_FONT_SIZE));
 		label->set_text(node.value(TEXT));
 		m_parent_windows[TEXT_LABEL][node.value(NAME)] = label.get();
 		m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->add_child(std::move(label));
