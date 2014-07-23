@@ -102,7 +102,7 @@ void WindowBase::on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) {
 	if (child != nullptr) {
 		child->on_mouse_up(mouse_x, mouse_y);
 	} else {
-		call_handler(HandlerType::ON_CLICK);
+		call_handler(Handler_Type::ON_CLICK);
 	}
 }
 
@@ -111,7 +111,7 @@ void WindowBase::on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) {
     if (child != nullptr) {
     	child->on_mouse_over(mouse_x, mouse_y);
 	}
-    call_handler(HandlerType::ON_MOUSE_OVER);
+    call_handler(Handler_Type::ON_MOUSE_OVER);
 }
 
 void WindowBase::on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) {
@@ -119,21 +119,21 @@ void WindowBase::on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) {
 	if (child != nullptr) {
 		child->on_drag(mouse_x, mouse_y, dx, dy);
 	}
-	call_handler(HandlerType::ON_DRAG);
+	call_handler(Handler_Type::ON_DRAG);
 }
 
 void WindowBase::on_losing_focus() {
 	for (const auto &child : m_children) {
 		child->on_losing_focus();
 	}
-	call_handler(HandlerType::ON_LOSING_FOCUS);
+	call_handler(Handler_Type::ON_LOSING_FOCUS);
 }
 
 void WindowBase::on_gaining_focus() {
 	for (const auto &child : m_children) {
 		child->on_gaining_focus();
 	}
-	call_handler(HandlerType::ON_GAINING_FOCUS);
+	call_handler(Handler_Type::ON_GAINING_FOCUS);
 }
 
 
@@ -157,14 +157,14 @@ WindowBase *WindowBase::child_under_coordinates(Sint16 x, Sint16 y) {
 	return nullptr;
 }
 
-void WindowBase::set_handler(HandlerType type, const std::string &handler_name) {
+void WindowBase::set_handler(Handler_Type type, const std::string &handler_name) {
 	if (!handler_name.empty()) {
 		m_handlers[type] = handler_name;
 	}
 }
 
 
-void WindowBase::call_handler(HandlerType type) {
+void WindowBase::call_handler(Handler_Type type) {
 	if (m_handlers.count(type) != 0 && m_handler_manager != nullptr) {
 		m_handler_manager->call_handler(m_handlers[type]);
 	}

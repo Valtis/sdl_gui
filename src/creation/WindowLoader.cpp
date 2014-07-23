@@ -51,9 +51,9 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 
 
 		SDL_Color hover_over_color = utility::lighter_color(button->m_color, 0.4);
-		button->m_additional_textures[static_cast<int>(ButtonGraphics::HOVER_OVER)] = m_factory->create_button(button->m_dimension.w, button->m_dimension.h, hover_over_color);
+		button->m_additional_textures[static_cast<int>(Button_Graphics::HOVER_OVER)] = m_factory->create_button(button->m_dimension.w, button->m_dimension.h, hover_over_color);
 		SDL_Color pressed_down_color = utility::darker_color(button->m_color, 0.5);
-		button->m_additional_textures[static_cast<int>(ButtonGraphics::PRESSED_DOWN)] = m_factory->create_button(button->m_dimension.w, button->m_dimension.h, pressed_down_color);
+		button->m_additional_textures[static_cast<int>(Button_Graphics::PRESSED_DOWN)] = m_factory->create_button(button->m_dimension.w, button->m_dimension.h, pressed_down_color);
 
 		m_parent_windows[BUTTON][node.value(NAME)] = button.get();
 		m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->add_child(std::move(button));
@@ -122,7 +122,7 @@ void WindowLoader::set_color(const serialization::Node &node, SDL_Color &color) 
 }
 
 void WindowLoader::set_handlers(const serialization::Node &node, WindowBase *base) {
-	base->set_handler(HandlerType::ON_CLICK, node.value("on_click"));
+	base->set_handler(Handler_Type::ON_CLICK, node.value("on_click"));
 }
 
 

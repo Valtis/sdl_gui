@@ -9,7 +9,7 @@ namespace sdl_gui {
 namespace creation {
 	class ITextureFactory;
 }
-enum class ButtonGraphics : int  { HOVER_OVER, PRESSED_DOWN, DEFAULT };
+enum class Button_Graphics : int  { HOVER_OVER, PRESSED_DOWN, DEFAULT };
 class Button : public WindowBase {
 public:
 	Button(std::shared_ptr<creation::ITextureFactory> factory);
@@ -27,7 +27,7 @@ private:
 	friend class creation::WindowLoader;
 
 
-	ButtonGraphics m_current_texture;
+	Button_Graphics m_current_texture;
 	texture_ptr m_additional_textures[2];
 };
 

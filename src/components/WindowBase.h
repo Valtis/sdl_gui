@@ -15,7 +15,7 @@ namespace creation {
 	class WindowLoader;
 }
 
-enum class HandlerType { ON_CLICK, ON_MOUSE_OVER, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS };
+enum class Handler_Type { ON_CLICK, ON_MOUSE_OVER, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS };
 
 class WindowBase {
 public:
@@ -47,7 +47,7 @@ public:
 		m_handler_manager = manager;
 	}
 
-	void set_handler(HandlerType type, const std::string &handler_name);
+	void set_handler(Handler_Type type, const std::string &handler_name);
 
 protected:
 
@@ -56,7 +56,7 @@ protected:
 	friend class creation::WindowLoader;
 	WindowBase *child_under_coordinates(Sint16 x, Sint16 y);
 	void do_draw(const texture_ptr &ptr, SDL_Rect destination_rect);
-	void call_handler(HandlerType type);
+	void call_handler(Handler_Type type);
 
 
 
@@ -69,7 +69,7 @@ protected:
 
 	std::vector<std::unique_ptr<WindowBase>> m_children;
 	WindowBase *m_focused_child;
-	std::map<HandlerType, std::string> m_handlers;
+	std::map<Handler_Type, std::string> m_handlers;
 };
 
 } /* namespace SDL_GUI */
