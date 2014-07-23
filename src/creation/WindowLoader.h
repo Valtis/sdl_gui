@@ -3,6 +3,7 @@
 #include <string>
 #include <functional>
 #include <unordered_map>
+#include <unordered_set>
 #include <memory>
 #include "TextureFactory.h"
 #include "../rendering/Renderer.h"
@@ -47,7 +48,8 @@ private:
 	Window *m_window;
 	std::shared_ptr<ITextureFactory> m_factory;
 	std::unordered_map<std::string, std::function<void(const serialization::Node &node)>> m_loaders;
-
+	std::unordered_map<std::string, std::unordered_map<std::string, WindowBase *>> m_parent_windows;
+	std::unordered_set<std::string> m_names;
 };
 
 } /* namespace creation */

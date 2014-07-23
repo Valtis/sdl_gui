@@ -9,28 +9,37 @@
 #include "../components/Window.h"
 #include "../components/Button.h"
 #include "../serialization/Serializer.h"
+#include "../serialization/ParseException.h"
 #include "../utility/Helpers.h"
 #include <SDL2/SDL.h>
 #include <stdexcept>
+
+#define WINDOW "window"
+#define BUTTON "button"
+#define NAME "name"
 
 namespace sdl_gui {
 namespace creation {
 
 WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_ptr<rendering::Renderer> renderer, Window *window, std::shared_ptr<ITextureFactory> factory) :
 	m_serializer(serializer), m_renderer(renderer), m_window(window), m_factory{factory} {
+
+	m_parent_windows[WINDOW][""] = window;
+
 	if (renderer == nullptr) {
 		throw std::invalid_argument("Renderer must not be null");
 	} else if (window == nullptr) {
 		throw std::invalid_argument("Window must not be null");
 	}
 
-	m_loaders["window"] = [=](const serialization::Node &node) {
+	m_loaders[WINDOW] = [=](const serialization::Node &node) {
 		set_generic_parameters(node, m_window);
 		m_window->m_background = m_factory->create_window(m_window->m_dimension.w, m_window->m_dimension.h, m_window->m_color);
 		m_window->m_title = node.value("title");
 	};
 
-	m_loaders["button"] = [=](const serialization::Node &node) {
+	m_loaders[BUTTON] = [=](const serialization::Node &node) {
+
 		std::unique_ptr<Button> button{new Button{m_factory, node.value("text") } };
 		set_generic_parameters(node, button.get());
 		button->set_renderer(m_renderer);
@@ -44,7 +53,9 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 
 
 		button->set_text(node.value("text"));
-		m_window->add_child(std::move(button));
+		m_parent_windows[BUTTON][node.value(NAME)] = button.get();
+		m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->add_child(std::move(button));
+
 	};
 }
 
@@ -66,6 +77,12 @@ void WindowLoader::load() {
 
 void WindowLoader::visitor(const serialization::Node &node) {
 	if (m_loaders.count(node.name()) != 0) {
+		if (node.name() != WINDOW && node.value(NAME).empty()) {
+			throw serialization::ParseException("Node must have a name (type: " + node.name() + ")");
+		} else if (m_names.count(node.value(NAME)) != 0) {
+			throw serialization::ParseException("Node must have unique name (type: " + node.name() + ")");
+		}
+		m_names.insert(node.value("name"));
 		m_loaders[node.name()](node);
 	}
 }
