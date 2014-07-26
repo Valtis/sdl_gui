@@ -112,16 +112,18 @@ void WindowBase::on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
     if (child != nullptr) {
     	child->on_mouse_over(mouse_x, mouse_y);
+	} else {
+		call_handler(Handler_Type::ON_MOUSE_OVER);
 	}
-    call_handler(Handler_Type::ON_MOUSE_OVER);
 }
 
 void WindowBase::on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
 	if (child != nullptr) {
 		child->on_drag(mouse_x, mouse_y, dx, dy);
+	} else {
+		call_handler(Handler_Type::ON_DRAG);
 	}
-	call_handler(Handler_Type::ON_DRAG);
 }
 
 void WindowBase::on_losing_focus() {

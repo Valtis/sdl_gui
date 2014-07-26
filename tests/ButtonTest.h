@@ -46,7 +46,7 @@ private:
 		button.add_child(create_label(80, 60));
 
 		button.on_mouse_up(41, 41);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
     }
 
     void button_on_click_handler_is_called_when_clicking_on_text() {
@@ -63,7 +63,7 @@ private:
   		button.set_handler(Handler_Type::ON_CLICK, handler_name);
 
   		button.on_mouse_up(80, 70);
-  		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
+  		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
     }
 
     void button_on_mouse_down_is_called_when_clicking_on_button() {
@@ -78,7 +78,7 @@ private:
 		button.set_handler(Handler_Type::ON_MOUSE_DOWN, handler_name);
 
 		button.on_mouse_down(41, 41);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
     }
 
     void button_on_mouse_down_is_called_when_clicking_on_child() {
@@ -95,7 +95,7 @@ private:
 		button.set_handler(Handler_Type::ON_MOUSE_DOWN, handler_name);
 
 		button.on_mouse_down(80, 70);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
     }
 
     void button_on_mouse_hover_handler_is_called_when_not_hovering_over_text() {
@@ -109,7 +109,7 @@ private:
 		button.add_child(create_label(80, 60));
 
 		button.on_mouse_over(41, 41);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
     }
 
 
@@ -126,7 +126,7 @@ private:
       		button.set_handler(Handler_Type::ON_MOUSE_OVER, handler_name);
 
       		button.on_mouse_over(80, 70);
-      		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler);
+      		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
     }
 
     void button_is_drawn_with_default_state() {
