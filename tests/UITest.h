@@ -9,6 +9,8 @@
 #include "../src/components/Button.h"
 #include "../src/UI.h"
 
+#include "mocks/TestHandlerErrorPolicy.h"
+
 namespace sdl_gui {
 
 class UITest : public CppUnit::TestFixture {
@@ -24,6 +26,14 @@ class UITest : public CppUnit::TestFixture {
     CPPUNIT_TEST(second_window_is_dragged_if_dragging_first_one_but_button_is_released_before_new_drag_with_right_handed_profile);
     CPPUNIT_TEST(second_window_is_dragged_if_dragging_first_one_but_button_is_released_before_new_drag_with_left_handed_profile);
     CPPUNIT_TEST(window_position_is_changed_on_drag_if_first_dragging_on_child_and_drag_is_terminated_outside_window_area);
+
+    CPPUNIT_TEST(window_on_mouse_down_handler_is_called_on_mouse_down_event_with_right_handed_profile);
+    CPPUNIT_TEST(window_on_mouse_down_handler_is_called_on_mouse_down_event_with_left_handed_profile);
+
+    CPPUNIT_TEST(window_on_mouse_up_handler_is_called_on_mouse_up_event_with_right_handed_profile);
+    CPPUNIT_TEST(window_on_mouse_up_handler_is_called_on_mouse_up_event_with_left_handed_profile);
+
+    CPPUNIT_TEST(ui_uses_handler_error_policy);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -42,6 +52,16 @@ private:
     	event.type = SDL_MOUSEBUTTONUP;
 		event.button.button = button;
 		event.button.state = SDL_RELEASED;
+		event.button.x = x;
+		event.button.y = y;
+		return event;
+    }
+
+    SDL_Event mouse_down_event(Sint32 x, Sint32 y, Uint8 button) {
+    	SDL_Event event;
+    	event.type = SDL_MOUSEBUTTONDOWN;
+		event.button.button = button;
+		event.button.state = SDL_PRESSED;
 		event.button.x = x;
 		event.button.y = y;
 		return event;
@@ -212,6 +232,74 @@ private:
 
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Window x coordinate has not changed correctly", 43, window->absolute_dimension().x);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Window y coordinate has not changed correctly", 46, window->absolute_dimension().y);
+    }
+
+
+    void window_on_mouse_down_handler_is_called_on_mouse_down_event_with_right_handed_profile() {
+    	bool is_called = false;
+    	auto ui = set_up_ui_for_handler_test(Handler_Type::ON_MOUSE_DOWN, is_called);
+		ui.update(mouse_down_event( 50, 60, SDL_BUTTON_LEFT));
+
+		CPPUNIT_ASSERT_MESSAGE("Window on_mouse_down handler was not called", is_called);
+    }
+
+    void window_on_mouse_down_handler_is_called_on_mouse_down_event_with_left_handed_profile() {
+    	bool is_called = false;
+    	auto ui = set_up_ui_for_handler_test(Handler_Type::ON_MOUSE_DOWN, is_called);
+    	ui.set_handedness(Handedness::LEFT);
+    	ui.update(mouse_down_event( 50, 60, SDL_BUTTON_RIGHT));
+
+		CPPUNIT_ASSERT_MESSAGE("Window on_mouse_down handler was not called", is_called);
+    }
+
+    void window_on_mouse_up_handler_is_called_on_mouse_up_event_with_right_handed_profile() {
+    	bool is_called = false;
+      	auto ui = set_up_ui_for_handler_test(Handler_Type::ON_CLICK, is_called);
+  		ui.update(mouse_up_event( 50, 60, SDL_BUTTON_LEFT));
+
+  		CPPUNIT_ASSERT_MESSAGE("Window on_mouse_down handler was not called", is_called);
+    }
+
+    void window_on_mouse_up_handler_is_called_on_mouse_up_event_with_left_handed_profile() {
+    	  bool is_called = false;
+    	  auto ui = set_up_ui_for_handler_test(Handler_Type::ON_CLICK, is_called);
+    	  ui.set_handedness(Handedness::LEFT);
+    	  ui.update(mouse_up_event( 50, 60, SDL_BUTTON_RIGHT));
+    	  CPPUNIT_ASSERT_MESSAGE("Window on_mouse_down handler was not called", is_called);
+    }
+
+
+    void ui_uses_handler_error_policy() {
+
+    	UI ui{nullptr};
+    	std::unique_ptr<TestHandlerErrorPolicy> policy{new TestHandlerErrorPolicy{}};
+    	std::string missing_handler_name;
+
+    	policy->m_on_missing_handler = [&](const std::string &name) { missing_handler_name = name; };
+    	ui.set_handler_error_policy(std::move(policy));
+
+    	auto window = std::make_shared<Window>();
+    	window->set_relative_dimension({ 40, 50, 120, 140 });
+    	std::string handler_name = "handler";
+    	window->set_handler(Handler_Type::ON_CLICK, handler_name);
+    	ui.add_window(window);
+
+    	ui.update(mouse_up_event( 50, 60, SDL_BUTTON_LEFT));
+
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Error handler was not invoked", handler_name, missing_handler_name);
+    }
+
+    UI set_up_ui_for_handler_test(Handler_Type type, bool &is_called) {
+    	auto window = std::make_shared<Window>();
+		window->set_relative_dimension({ 40, 50, 120, 140 });
+
+		std::string handler_name = "handler";
+		window->set_handler(type, handler_name);
+
+		UI ui{nullptr};
+		ui.add_window(window);
+		ui.register_handler(handler_name, [&]() { is_called = true; });
+		return ui;
     }
 
 

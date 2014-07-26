@@ -7,12 +7,12 @@
 #include "creation/WindowLoader.h"
 #include "creation/TextureFactory.h"
 #include "utility/Helpers.h"
-#include "ThrowHandlerExceptionPolicy.h"
+#include "ThrowHandlerErrorPolicy.h"
 #include "rendering/SDLRenderer.h"
 
 namespace sdl_gui {
 UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_has_initialized_ttf(false), m_dragging(Drag_Status::NOT_DRAGGING),
-		m_window_has_focus(false), m_handler_exception_policy{new ThrowHandlerExceptionPolicy{}},
+		m_window_has_focus(false), m_handler_error_policy{new ThrowHandlerErrorPolicy{}},
 		m_factory{new creation::TextureFactory{renderer}} {
 
 	set_handedness(Handedness::RIGHT);
@@ -171,7 +171,7 @@ bool UI::update_active_window(int x, int y) {
 
 void UI::call_handler(const std::string &handler_name) {
 	if (m_handlers.count(handler_name) == 0) {
-		m_handler_exception_policy->on_missing_handler(handler_name);
+		m_handler_error_policy->on_missing_handler(handler_name);
 		return;
 	}
 

@@ -42,6 +42,7 @@ class WindowBaseTest : public CppUnit::TestFixture {
 
 	CPPUNIT_TEST(on_losing_focus_handler_is_called_with_no_children);
 	CPPUNIT_TEST(on_losing_focus_handler_is_called_with_child_and_parent);
+	CPPUNIT_TEST(on_losing_focus_handler_is_called_with_child_if_another_child_gains_focus);
 
 	CPPUNIT_TEST(child_window_is_drawn_fully_if_it_fits_parent);
     CPPUNIT_TEST(grand_child_window_is_drawn_fully_if_it_fits_child_and_child_fits_parent);
@@ -273,6 +274,22 @@ private:
 		CPPUNIT_ASSERT(std::find(manager.m_called_handler.begin(), manager.m_called_handler.end(), parent_handler_name) != manager.m_called_handler.end());
 		CPPUNIT_ASSERT(std::find(manager.m_called_handler.begin(), manager.m_called_handler.end(), child_handler_name) != manager.m_called_handler.end());
 	}
+
+	void on_losing_focus_handler_is_called_with_child_if_another_child_gains_focus() {
+			TestHandlerManager manager;
+			std::string parent_handler_name = "parent_handler";
+			std::string child_handler_name = "child_handler";
+
+			auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_LOSING_FOCUS, parent_handler_name, child_handler_name);
+			std::unique_ptr<WindowBase> child{new WindowBase{}};
+			child->set_relative_dimension({0, 0, 10, 10});
+			base->add_child(std::move(child));
+
+			base->on_mouse_up(60, 60);
+			base->on_mouse_up(10, 10);
+
+			CPPUNIT_ASSERT(std::find(manager.m_called_handler.begin(), manager.m_called_handler.end(), child_handler_name) != manager.m_called_handler.end());
+		}
 
 	std::unique_ptr<WindowBase> set_up_base_for_no_children_handler_calls(TestHandlerManager &manager, Handler_Type type, const std::string &name) {
 		std::unique_ptr<WindowBase> base{new WindowBase{}};

@@ -3,9 +3,9 @@
 #include <string>
 namespace sdl_gui {
 
-class HandlerExceptionPolicy {
+class HandlerErrorPolicy {
 public:
-	virtual ~HandlerExceptionPolicy() { }
+	virtual ~HandlerErrorPolicy() { }
 	virtual void on_missing_handler(const std::string &handler_name) = 0;
 };
 
@@ -13,4 +13,4 @@ public:
 
 
 
-#endif /* HANDLEREXCEPTIONPOLICY_H_ */
+#endif
