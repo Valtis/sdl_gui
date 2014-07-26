@@ -93,6 +93,8 @@ void WindowBase::on_mouse_down(Sint32 mouse_x, Sint32 mouse_y) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
 	if (child != nullptr) {
 		child->on_mouse_down(mouse_x, mouse_y);
+	} else {
+		call_handler(Handler_Type::ON_MOUSE_DOWN);
 	}
 
 }

@@ -15,7 +15,7 @@ namespace creation {
 	class WindowLoader;
 }
 
-enum class Handler_Type { ON_CLICK, ON_MOUSE_OVER, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS };
+enum class Handler_Type { ON_MOUSE_DOWN, ON_CLICK, ON_MOUSE_OVER, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS };
 
 class WindowBase {
 public:

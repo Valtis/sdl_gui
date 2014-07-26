@@ -22,11 +22,12 @@ void Button::draw() {
 
 void Button::on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) {
 	m_current_texture = Button_Graphics::HOVER_OVER;
+	call_handler(Handler_Type::ON_MOUSE_OVER);
 }
 
 void Button::on_mouse_down(Sint32 mouse_x, Sint32 mouse_y) {
-	WindowBase::on_mouse_down(mouse_x, mouse_y);
 	m_current_texture = Button_Graphics::PRESSED_DOWN;
+	call_handler(Handler_Type::ON_MOUSE_DOWN);
 }
 
 void Button::on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) {
