@@ -17,6 +17,11 @@ class UtilityTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(point_inside_rect_returns_true_if_point_is_on_top_left_edge_of_rectangle);
     CPPUNIT_TEST(point_inside_rect_returns_true_if_point_is_on_bottom_right_edge_of_rectangle);
 
+    CPPUNIT_TEST(destination_rectangle_is_clipped_correctly_when_clipping_is_required);
+    CPPUNIT_TEST(destination_rectangle_is__not_clipped_when_it_fits_inside);
+    CPPUNIT_TEST(source_rectangle_is_clipped_correctly_when_clipping_is_required);
+    CPPUNIT_TEST(source_rectangle_is_not_clipped_when_clipping_is_not_required);
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -48,6 +53,58 @@ private:
         	CPPUNIT_ASSERT_MESSAGE("True returned for a point that is outside rectangle", utility::point_inside_rect({ 150, 120, }, { 50, 90, 100, 30 }));
     }
 
+
+    void destination_rectangle_is_clipped_correctly_when_clipping_is_required() {
+    	SDL_Rect source = {0, 0, 50, 50 };
+    	SDL_Rect destination = { 40, 50, 90, 100 };
+
+    	SDL_Rect draw_area = { 20, 60, 30, 30 };
+    	utility::clip_draw_rectangles(draw_area, source, destination);
+
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination x-coordinate was changed incorrectly", 40, destination.x);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination y-coordinate was changed incorrectly", 60, destination.y);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination w-coordinate was changed incorrectly", 10, destination.w);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination h-coordinate was changed incorrectly", 30, destination.h);
+    }
+
+    void destination_rectangle_is__not_clipped_when_it_fits_inside() {
+    	SDL_Rect source = {0, 0, 50, 50 };
+    	SDL_Rect destination = { 40, 50, 90, 100 };
+
+    	SDL_Rect draw_area = { 20, 50, 300, 300 };
+    	utility::clip_draw_rectangles(draw_area, source, destination);
+
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination x-coordinate was changed incorrectly", 40, destination.x);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination y-coordinate was changed incorrectly", 50, destination.y);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination w-coordinate was changed incorrectly", 90, destination.w);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination h-coordinate was changed incorrectly", 100, destination.h);
+    }
+
+    void source_rectangle_is_clipped_correctly_when_clipping_is_required() {
+        	SDL_Rect source = {0, 0, 50, 50 };
+        	SDL_Rect destination = { 40, 50, 90, 100 };
+
+        	SDL_Rect draw_area = { 20, 60, 30, 30 };
+        	utility::clip_draw_rectangles(draw_area, source, destination);
+
+        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source x-coordinate was changed incorrectly", 0, source.x);
+        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source y-coordinate was changed incorrectly", 10, source.y);
+        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source w-coordinate was changed incorrectly", 10, source.w);
+        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source h-coordinate was changed incorrectly", 30, source.h);
+    }
+
+    void source_rectangle_is_not_clipped_when_clipping_is_not_required() {
+        	SDL_Rect source = {0, 0, 50, 50 };
+        	SDL_Rect destination = { 40, 50, 90, 100 };
+
+        	SDL_Rect draw_area = { 20, 20, 300, 300 };
+        	utility::clip_draw_rectangles(draw_area, source, destination);
+
+        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source x-coordinate was changed incorrectly", 0, source.x);
+        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source y-coordinate was changed incorrectly", 0, source.y);
+        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source w-coordinate was changed incorrectly", 50, source.w);
+        	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source h-coordinate was changed incorrectly", 50, source.h);
+    }
 
 };
 
