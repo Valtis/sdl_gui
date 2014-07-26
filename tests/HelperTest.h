@@ -22,6 +22,9 @@ class UtilityTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(source_rectangle_is_clipped_correctly_when_clipping_is_required);
     CPPUNIT_TEST(source_rectangle_is_not_clipped_when_clipping_is_not_required);
 
+    CPPUNIT_TEST(lighter_color_produces_lighter_colors);
+    CPPUNIT_TEST(darker_color_produces_darker_colors);
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -104,6 +107,26 @@ private:
         	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source y-coordinate was changed incorrectly", 0, source.y);
         	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source w-coordinate was changed incorrectly", 50, source.w);
         	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source h-coordinate was changed incorrectly", 50, source.h);
+    }
+
+    void lighter_color_produces_lighter_colors() {
+    	SDL_Color original = { 170, 170, 170, 255 };
+    	SDL_Color lightened = utility::lighter_color(original, 0.5);
+
+    	CPPUNIT_ASSERT_MESSAGE("Produced r-component is not lighter", lightened.r >= original.r);
+    	CPPUNIT_ASSERT_MESSAGE("Produced g-component is not lighter", lightened.g >= original.g);
+    	CPPUNIT_ASSERT_MESSAGE("Produced b-component is not lighter", lightened.b >= original.b);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Alpha value has changed", original.a, lightened.a);
+    }
+
+    void darker_color_produces_darker_colors() {
+    	SDL_Color original = { 170, 170, 170, 255 };
+    	SDL_Color darkened = utility::darker_color(original, 0.5);
+
+    	CPPUNIT_ASSERT_MESSAGE("Produced r-component is not darker", darkened.r <= original.r);
+    	CPPUNIT_ASSERT_MESSAGE("Produced g-component is not darker", darkened.g <= original.g);
+    	CPPUNIT_ASSERT_MESSAGE("Produced b-component is not darker", darkened.b <= original.b);
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Alpha value has changed", original.a, darkened.a);
     }
 
 };
