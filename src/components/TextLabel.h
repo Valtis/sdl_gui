@@ -15,6 +15,7 @@ public:
 	TextLabel(std::shared_ptr<creation::ITextureFactory> factory);
 	virtual ~TextLabel();
 
+	void set_relative_dimension(SDL_Rect r) override;
 	SDL_Rect relative_dimension() const override;
 
 	void set_text(std::string text);
@@ -38,6 +39,9 @@ private:
 
 	Text_VAlignment m_valignment;
 	int m_voffset;
+
+	int m_max_width;
+	int m_max_height;
 
 	std::shared_ptr<creation::ITextureFactory> m_factory;
 };

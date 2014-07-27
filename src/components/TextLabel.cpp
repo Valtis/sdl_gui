@@ -6,7 +6,8 @@ namespace sdl_gui {
 
 TextLabel::TextLabel(std::shared_ptr<creation::ITextureFactory> factory) :
 		 m_text{""}, m_font_size{DEFAULT_FONT_SIZE}, m_halignment{Text_HAlignment::LEFT},
-		 m_hoffset(0), m_valignment{Text_VAlignment::TOP}, m_voffset(0), m_factory{factory} {
+		 m_hoffset(0), m_valignment{Text_VAlignment::TOP}, m_voffset(0),
+		 m_max_width(0), m_max_height(0), m_factory{factory} {
 }
 
 TextLabel::~TextLabel() {
@@ -18,13 +19,23 @@ void TextLabel::set_text(std::string text) {
 	m_background = m_factory->create_text(text, m_color, m_font_size);
 	int w, h;
 	m_renderer->texture_width_and_height(m_background, w, h);
-	if (m_dimension.w == 0) {
-		m_dimension.w = w;
+
+	if (m_max_width == 0) {
+		m_max_width = w;
 	}
 
-	if (m_dimension.h == 0) {
-		m_dimension.h = h;
+	if (m_max_height == 0) {
+		m_max_height = h;
 	}
+
+	m_dimension.w = std::min(w, m_max_width);
+	m_dimension.h = std::min(h, m_max_height);
+}
+
+void TextLabel::set_relative_dimension(SDL_Rect r) {
+	WindowBase::set_relative_dimension(r);
+	m_max_width = r.w;
+	m_max_height = r.h;
 }
 
 SDL_Rect TextLabel::relative_dimension() const {

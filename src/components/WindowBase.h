@@ -35,7 +35,7 @@ public:
 	virtual void on_gaining_focus();
 
 	virtual SDL_Rect relative_dimension() const;
-	void set_relative_dimension(SDL_Rect dimension) { m_dimension = dimension; }
+	virtual void set_relative_dimension(SDL_Rect dimension) { m_dimension = dimension; }
 	SDL_Rect absolute_dimension() const;
 
 	void add_child(std::unique_ptr<WindowBase> child);
@@ -76,6 +76,12 @@ protected:
 	std::vector<std::unique_ptr<WindowBase>> m_children;
 	WindowBase *m_focused_child;
 	std::map<Handler_Type, std::string> m_handlers;
+
+	// currently does not change the color of the window after initialization
+	// as this requires creation of new base texture
+	void set_color(const SDL_Color &color) {
+		m_color = color;
+	}
 };
 
 } /* namespace SDL_GUI */

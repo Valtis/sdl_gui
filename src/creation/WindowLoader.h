@@ -38,8 +38,8 @@ private:
 	int stoi(const std::string &str, int default_value = 0);
 	void visitor(const serialization::Node &node);
 
-	void set_dimensions(const serialization::Node &node, SDL_Rect &dimension);
-	void set_color(const serialization::Node &node, SDL_Color &color);
+	void set_dimensions(const serialization::Node &node, WindowBase *base);
+	void set_color(const serialization::Node &node, WindowBase *base);
 	void set_generic_parameters(const serialization::Node &node, WindowBase *base);
 	void set_handlers(const serialization::Node &node, WindowBase *base);
 

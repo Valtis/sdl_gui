@@ -132,26 +132,30 @@ void WindowLoader::visitor(const serialization::Node &node) {
 
 
 void WindowLoader::set_generic_parameters(const serialization::Node &node, WindowBase *base) {
-	set_dimensions(node, base->m_dimension);
-	set_color(node, base->m_color);
+	set_dimensions(node, base);
+	set_color(node, base);
 	base->set_renderer(m_renderer);
 	base->m_name = node.value(NAME);
 	set_handlers(node, base);
 
 }
 
-void WindowLoader::set_dimensions(const serialization::Node &node, SDL_Rect &dimension) {
-	dimension.x = stoi(node.value("x"));
-	dimension.y = stoi(node.value("y"));
-	dimension.w = stoi(node.value("w"));
-	dimension.h = stoi(node.value("h"));
+void WindowLoader::set_dimensions(const serialization::Node &node, WindowBase *base) {
+	base->set_relative_dimension({
+		stoi(node.value("x")),
+		stoi(node.value("y")),
+		stoi(node.value("w")),
+		stoi(node.value("h")),
+	});
 }
 
-void WindowLoader::set_color(const serialization::Node &node, SDL_Color &color) {
-	color.r = stoi(node.value("r"));
-	color.g = stoi(node.value("g"));
-	color.b = stoi(node.value("b"));
-	color.a = stoi(node.value("a"), 255);
+void WindowLoader::set_color(const serialization::Node &node, WindowBase *base) {
+	base->set_color({
+		stoi(node.value("r")),
+		stoi(node.value("g")),
+		stoi(node.value("b")),
+		stoi(node.value("a"), 255)
+	});
 }
 
 void WindowLoader::set_handlers(const serialization::Node &node, WindowBase *base) {
