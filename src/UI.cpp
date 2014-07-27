@@ -133,7 +133,7 @@ void UI::handle_motion(const SDL_Event &event) {
 		} else {
 			m_dragging = Drag_Status::FAILED_DRAG;
 		}
-	} else {
+	} else if (m_windows.back()->has_focus()){
 		m_windows.back()->on_mouse_over(event.motion.x, event.motion.y);
 	}
 }
