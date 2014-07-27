@@ -70,20 +70,30 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 		set_generic_parameters(node, label.get());
 
 
-		auto get_alignment = [](const std::string &align) -> Text_Alignment {
+		auto get_halignment = [](const std::string &align) -> Text_HAlignment {
 			if (align == "center") {
-				return Text_Alignment::CENTER;
+				return Text_HAlignment::CENTER;
 			} else if (align == "right") {
-				return Text_Alignment::RIGHT;
+				return Text_HAlignment::RIGHT;
 			} else {
-				return Text_Alignment::LEFT;
+				return Text_HAlignment::LEFT;
 			}
 		};
 
+		auto get_valignment = [](const std::string &align) -> Text_VAlignment {
+					if (align == "center") {
+						return Text_VAlignment::CENTER;
+					} else if (align == "bottom") {
+						return Text_VAlignment::BOTTOM;
+					} else {
+						return Text_VAlignment::TOP;
+					}
+				};
+
 		label->set_font_size(stoi(node.value(FONT_SIZE), DEFAULT_FONT_SIZE));
 
-		label->set_horizontal_alignment(get_alignment(node.value(HORIZONTAL_ALIGNMENT)), stoi(node.value(HORIZONTAL_OFFSET)));
-		label->set_vertical_alignment(get_alignment(node.value(VERTICAL_ALIGNMENT)), stoi(node.value(VERTICAL_OFFSET)));
+		label->set_horizontal_alignment(get_halignment(node.value(HORIZONTAL_ALIGNMENT)), stoi(node.value(HORIZONTAL_OFFSET)));
+		label->set_vertical_alignment(get_valignment(node.value(VERTICAL_ALIGNMENT)), stoi(node.value(VERTICAL_OFFSET)));
 
 		label->set_text(node.value(TEXT));
 		m_parent_windows[TEXT_LABEL][node.value(NAME)] = label.get();

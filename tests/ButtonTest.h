@@ -173,8 +173,8 @@ private:
 		std::unique_ptr<TextLabel> label{new TextLabel{std::shared_ptr<creation::ITextureFactory>{new TestTextureFactory{} }}};
 		label->set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
 		label->set_text("Let there be text!");
-		label->set_horizontal_alignment(Text_Alignment::CENTER, 0);
-		label->set_vertical_alignment(Text_Alignment::CENTER, 0);
+		label->set_horizontal_alignment(Text_HAlignment::CENTER, 0);
+		label->set_vertical_alignment(Text_VAlignment::CENTER, 0);
 		return label;
     }
 

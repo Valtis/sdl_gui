@@ -6,7 +6,9 @@
 #define DEFAULT_FONT_SIZE 12
 namespace sdl_gui {
 
-enum class Text_Alignment { LEFT, CENTER, RIGHT };
+enum class Text_HAlignment { LEFT, CENTER, RIGHT };
+enum class Text_VAlignment { TOP, CENTER, BOTTOM };
+
 
 class TextLabel : public WindowBase {
 public:
@@ -22,19 +24,19 @@ public:
 
 
 	// for center, offset_from_align_direction is from the left
-	void set_horizontal_alignment(Text_Alignment alingment, int offset_from_align_direction);
+	void set_horizontal_alignment(Text_HAlignment alingment, int offset_from_align_direction);
 
 	// for center, offset is from the top
-	void set_vertical_alignment(Text_Alignment alingment, int offset_from_align_direction);
+	void set_vertical_alignment(Text_VAlignment alingment, int offset_from_align_direction);
 
 private:
 	std::string m_text;
 	int m_font_size;
 
-	Text_Alignment m_halignment;
+	Text_HAlignment m_halignment;
 	int m_hoffset;
 
-	Text_Alignment m_valignment;
+	Text_VAlignment m_valignment;
 	int m_voffset;
 
 	std::shared_ptr<creation::ITextureFactory> m_factory;

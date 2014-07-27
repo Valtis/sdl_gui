@@ -8,7 +8,7 @@
 	</button>
 
 	<button name="my_button3" x="240" y="120" w="140" h="50" r="248" g="201" b="240" a="255" on_click="my_handler">
-		<text name="my_button_text_with_ralign" halign="right" valign="right" text="my_text"/>
+		<text name="my_button_text_with_ralign" halign="right" valign="bottom" text="my_text"/>
 	</button>
 
 	<text name="my_label" text="my label text" x="10" y="100" a="0"/>
