@@ -3,7 +3,11 @@
 #include <functional>
 #include <SDL2/SDL.h>
 
+
 #include "src/UI.h"
+#include "src/UIComponents.h"
+#include "src/components/Button.h"
+#include "src/components/TextLabel.h"
 
 using namespace sdl_gui;
 
@@ -38,9 +42,22 @@ int main() {
 		ui.load_window("abcd.xml");
 		ui.set_handedness(Handedness::RIGHT);
 
-		ui.register_handler("my_handler", [](){
+		ui.register_handler("my_handler", [](UIComponents components, WindowBase *caller){
 			std::cout << "button on_click handler was called!\n";
 		});
+
+		ui.register_handler("set_label_text", [](UIComponents components, WindowBase *caller) {
+			Button *button = dynamic_cast<Button *>(caller);
+			if (button) {
+				std::string text = button->get_text();
+				auto l = components.get_by_name<TextLabel *>("label3");
+				if (l) {
+					l->set_text(text);
+				}
+
+			}
+		});
+
 
 
 		bool is_running = true;

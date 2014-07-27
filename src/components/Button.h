@@ -22,6 +22,8 @@ public:
 
 	virtual void on_losing_focus() override;
 	virtual void on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) override {} // do nothing if dragged
+
+	std::string get_text();
 private:
 	friend class creation::WindowLoader;
 

@@ -47,6 +47,7 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 		m_window->m_background = m_factory->create_window(m_window->m_dimension.w, m_window->m_dimension.h, m_window->m_color);
 		m_window->m_no_focus_overlay = m_factory->create_window(m_window->m_dimension.w, m_window->m_dimension.h, {255, 255, 255, 100});
 		m_window->m_title = node.value("title");
+		m_parent_windows[WINDOW][node.value(NAME)] = m_window;
 	};
 
 	m_loaders[BUTTON] = [=](const serialization::Node &node) {
@@ -119,7 +120,7 @@ void WindowLoader::load() {
 
 void WindowLoader::visitor(const serialization::Node &node) {
 	if (m_loaders.count(node.name()) != 0) {
-		if (node.name() != WINDOW && node.value(NAME).empty()) {
+		if (node.value(NAME).empty()) {
 			throw serialization::ParseException("Node must have a name (type: " + node.name() + ")");
 		} else if (m_names.count(node.value(NAME)) != 0) {
 			throw serialization::ParseException("Node must have unique name (type: " + node.name() + ")");
@@ -134,6 +135,7 @@ void WindowLoader::set_generic_parameters(const serialization::Node &node, Windo
 	set_dimensions(node, base->m_dimension);
 	set_color(node, base->m_color);
 	base->set_renderer(m_renderer);
+	base->m_name = node.value(NAME);
 	set_handlers(node, base);
 
 }

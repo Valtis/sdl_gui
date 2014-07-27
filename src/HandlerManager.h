@@ -6,7 +6,7 @@ namespace sdl_gui {
 class HandlerManager {
 public:
 	virtual ~HandlerManager() { }
-	virtual void call_handler(const std::string &handler_name) = 0;
+	virtual void call_handler(const std::string &handler_name, WindowBase *caller) = 0;
 };
 
 } /* namespace sdl_gui */

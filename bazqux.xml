@@ -1,3 +1,9 @@
-<window title="my_title" x="0" y="0" w="400" h="400" r="255" g="100" b="100" a="255">
-    <button name="button1" text="button_text" x="200" y="20" w="50" h="20" r="255" g="0" b="0"/>
+<window name="bazqux.xml" title="my_title" x="0" y="0" w="400" h="400" r="255" g="100" b="100" a="255">
+    <button name="button1" x="10" y="10" w="50" h="20" r="255" g="0" b="0" on_click="set_label_text">
+	<text name="label1" halign="center" valign="center" text="foooo"/>
+    </button>
+    <button name="button2" x="70" y="10" w="50" h="20" r="255" g="0" b="0" on_click="set_label_text">
+	<text name="label2" halign="center" valign="center" text="baar"/>
+    </button>
+    <text name="label3" text="huehue" x="10" y="40"/>
 </window>

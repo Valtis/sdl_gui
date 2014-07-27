@@ -5,9 +5,13 @@
 #include <vector>
 #include <memory>
 #include <unordered_map>
+
 #include "components/Window.h"
+
 #include "HandlerManager.h"
 #include "HandlerErrorPolicy.h"
+#include "UIComponents.h"
+
 #include "rendering/SDLRenderer.h"
 #include "creation/ITextureFactory.h"
 
@@ -39,7 +43,7 @@ public:
 
 	void add_window(std::shared_ptr<Window> window);
 
-	void register_handler(const std::string &name, std::function<void()> handler) {
+	void register_handler(const std::string &name, std::function<void(UIComponents, WindowBase *)> handler) {
 		m_handlers[name] = handler;
  	}
 
@@ -47,7 +51,7 @@ public:
 		m_handler_error_policy = std::move(policy);
 	}
 
-	void call_handler(const std::string &name) override;
+	void call_handler(const std::string &name, WindowBase *caller) override;
 
 private:
 	std::shared_ptr<rendering::Renderer> initialize_window(std::shared_ptr<Window> window);
@@ -67,7 +71,7 @@ private:
 
 	// Window is non-copyable, hence we must store it as a pointer as stl requires copyability for container reallocations
 	std::vector<std::shared_ptr<Window>> m_windows;
-	std::unordered_map<std::string, std::function<void()>> m_handlers;
+	std::unordered_map<std::string, std::function<void(UIComponents, WindowBase *)>> m_handlers;
 	std::shared_ptr<HandlerErrorPolicy> m_handler_error_policy;
 
 	struct Buttons {

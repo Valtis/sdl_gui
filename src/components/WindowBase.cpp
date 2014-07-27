@@ -170,8 +170,25 @@ void WindowBase::set_handler(Handler_Type type, const std::string &handler_name)
 
 void WindowBase::call_handler(Handler_Type type) {
 	if (m_handlers.count(type) != 0 && m_handler_manager != nullptr) {
-		m_handler_manager->call_handler(m_handlers[type]);
+		m_handler_manager->call_handler(m_handlers[type], this);
 	}
+}
+
+WindowBase *WindowBase::get_child_by_name(const std::string &name) {
+	for (const auto &child : m_children) {
+		if (child->get_name() == name) {
+			return child.get();
+		}
+	}
+
+	for (const auto &child : m_children) {
+		WindowBase *base = child->get_child_by_name(name);
+		if (base) {
+			return base;
+		}
+	}
+
+	return nullptr;
 }
 
 

@@ -1,4 +1,4 @@
-<window title = "my_title" x="80" y="80" w="400" h="300" r="201" g="240" b="248" a="255">  
+<window name="foobar" title = "my_title" x="80" y="80" w="400" h="300" r="201" g="240" b="248" a="255">  
 	<button name="my_button" x="20" y="20" w="100" h="50" r="248" g="201" b="240" a="255" on_click="my_handler">
 		<text name="my_button_text" halign="center" valign="center" text="my_text"/>
 	</button>

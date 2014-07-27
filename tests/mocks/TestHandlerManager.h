@@ -9,7 +9,7 @@ namespace sdl_gui {
 class TestHandlerManager : public HandlerManager {
 public:
 	std::vector<std::string> m_called_handler;
-	void call_handler(const std::string &handler_name) {
+	void call_handler(const std::string &handler_name, WindowBase *caller) override {
 		m_called_handler.push_back(handler_name);
 	}
 };

@@ -170,13 +170,15 @@ bool UI::update_active_window(int x, int y) {
 	return false;
 }
 
-void UI::call_handler(const std::string &handler_name) {
+void UI::call_handler(const std::string &handler_name, WindowBase *caller) {
 	if (m_handlers.count(handler_name) == 0) {
 		m_handler_error_policy->on_missing_handler(handler_name);
 		return;
 	}
 
-	m_handlers[handler_name]();
+	UIComponents c{ m_windows.back()->get_name(), m_windows };
+
+	m_handlers[handler_name](c, caller);
 }
 
 }

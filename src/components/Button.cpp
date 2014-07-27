@@ -40,4 +40,16 @@ void Button::on_losing_focus() {
 	m_current_texture = Button_Graphics::DEFAULT;
 }
 
+
+// Todo: This probably should be handled in a less stupid way
+std::string Button::get_text() {
+	for (const auto &child : m_children) {
+		TextLabel *label = dynamic_cast<TextLabel *>(child.get());
+		if (label) {
+			return label->get_text();
+		}
+	}
+	return "";
+}
+
 } /* namespace SDL_GUI */

@@ -49,6 +49,12 @@ public:
 
 	void set_handler(Handler_Type type, const std::string &handler_name);
 
+	std::string get_name() {
+		return m_name;
+	}
+
+	WindowBase *get_child_by_name(const std::string &name);
+
 protected:
 
 	void draw(const texture_ptr &ptr);
@@ -59,7 +65,7 @@ protected:
 	void call_handler(Handler_Type type);
 
 
-
+	std::string m_name;
 	SDL_Rect m_dimension;
 	SDL_Color m_color;
 	texture_ptr m_background;
