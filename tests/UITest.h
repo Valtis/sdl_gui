@@ -8,6 +8,7 @@
 #include "../src/components/Window.h"
 #include "../src/components/Button.h"
 #include "../src/UI.h"
+#include "../src/UIComponents.h"
 
 #include "mocks/TestHandlerErrorPolicy.h"
 
@@ -298,7 +299,7 @@ private:
 
 		UI ui{nullptr};
 		ui.add_window(window);
-		ui.register_handler(handler_name, [&]() { is_called = true; });
+		ui.register_handler(handler_name, [&](UIComponents c, WindowBase *) { is_called = true; });
 		return ui;
     }
 
