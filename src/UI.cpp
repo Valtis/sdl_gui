@@ -12,8 +12,7 @@
 
 namespace sdl_gui {
 UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_has_initialized_ttf(false), m_dragging(Drag_Status::NOT_DRAGGING),
-		m_window_has_focus(false), m_handler_error_policy{new ThrowHandlerErrorPolicy{}},
-		m_factory{new creation::TextureFactory{renderer}} {
+	    m_handler_error_policy{new ThrowHandlerErrorPolicy{}}, m_factory{new creation::TextureFactory{renderer}} {
 
 	set_handedness(Handedness::RIGHT);
 
@@ -148,7 +147,6 @@ bool UI::update_active_window(int x, int y) {
 		SDL_Rect r = (*iter)->absolute_dimension();
 		if (utility::point_inside_rect({x, y}, r)) {
 
-			m_window_has_focus = true;
 			auto window = *iter;
 			if (iter != m_windows.rbegin()) {
 				m_windows.back()->on_losing_focus();
@@ -157,12 +155,15 @@ bool UI::update_active_window(int x, int y) {
 			m_windows.erase(--(iter.base()));
 			m_windows.push_back(window);
 
+			if (!m_windows.back()->has_focus()) {
+				m_windows.back()->on_gaining_focus();
+			}
+
 			return true;
 		 }
 	}
 
-	if (m_window_has_focus == true) {
-		m_window_has_focus = false;
+	if (m_windows.back()->has_focus()) {
 		m_windows.back()->on_losing_focus();
 	}
 

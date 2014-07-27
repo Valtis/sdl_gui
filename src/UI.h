@@ -64,7 +64,6 @@ private:
 
 	enum class Drag_Status { NOT_DRAGGING, DRAGGING, FAILED_DRAG };
 	Drag_Status m_dragging;
-	bool m_window_has_focus;
 
 	// Window is non-copyable, hence we must store it as a pointer as stl requires copyability for container reallocations
 	std::vector<std::shared_ptr<Window>> m_windows;

@@ -45,6 +45,7 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 	m_loaders[WINDOW] = [=](const serialization::Node &node) {
 		set_generic_parameters(node, m_window);
 		m_window->m_background = m_factory->create_window(m_window->m_dimension.w, m_window->m_dimension.h, m_window->m_color);
+		m_window->m_no_focus_overlay = m_factory->create_window(m_window->m_dimension.w, m_window->m_dimension.h, {255, 255, 255, 100});
 		m_window->m_title = node.value("title");
 	};
 
