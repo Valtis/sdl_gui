@@ -22,7 +22,7 @@ public:
 	WindowBase();
 	virtual ~WindowBase();
 
-	void set_renderer(std::shared_ptr<rendering::Renderer> renderer);
+	void set_renderer(rendering::Renderer *renderer);
 
 	virtual void draw();
 
@@ -53,6 +53,11 @@ public:
 		return m_name;
 	}
 
+	void set_name(std::string name) {
+		m_name = name;
+	}
+
+
 	WindowBase *get_child_by_name(const std::string &name);
 
 protected:
@@ -70,7 +75,7 @@ protected:
 	SDL_Color m_color;
 	texture_ptr m_background;
 	WindowBase *m_parent;
-	std::shared_ptr<rendering::Renderer> m_renderer;
+	rendering::Renderer *m_renderer;
 	HandlerManager *m_handler_manager;
 
 	std::vector<std::unique_ptr<WindowBase>> m_children;

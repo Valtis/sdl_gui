@@ -134,7 +134,7 @@ void WindowLoader::visitor(const serialization::Node &node) {
 void WindowLoader::set_generic_parameters(const serialization::Node &node, WindowBase *base) {
 	set_dimensions(node, base);
 	set_color(node, base);
-	base->set_renderer(m_renderer);
+	base->set_renderer(m_renderer.get());
 	base->m_name = node.value(NAME);
 	set_handlers(node, base);
 

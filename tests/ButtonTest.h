@@ -132,7 +132,7 @@ private:
     void button_is_drawn_with_default_state() {
     	Button button{};
     	auto renderer = std::make_shared<TestRenderer>();
-    	button.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+    	button.set_renderer(renderer.get());
 
     	button.draw();
 
@@ -143,7 +143,7 @@ private:
     void button_is_drawn_with_pushed_down_state() {
         	Button button{};
         	auto renderer = std::make_shared<TestRenderer>();
-        	button.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+        	button.set_renderer(renderer.get());
         	button.set_relative_dimension({0, 0, 100, 100});
         	button.on_mouse_down(10, 10);
         	button.draw();
@@ -155,7 +155,7 @@ private:
      void button_is_drawn_with_hover_over_state() {
            	Button button{};
            	auto renderer = std::make_shared<TestRenderer>();
-           	button.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+           	button.set_renderer(renderer.get());
            	button.set_relative_dimension({0, 0, 100, 100});
            	button.on_mouse_over(10, 10);
            	button.draw();
@@ -171,7 +171,7 @@ private:
 
 
 		std::unique_ptr<TextLabel> label{new TextLabel{std::shared_ptr<creation::ITextureFactory>{new TestTextureFactory{} }}};
-		label->set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		label->set_renderer(renderer.get());
 		label->set_text("Let there be text!");
 		label->set_horizontal_alignment(Text_HAlignment::CENTER, 0);
 		label->set_vertical_alignment(Text_VAlignment::CENTER, 0);

@@ -11,10 +11,10 @@ WindowBase::WindowBase() : m_dimension{0, 0, 0, 0}, m_color{0, 0, 0, 0},
 }
 
 WindowBase::~WindowBase() {
-	// do not delete the renderer, parent or HandlerManager; this class does not own these pointers
+	// do not delete any naked pointers here; this class does not own any of these
 }
 
-void WindowBase::set_renderer(std::shared_ptr<rendering::Renderer> renderer) {
+void WindowBase::set_renderer(rendering::Renderer *renderer) {
 	 m_renderer = renderer;
 	 for (const auto &child : m_children) {
 		 child->set_renderer(renderer);

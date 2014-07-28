@@ -12,7 +12,7 @@
 #include "HandlerErrorPolicy.h"
 #include "UIComponents.h"
 
-#include "rendering/SDLRenderer.h"
+#include "rendering/Renderer.h"
 #include "creation/ITextureFactory.h"
 
 
@@ -54,12 +54,12 @@ public:
 	void call_handler(const std::string &name, WindowBase *caller) override;
 
 private:
-	std::shared_ptr<rendering::Renderer> initialize_window(std::shared_ptr<Window> window);
+	void initialize_window(std::shared_ptr<Window> window);
 	void handle_click(const SDL_Event &event);
 	void handle_motion(const SDL_Event &event);
 	bool update_active_window(int x, int y);
 	void update_mouse_position();
-	SDL_Renderer *m_renderer;
+	std::shared_ptr<rendering::Renderer> m_renderer;
 
 	// whether or not this class is responsible for initializing font support; if so, it must also
 	// shut it down on destruction

@@ -57,6 +57,13 @@ class WindowBaseTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(child_window_is_clipped_correctly_from_bottom);
     CPPUNIT_TEST(grand_child_window_is_clipped_correctly_from_bottom_if_child_is_clipped);
 
+    CPPUNIT_TEST(set_name_works);
+
+    CPPUNIT_TEST(get_child_by_name_returns_nullptr_if_no_child_exists_with_name);
+    CPPUNIT_TEST(get_child_by_name_returns_valid_pointer_if_child_exists_with_name);
+    CPPUNIT_TEST(get_child_by_name_returns_valid_pointer_if_grand_child_exists_with_name);
+
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -319,7 +326,7 @@ private:
 		auto renderer = std::make_shared<TestRenderer>();WindowBase base{};
 
 		base.set_relative_dimension({40, 40, 400, 400});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({10, 10, 200, 100});
@@ -335,7 +342,7 @@ private:
 		auto renderer = std::make_shared<TestRenderer>();WindowBase base{};
 
 		base.set_relative_dimension({40, 40, 400, 400});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({20, 30, 100, 100});
@@ -356,7 +363,7 @@ private:
 		WindowBase base{};
 
 		base.set_relative_dimension({40, 40, 400, 400});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({20, 30, 40, 100});
@@ -377,7 +384,7 @@ private:
 		WindowBase base{};
 
 		base.set_relative_dimension({40, 40, 400, 500});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({300, 10, 200, 100});
@@ -394,7 +401,7 @@ private:
 		WindowBase base{};
 
 		base.set_relative_dimension({40, 40, 400, 500});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({300, 10, 200, 100});
@@ -415,7 +422,7 @@ private:
 		WindowBase base{};
 
 		base.set_relative_dimension({40, 60, 400, 300});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({10, -40, 200, 100});
@@ -435,7 +442,7 @@ private:
 		WindowBase base{};
 
 		base.set_relative_dimension({40, 60, 400, 400});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({10, -40, 200, 100});
@@ -456,7 +463,7 @@ private:
 		WindowBase base{};
 
 		base.set_relative_dimension({40, 60, 400, 300});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({-40, 10, 200, 100});
@@ -473,7 +480,7 @@ private:
 		WindowBase base{};
 
 		base.set_relative_dimension({40, 60, 400, 300});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({-20, 10, 200, 100});
@@ -494,7 +501,7 @@ private:
 		WindowBase base{};
 
 		base.set_relative_dimension({40, 60, 400, 300});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({10, 250, 200, 100});
@@ -510,7 +517,7 @@ private:
 		auto renderer = std::make_shared<TestRenderer>();WindowBase base{};
 
 		base.set_relative_dimension({40, 60, 400, 300});
-		base.set_renderer(std::static_pointer_cast<rendering::Renderer>(renderer));
+		base.set_renderer(renderer.get());
 
 		std::unique_ptr<WindowBase> child{new WindowBase{}};
 		child->set_relative_dimension({10, 250, 200, 100});
@@ -541,6 +548,48 @@ private:
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination w coordinate incorrect", expected_destination.w, renderer->m_destination_rect.w);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination h coordinate incorrect", expected_destination.h, renderer->m_destination_rect.h);
 	}
+
+	void set_name_works() {
+		WindowBase base;
+		base.set_name("foobar");
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Name was not set correctly", std::string("foobar"), base.get_name());
+	}
+
+	void get_child_by_name_returns_nullptr_if_no_child_exists_with_name() {
+		auto base = create_base_for_get_child_name_tests();
+		CPPUNIT_ASSERT_MESSAGE("Nullptr was expected for non-existent child", base->get_child_by_name("no_name") == nullptr);
+	}
+
+	void get_child_by_name_returns_valid_pointer_if_child_exists_with_name() {
+		auto base = create_base_for_get_child_name_tests();
+		CPPUNIT_ASSERT_MESSAGE("Expected valid pointer", base->get_child_by_name("child_1") != nullptr);
+	}
+
+	void get_child_by_name_returns_valid_pointer_if_grand_child_exists_with_name() {
+		auto base = create_base_for_get_child_name_tests();
+		CPPUNIT_ASSERT_MESSAGE("Expected valid pointer", base->get_child_by_name("grand_child") != nullptr);
+	}
+
+	std::unique_ptr<WindowBase> create_base_for_get_child_name_tests() {
+		std::unique_ptr<WindowBase> grand_child{new WindowBase{}};
+		grand_child->set_name("grand_child");
+
+		std::unique_ptr<WindowBase> child_1{new WindowBase{}};
+		child_1->set_name("child_1");
+
+		std::unique_ptr<WindowBase> child_2{new WindowBase{}};
+		child_2->set_name("child_2");
+
+		child_1->add_child(std::move(grand_child));
+
+		std::unique_ptr<WindowBase> base{new WindowBase{}};
+
+		base->add_child(std::move(child_1));
+		base->add_child(std::move(child_2));
+
+		return base;
+	}
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( WindowBaseTest );

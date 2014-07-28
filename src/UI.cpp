@@ -11,9 +11,12 @@
 #include "rendering/SDLRenderer.h"
 
 namespace sdl_gui {
-UI::UI(SDL_Renderer *renderer) : m_renderer(renderer), m_has_initialized_ttf(false), m_dragging(Drag_Status::NOT_DRAGGING),
+UI::UI(SDL_Renderer *renderer) : m_renderer(nullptr), m_has_initialized_ttf(false), m_dragging(Drag_Status::NOT_DRAGGING),
 	    m_handler_error_policy{new ThrowHandlerErrorPolicy{}}, m_factory{new creation::TextureFactory{renderer}} {
 
+	m_renderer = std::static_pointer_cast<rendering::Renderer>(
+			std::make_shared<rendering::SDLRenderer>(renderer)
+			);
 	set_handedness(Handedness::RIGHT);
 
 	if (!TTF_WasInit()) {
@@ -40,14 +43,12 @@ void UI::set_handedness(Handedness h) {
 }
 
 void UI::set_renderer(SDL_Renderer *renderer) {
-	m_renderer = renderer;
-
-	auto renderer_ptr = std::static_pointer_cast<rendering::Renderer>(
+	m_renderer = std::static_pointer_cast<rendering::Renderer>(
 			std::make_shared<rendering::SDLRenderer>(renderer)
 			);
 
 	for (auto &window : m_windows) {
-		window->set_renderer(renderer_ptr);
+		window->set_renderer(m_renderer.get());
 	}
 }
 
@@ -84,10 +85,10 @@ void UI::draw() {
 
 void UI::load_window(const std::string &file_name) {
 	std::shared_ptr<Window> window{new Window{}};
-	auto renderer_ptr = initialize_window(window);
+	initialize_window(window);
 
 	serialization::XMLSerializer serializer{file_name};
-	creation::WindowLoader loader{serializer, renderer_ptr, window.get(), m_factory};
+	creation::WindowLoader loader{serializer, m_renderer, window.get(), m_factory};
 	loader.load();
 
 	m_windows.push_back(window);
@@ -96,16 +97,11 @@ void UI::load_window(const std::string &file_name) {
 void UI::add_window(std::shared_ptr<Window> window) {
 	initialize_window(window);
 	m_windows.push_back(window);
-
 }
 
-std::shared_ptr<rendering::Renderer> UI::initialize_window(std::shared_ptr<Window> window) {
-	auto renderer_ptr = std::static_pointer_cast<rendering::Renderer>(
-				std::make_shared<rendering::SDLRenderer>(m_renderer)
-				);
-	window->set_renderer(renderer_ptr);
+void UI::initialize_window(std::shared_ptr<Window> window) {
+	window->set_renderer(m_renderer.get());
 	window->set_handler_manager(this);
-	return renderer_ptr;
 }
 
 void UI::handle_click(const SDL_Event &event) {
