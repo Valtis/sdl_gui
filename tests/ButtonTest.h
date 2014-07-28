@@ -24,6 +24,8 @@ class ButtonTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(button_is_drawn_with_pushed_down_state);
     CPPUNIT_TEST(button_is_drawn_with_hover_over_state);
 
+    CPPUNIT_TEST(get_text_returns_empty_string_if_no_label_is_set);
+    CPPUNIT_TEST(get_text_returns_label_text);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -164,19 +166,35 @@ private:
            	CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination rectangle was not set", true, renderer->m_destination_is_set);
     }
 
-    std::unique_ptr<TextLabel> create_label(int width, int height) {
-    	auto renderer = std::make_shared<TestRenderer>();
-		renderer->m_texture_width = width;
-		renderer->m_texture_height= height;
 
 
-		std::unique_ptr<TextLabel> label{new TextLabel{std::shared_ptr<creation::ITextureFactory>{new TestTextureFactory{} }}};
-		label->set_renderer(renderer.get());
-		label->set_text("Let there be text!");
-		label->set_horizontal_alignment(Text_HAlignment::CENTER, 0);
-		label->set_vertical_alignment(Text_VAlignment::CENTER, 0);
-		return label;
+    void get_text_returns_empty_string_if_no_label_is_set() {
+    	Button button{};
+    	CPPUNIT_ASSERT_MESSAGE("Empty string expected if button has no text label", button.get_text().empty());
     }
+
+    void get_text_returns_label_text() {
+    	Button button{};
+
+    	auto label = create_label(10, 10);
+    	button.add_child(std::move(label));
+
+    	CPPUNIT_ASSERT_EQUAL_MESSAGE("get_text excepted to return label text", std::string("Let there be text!"), button.get_text());
+    }
+
+    std::unique_ptr<TextLabel> create_label(int width, int height) {
+    		auto renderer = std::make_shared<TestRenderer>();
+
+        	renderer->m_texture_width = width;
+    		renderer->m_texture_height= height;
+
+    		std::unique_ptr<TextLabel> label{new TextLabel{std::shared_ptr<creation::ITextureFactory>{new TestTextureFactory{} }}};
+    		label->set_renderer(renderer.get());
+    		label->set_text("Let there be text!");
+    		label->set_horizontal_alignment(Text_HAlignment::CENTER, 0);
+    		label->set_vertical_alignment(Text_VAlignment::CENTER, 0);
+    		return label;
+	}
 
 };
 CPPUNIT_TEST_SUITE_REGISTRATION( ButtonTest);
