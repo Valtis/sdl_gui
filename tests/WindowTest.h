@@ -9,7 +9,7 @@
 #include "../src/components/Window.h"
 #include "../src/components/Button.h"
 #include "mocks/TestTextureFactory.h"
-#include "mocks/hippomocks.h"
+#include "mocks/TestRenderer.h"
 
 namespace sdl_gui {
 
@@ -71,19 +71,14 @@ private:
 
     void window_does_not_draw_overlay_when_it_has_focus() {
     	Window window;
-
-    	MockRepository mocks;
     	int count = 0;
+    	auto renderer = std::make_shared<TestRenderer>();
 
-    	rendering::Renderer *renderer = mocks.Mock<rendering::Renderer>();
-
-    	std::function<void(const texture_ptr &, SDL_Rect *, SDL_Rect *)> f = [&](const texture_ptr &ptr, SDL_Rect *r, SDL_Rect *r2) {
+    	renderer->m_on_draw = [&]() {
     		++count;
     	};
 
-    	mocks.OnCall(renderer, rendering::Renderer::draw).Do(f);
-
-    	window.set_renderer(renderer);
+    	window.set_renderer(renderer.get());
     	window.on_gaining_focus();
     	window.draw();
 
@@ -93,19 +88,14 @@ private:
 
     void window_draws_overlay_when_it_has_no_focus() {
     	Window window;
-
-    	MockRepository mocks;
     	int count = 0;
+    	auto renderer = std::make_shared<TestRenderer>();
 
-    	rendering::Renderer *renderer = mocks.Mock<rendering::Renderer>();
-
-    	std::function<void(const texture_ptr &, SDL_Rect *, SDL_Rect *)> f = [&](const texture_ptr &ptr, SDL_Rect *r, SDL_Rect *r2) {
+    	renderer->m_on_draw = [&]() {
     		++count;
     	};
 
-    	mocks.OnCall(renderer, rendering::Renderer::draw).Do(f);
-
-    	window.set_renderer(renderer);
+    	window.set_renderer(renderer.get());
     	window.on_losing_focus();
     	window.draw();
 

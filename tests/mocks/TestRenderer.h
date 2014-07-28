@@ -1,14 +1,15 @@
 #ifndef TESTRENDERER_H_
 #define TESTRENDERER_H_
 #include "../../src/rendering/Renderer.h"
-
+#include <functional>
 
 namespace sdl_gui {
 class TestRenderer : public rendering::Renderer {
 public:
+
 	TestRenderer() : m_source_is_set(false), m_destination_is_set(false),
 	m_texture_width(0), m_texture_height(0) {
-
+		m_on_draw = []() {};
 	}
 
 	// pointers may be released shortly after this call so we can't simply copy the pointer
@@ -25,6 +26,8 @@ public:
 			m_destination_rect = *destination_rect;
 			m_destination_is_set = true;
 		}
+
+		m_on_draw();
 	}
 
 	void texture_width_and_height(const texture_ptr &ptr, int &width, int &height) {
@@ -40,6 +43,9 @@ public:
 
 	int m_texture_width;
 	int m_texture_height;
+
+	std::function<void()> m_on_draw;
+
 };
 
 
