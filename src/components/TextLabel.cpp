@@ -46,14 +46,12 @@ SDL_Rect TextLabel::relative_dimension() const {
 		r.x = r.x + m_hoffset;
 		break;
 	case Text_HAlignment::RIGHT:
-		if (m_parent != nullptr) {
-			r.x = m_parent->relative_dimension().w - m_dimension.w - m_hoffset;
-		}
+
+		r.x = r.x + m_max_width - m_dimension.w - m_hoffset;
 		break;
 	case Text_HAlignment::CENTER:
-		if (m_parent != nullptr) {
-			r.x = m_parent->relative_dimension().w/2 - m_dimension.w/2 + m_hoffset;
-		}
+		r.x = r.x + m_max_width/2 - m_dimension.w/2 + m_hoffset;
+
 		break;
 	}
 
@@ -62,14 +60,12 @@ SDL_Rect TextLabel::relative_dimension() const {
 			r.y = r.y + m_voffset;
 			break;
 		case Text_VAlignment::BOTTOM:
-			if (m_parent != nullptr) {
-				r.y = m_parent->relative_dimension().h - m_dimension.h - m_voffset;
-			}
+
+			r.y = r.y + m_max_height - m_dimension.h - m_voffset;
+
 			break;
 		case Text_VAlignment::CENTER:
-			if (m_parent != nullptr) {
-				r.y = m_parent->relative_dimension().h/2 - m_dimension.h/2 + m_voffset;
-			}
+			r.y = r.y + m_max_height/2 - m_dimension.h/2 + m_voffset;
 			break;
 		}
 

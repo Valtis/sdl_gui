@@ -8,6 +8,7 @@
 
 #include "ButtonTest.h"
 #include "HelperTest.h"
+#include "TextLabelTest.h"
 #include "UITest.h"
 #include "WindowTest.h"
 #include "WindowBaseTest.h"

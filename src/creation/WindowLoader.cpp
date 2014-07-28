@@ -71,6 +71,16 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 		set_generic_parameters(node, label.get());
 
 
+		// if width or height is zero, use parent width/height. This is required for centering to work properly
+		int width = (label->m_dimension.w == 0) ? m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->relative_dimension().w
+		                                                                                  : label->m_dimension.w;
+
+		int height = (label->m_dimension.w== 0) ? m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->relative_dimension().h
+				                                                                                  : label->m_dimension.h;
+
+		label->set_relative_dimension({label->m_dimension.x, label->m_dimension.y, width, height});
+
+
 		auto get_halignment = [](const std::string &align) -> Text_HAlignment {
 			if (align == "center") {
 				return Text_HAlignment::CENTER;
