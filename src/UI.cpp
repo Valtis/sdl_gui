@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <algorithm>
+#include <iostream>
 
 #include "serialization/XMLSerializer.h"
 #include "creation/WindowLoader.h"
@@ -74,16 +75,7 @@ void UI::update(const SDL_Event &event) {
 		handle_key_event(event);
 		break;
 	case SDL_TEXTINPUT:
-		if (m_windows.back()->has_focus()) {
-			m_windows.back()->on_text_input(event.text.text);
-
-		}
-		break;
-	case SDL_TEXTEDITING:
-		if (m_windows.back()->has_focus()) {
-			m_windows.back()->on_text_input(std::string("*") + event.edit.text + "*");
-
-		}
+		handle_text_input(event);
 		break;
 
 	default:
@@ -155,6 +147,13 @@ void UI::handle_key_event(const SDL_Event &event) {
 		}
 	}
 }
+
+void UI::handle_text_input(const SDL_Event &event) {
+	if (m_windows.back()->has_focus()) {
+		m_windows.back()->on_text_input(event.text.text);
+	}
+}
+
 
 /**
  * Returns true if there was a window under the cursor, false otherwise

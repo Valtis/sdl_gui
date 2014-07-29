@@ -58,6 +58,7 @@ private:
 	void handle_click(const SDL_Event &event);
 	void handle_motion(const SDL_Event &event);
 	void handle_key_event(const SDL_Event &event);
+	void handle_text_input(const SDL_Event &event);
 	bool update_active_window(int x, int y);
 	void update_mouse_position();
 	std::shared_ptr<rendering::Renderer> m_renderer;
