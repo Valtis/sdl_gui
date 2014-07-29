@@ -140,11 +140,18 @@ void WindowBase::on_gaining_focus() {
 }
 
 void WindowBase::on_key_down(SDL_Keycode code) {
-
 	if (m_focused_child) {
 		m_focused_child->on_key_down(code);
 	} else {
 		call_handler(Handler_Type::ON_KEY_DOWN);
+	}
+}
+
+void WindowBase::on_text_input(std::string text) {
+	if (m_focused_child) {
+		m_focused_child->on_text_input(text);
+	} else {
+		call_handler(Handler_Type::ON_TEXT_INPUT);
 	}
 }
 

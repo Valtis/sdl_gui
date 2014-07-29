@@ -60,7 +60,7 @@ texture_ptr TextureFactory::create_text(std::string text, const SDL_Color &color
 
 	}
 
-	surface_ptr font_surface{TTF_RenderText_Blended(font.get(), text.c_str(), color), SDL_FreeSurface};
+	surface_ptr font_surface{TTF_RenderUTF8_Blended(font.get(), text.c_str(), color), SDL_FreeSurface};
 
 	if (font_surface == nullptr) {
 		throw CreationFailureException(std::string("Failed to create surface for text: ") + TTF_GetError());

@@ -15,7 +15,7 @@ namespace creation {
 	class WindowLoader;
 }
 
-enum class Handler_Type { ON_MOUSE_DOWN, ON_CLICK, ON_MOUSE_OVER, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS, ON_KEY_DOWN };
+enum class Handler_Type { ON_MOUSE_DOWN, ON_CLICK, ON_MOUSE_OVER, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS, ON_KEY_DOWN, ON_KEY_UP, ON_TEXT_INPUT};
 
 class WindowBase {
 public:
@@ -32,6 +32,7 @@ public:
 	virtual void on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy);
 	virtual void on_losing_focus();
 	virtual void on_gaining_focus();
+	virtual void on_text_input(std::string input);
 	virtual void on_key_down(SDL_Keycode code);
 
 

@@ -69,7 +69,21 @@ void UI::update(const SDL_Event &event) {
 
 	case SDL_MOUSEMOTION:
 		handle_motion(event);
+		break;
+	case SDL_KEYDOWN:
+		handle_key_event(event);
+		break;
+	case SDL_TEXTINPUT:
+		if (m_windows.back()->has_focus()) {
+			m_windows.back()->on_text_input(event.text.text);
 
+		}
+		break;
+	case SDL_TEXTEDITING:
+		if (m_windows.back()->has_focus()) {
+			m_windows.back()->on_text_input(std::string("*") + event.edit.text + "*");
+
+		}
 		break;
 
 	default:
@@ -131,6 +145,14 @@ void UI::handle_motion(const SDL_Event &event) {
 		}
 	} else if (m_windows.back()->has_focus()){
 		m_windows.back()->on_mouse_over(event.motion.x, event.motion.y);
+	}
+}
+
+void UI::handle_key_event(const SDL_Event &event) {
+	if (m_windows.back()->has_focus()) {
+		if (event.key.state == SDL_PRESSED) {
+			m_windows.back()->on_key_down(event.key.keysym.sym);
+		}
 	}
 }
 

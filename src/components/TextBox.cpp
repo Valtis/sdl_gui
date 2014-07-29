@@ -10,8 +10,22 @@ TextBox::~TextBox() {
 
 }
 
-void TextBox::on_key_down(SDL_Keycode code) {
+void TextBox::on_gaining_focus() {
+	SDL_StartTextInput();
+}
 
+void TextBox::on_losing_focus() {
+	SDL_StopTextInput();
+}
+
+void TextBox::on_text_input(std::string text) {
+	m_text += text;
+	m_text_lines.clear();
+	auto label = std::make_shared<TextLabel>(m_factory);
+	label->set_parent(this);
+	label->set_renderer(m_renderer);
+	label->set_text(m_text);
+	m_text_lines.push_back(label);
 }
 
 void TextBox::draw() const {
