@@ -15,7 +15,7 @@ public:
 	Button();
 	virtual ~Button();
 
-	virtual void draw() override;
+	virtual void draw() const override;
 	virtual void on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) override;
 	virtual void on_mouse_down(Sint32 mouse_x, Sint32 mouse_y) override;
 	virtual void on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) override;
@@ -23,7 +23,7 @@ public:
 	virtual void on_losing_focus() override;
 	virtual void on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) override {} // do nothing if dragged
 
-	std::string get_text();
+	std::string get_text() const;
 private:
 	friend class creation::WindowLoader;
 

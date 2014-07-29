@@ -25,7 +25,7 @@ void Window::on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) {
 	}
 }
 
-void Window::draw() {
+void Window::draw() const {
 	WindowBase::draw();
 
 	if (!m_has_focus) {

@@ -15,7 +15,7 @@ namespace creation {
 	class WindowLoader;
 }
 
-enum class Handler_Type { ON_MOUSE_DOWN, ON_CLICK, ON_MOUSE_OVER, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS };
+enum class Handler_Type { ON_MOUSE_DOWN, ON_CLICK, ON_MOUSE_OVER, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS, ON_KEY_DOWN };
 
 class WindowBase {
 public:
@@ -24,8 +24,7 @@ public:
 
 	void set_renderer(rendering::Renderer *renderer);
 
-	virtual void draw();
-
+	virtual void draw() const;
 
 	virtual void on_mouse_down(Sint32 mouse_x, Sint32 mouse_y);
 	virtual void on_mouse_up(Sint32 mouse_x, Sint32 mouse_y);
@@ -33,9 +32,14 @@ public:
 	virtual void on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy);
 	virtual void on_losing_focus();
 	virtual void on_gaining_focus();
+	virtual void on_key_down(SDL_Keycode code);
+
 
 	virtual SDL_Rect relative_dimension() const;
-	virtual void set_relative_dimension(SDL_Rect dimension) { m_dimension = dimension; }
+	virtual void set_relative_dimension(SDL_Rect dimension) {
+		m_dimension = dimension;
+	}
+
 	SDL_Rect absolute_dimension() const;
 
 	void add_child(std::unique_ptr<WindowBase> child);
@@ -49,7 +53,7 @@ public:
 
 	void set_handler(Handler_Type type, const std::string &handler_name);
 
-	std::string get_name() {
+	std::string get_name() const {
 		return m_name;
 	}
 
@@ -58,15 +62,14 @@ public:
 	}
 
 
-	WindowBase *get_child_by_name(const std::string &name);
+	WindowBase *get_child_by_name(const std::string &name) const ;
 
 protected:
-
-	void draw(const texture_ptr &ptr);
-	SDL_Rect get_draw_area();
+	void draw(const texture_ptr &ptr) const;
+	SDL_Rect get_draw_area() const ;
 	friend class creation::WindowLoader;
 	WindowBase *child_under_coordinates(Sint16 x, Sint16 y);
-	void do_draw(const texture_ptr &ptr, SDL_Rect destination_rect);
+	void do_draw(const texture_ptr &ptr, SDL_Rect destination_rect) const;
 	void call_handler(Handler_Type type);
 
 

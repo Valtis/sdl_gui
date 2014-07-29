@@ -19,7 +19,7 @@ public:
 	SDL_Rect relative_dimension() const override;
 
 	void set_text(std::string text);
-	std::string get_text() { return m_text; }
+	std::string get_text() const { return m_text; }
 
 	void set_font_size(int size);
 

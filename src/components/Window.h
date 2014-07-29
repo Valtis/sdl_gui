@@ -19,7 +19,7 @@ public:
 	virtual void on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy);
 	virtual void on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) override;
 
-	void draw() override;
+	void draw() const override;
 	virtual void on_losing_focus() override;
 	virtual void on_gaining_focus() override;
 

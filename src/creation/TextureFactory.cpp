@@ -45,8 +45,6 @@ texture_ptr TextureFactory::create_button(const int width, const int height, con
 
 	SDL_Color bottom_color = utility::darker_color(color, 0.75);
 
-
-
 	SDL_Rect area = { 0, height/2, width, height/2-1 };
 	fill_surface_with_color(surface.get(), bottom_color, &area);
 
@@ -69,6 +67,12 @@ texture_ptr TextureFactory::create_text(std::string text, const SDL_Color &color
 	}
 
 	return create_texture(font_surface.get());
+}
+
+texture_ptr TextureFactory::create_text_box(const int width, const int height, const SDL_Color &color) {
+	auto surface = create_surface(width, height, color);
+	draw_box(surface.get(), {0, 0, width, height }, {0, 0, 0, 255 });
+	return create_texture(surface.get());
 }
 
 surface_ptr TextureFactory::create_surface(const int width, const int height, const SDL_Color &color) {

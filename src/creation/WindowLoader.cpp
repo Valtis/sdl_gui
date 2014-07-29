@@ -9,6 +9,7 @@
 #include "../components/Window.h"
 #include "../components/Button.h"
 #include "../components/TextLabel.h"
+#include "../components/TextBox.h"
 #include "../serialization/Serializer.h"
 #include "../serialization/ParseException.h"
 #include "../utility/Helpers.h"
@@ -18,7 +19,7 @@
 #define WINDOW "window"
 #define BUTTON "button"
 #define TEXT_LABEL "text"
-
+#define TEXT_BOX "textbox"
 
 #define HORIZONTAL_ALIGNMENT "halign"
 #define VERTICAL_ALIGNMENT "valign"
@@ -110,6 +111,17 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 		m_parent_windows[TEXT_LABEL][node.value(NAME)] = label.get();
 		m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->add_child(std::move(label));
 	};
+
+	m_loaders[TEXT_BOX] = [=](const serialization::Node &node) {
+		std::unique_ptr<TextBox> box{new TextBox{m_factory}};
+		set_generic_parameters(node, box.get());
+		box->m_background = m_factory->create_text_box(box->m_dimension.w, box->m_dimension.h, box->m_color);
+
+		m_parent_windows[TEXT_BOX][node.value(NAME)] = box.get();
+		m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->add_child(std::move(box));
+	};
+
+
 }
 
 WindowLoader::~WindowLoader() {

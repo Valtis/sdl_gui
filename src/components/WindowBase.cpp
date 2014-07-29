@@ -22,11 +22,11 @@ void WindowBase::set_renderer(rendering::Renderer *renderer) {
 }
 
 
-void WindowBase::draw() {
+void WindowBase::draw() const {
 	draw(m_background);
 }
 
-void WindowBase::draw(const texture_ptr &texture) {
+void WindowBase::draw(const texture_ptr &texture) const {
 	if (m_renderer == nullptr && texture == nullptr) {
 		return;
 	}
@@ -38,15 +38,14 @@ void WindowBase::draw(const texture_ptr &texture) {
 	}
 }
 
-void WindowBase::do_draw(const texture_ptr &texture, SDL_Rect destination_rect) {
-
+void WindowBase::do_draw(const texture_ptr &texture, SDL_Rect destination_rect) const {
 	SDL_Rect source_rect = {0, 0, relative_dimension().w, relative_dimension().h };
 	utility::clip_draw_rectangles(get_draw_area(), source_rect, destination_rect);
 
 	m_renderer->draw(texture, &source_rect, &destination_rect);
 }
 
-SDL_Rect WindowBase::get_draw_area() {
+SDL_Rect WindowBase::get_draw_area() const {
 	if (m_parent == nullptr) {
 		return absolute_dimension();
 	}
@@ -140,6 +139,14 @@ void WindowBase::on_gaining_focus() {
 	call_handler(Handler_Type::ON_GAINING_FOCUS);
 }
 
+void WindowBase::on_key_down(SDL_Keycode code) {
+
+	if (m_focused_child) {
+		m_focused_child->on_key_down(code);
+	} else {
+		call_handler(Handler_Type::ON_KEY_DOWN);
+	}
+}
 
 WindowBase *WindowBase::child_under_coordinates(Sint16 x, Sint16 y) {
 	for (const auto &child : m_children) {
@@ -174,7 +181,7 @@ void WindowBase::call_handler(Handler_Type type) {
 	}
 }
 
-WindowBase *WindowBase::get_child_by_name(const std::string &name) {
+WindowBase *WindowBase::get_child_by_name(const std::string &name) const {
 	for (const auto &child : m_children) {
 		if (child->get_name() == name) {
 			return child.get();

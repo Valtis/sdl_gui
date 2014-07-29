@@ -11,9 +11,9 @@ Button::~Button() {
 
 }
 
-void Button::draw() {
+void Button::draw() const {
 	if (m_current_texture == Button_Graphics::DEFAULT) {
-		WindowBase::draw(m_background);
+		WindowBase::draw();
 	} else {
 		int position = static_cast<int>(m_current_texture);
 		WindowBase::draw(m_additional_textures[position]);
@@ -42,7 +42,7 @@ void Button::on_losing_focus() {
 
 
 // Todo: This probably should be handled in a less stupid way
-std::string Button::get_text() {
+std::string Button::get_text() const {
 	for (const auto &child : m_children) {
 		TextLabel *label = dynamic_cast<TextLabel *>(child.get());
 		if (label) {
