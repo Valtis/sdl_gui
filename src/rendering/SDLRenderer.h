@@ -15,7 +15,10 @@ public:
 
 	virtual void texture_width_and_height(const texture_ptr &ptr, int &width, int &height) override;
 
+	virtual void text_width_and_height(std::string text, int font_size, int *width, int *height) override;
 	SDL_Renderer *get_renderer() const { return m_renderer; }
+
+
 
 private:
 	SDL_Renderer *m_renderer;

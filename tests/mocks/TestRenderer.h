@@ -13,7 +13,7 @@ public:
 	}
 
 	// pointers may be released shortly after this call so we can't simply copy the pointer
-	void draw(const texture_ptr &texture, SDL_Rect *source_rect, SDL_Rect *destination_rect) {
+	void draw(const texture_ptr &texture, SDL_Rect *source_rect, SDL_Rect *destination_rect) override  {
 		m_source_is_set = false;
 		m_destination_is_set = false;
 
@@ -30,9 +30,18 @@ public:
 		m_on_draw();
 	}
 
-	void texture_width_and_height(const texture_ptr &ptr, int &width, int &height) {
+	void texture_width_and_height(const texture_ptr &ptr, int &width, int &height) override {
 		width = m_texture_width;
 		height = m_texture_height;
+	}
+
+	void text_width_and_height(std::string text, int font_size, int *width, int *height) override {
+		if (width != nullptr) {
+			*width = text.length();
+		}
+		if (height != nullptr) {
+			*height = 1;
+		}
 	}
 
 	SDL_Rect m_source_rect;
