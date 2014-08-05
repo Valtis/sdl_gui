@@ -93,7 +93,7 @@ private:
 		std::string text = "This is a test line";
 		auto wrapped_text = utility::wrap_text(text, 12,  renderer.get(), {0, 0, 15, 200}, { 0, 0 });
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)2, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is a test "), wrapped_text[0]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is a test"), wrapped_text[0]);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("line"), wrapped_text[1]);
 	}
 
@@ -102,8 +102,8 @@ private:
 		std::string text = "This is largeish test line";
 		auto wrapped_text = utility::wrap_text(text, 12, renderer.get(), {0, 0, 15, 200}, { 0, 0 });
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)3, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is "), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("largeish test "), wrapped_text[1]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is"), wrapped_text[0]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("largeish test"), wrapped_text[1]);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("line"), wrapped_text[2]);
 	}
 
@@ -113,7 +113,7 @@ private:
 		auto wrapped_text = utility::wrap_text(text, 12, renderer.get(), {0, 0, 15, 200}, { 0, 0 });
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)2, wrapped_text.size());
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("gigantic_word_for_testing"), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string(" foo bar"), wrapped_text[1]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("foo bar"), wrapped_text[1]);
 	}
 
 	void word_wrap_splist_correctly_when_long_word_is_last() {
@@ -121,7 +121,7 @@ private:
 		std::string text = "foo bar gigantic_word_for_testing";
 		auto wrapped_text = utility::wrap_text(text, 12, renderer.get(), {0, 0, 15, 200}, { 0, 0 });
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)2, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("foo bar "), wrapped_text[0]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("foo bar"), wrapped_text[0]);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("gigantic_word_for_testing"), wrapped_text[1]);
 	}
 
@@ -130,9 +130,9 @@ private:
    		std::string text = "This is gigantic_word_for_testing test line";
    		auto wrapped_text = utility::wrap_text(text, 12, renderer.get(), {0, 0, 15, 200}, { 0, 0 });
    		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)3, wrapped_text.size());
-   		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is "), wrapped_text[0]);
+   		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is"), wrapped_text[0]);
    		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("gigantic_word_for_testing"), wrapped_text[1]);
-   		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string(" test line"), wrapped_text[2]);
+   		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("test line"), wrapped_text[2]);
    	}
 
 	void word_wrap_splits_with_left_offset_correctly() {
@@ -140,7 +140,7 @@ private:
 		std::string text = "This is a test line";
 		auto wrapped_text = utility::wrap_text(text, 12,  renderer.get(), {0, 0, 15, 200}, { 5, 0 });
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)2, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is a "), wrapped_text[0]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is a"), wrapped_text[0]);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("test line"), wrapped_text[1]);
 	}
 
@@ -149,7 +149,7 @@ private:
 		std::string text = "This is a test line";
 		auto wrapped_text = utility::wrap_text(text, 12,  renderer.get(), {0, 0, 15, 200}, { 0, 5 });
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)2, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is a "), wrapped_text[0]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is a"), wrapped_text[0]);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("test line"), wrapped_text[1]);
 	}
 
@@ -158,9 +158,9 @@ private:
 		std::string text = "This is a test line";
 		auto wrapped_text = utility::wrap_text(text, 12,  renderer.get(), {0, 0, 15, 200}, { 5, 5 });
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)4, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This "), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("is a "), wrapped_text[1]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("test "), wrapped_text[2]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This"), wrapped_text[0]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("is a"), wrapped_text[1]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("test"), wrapped_text[2]);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("line"), wrapped_text[3]);
 	}
 
@@ -169,9 +169,9 @@ private:
 		std::string text = "This is gigantic_word_for_testing test line";
 		auto wrapped_text = utility::wrap_text(text, 12, renderer.get(), {0, 0, 25, 200}, { 5, 5 });
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)3, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is "), wrapped_text[0]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is"), wrapped_text[0]);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("gigantic_word_for_testing"), wrapped_text[1]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string(" test line"), wrapped_text[2]);
+		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("test line"), wrapped_text[2]);
 	}
 
 };
