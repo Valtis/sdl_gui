@@ -1,6 +1,5 @@
 #include "StringUtility.h"
 #include <cstring>
-#include <iostream>
 #include "../rendering/Renderer.h"
 
 namespace sdl_gui {
@@ -59,7 +58,7 @@ std::vector<std::string> do_wrap(const std::string &text, const int font_size, r
 
 	std::string wrapped_text = tokens[0];
 
-	for (int i = 1; i < tokens.size(); ++i) {
+	for (size_t i = 1; i < tokens.size(); ++i) {
 		int width = 0;
 		std::string new_string = wrapped_text + delimiter + tokens[i];
 		renderer->text_width_and_height(new_string, font_size, &width, nullptr);

@@ -2,12 +2,14 @@
 #include <memory>
 #include <functional>
 #include <SDL2/SDL.h>
-
+#include <fstream>
 
 #include "src/UI.h"
 #include "src/UIComponents.h"
 #include "src/components/Button.h"
 #include "src/components/TextLabel.h"
+#include "src/components/TextBox.h"
+
 
 using namespace sdl_gui;
 
@@ -58,6 +60,25 @@ int main() {
 			}
 		});
 
+
+		ui.register_handler("save", [](UIComponents components, WindowBase *caller) {
+			auto text_box = components.get_by_name<TextBox *>("my_textbox");
+			auto text = text_box->get_text();
+
+			std::ofstream file("saved_text.txt");
+			file << text;
+
+		});
+
+		ui.register_handler("load", [](UIComponents components, WindowBase *caller) {
+
+			std::ifstream file("saved_text.txt");
+			std::string text((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+			auto text_box = components.get_by_name<TextBox *>("my_textbox");
+			text_box->set_text(text);
+
+		});
 
 
 		bool is_running = true;

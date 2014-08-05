@@ -26,6 +26,7 @@
 #define HORIZONTAL_OFFSET "horizontal_offset"
 #define VERTICAL_OFFSET "vertical_offset"
 #define FONT_SIZE "font_size"
+#define WORD_WRAP "word_wrap"
 #define TEXT "text"
 #define NAME "name"
 
@@ -116,6 +117,7 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 		std::unique_ptr<TextBox> box{new TextBox{m_factory}};
 		set_generic_parameters(node, box.get());
 		box->m_background = m_factory->create_text_box(box->m_dimension.w, box->m_dimension.h, box->m_color);
+		box->set_word_wrap(node.value(WORD_WRAP) == "true");
 
 		m_parent_windows[TEXT_BOX][node.value(NAME)] = box.get();
 		m_parent_windows[node.parent()->name()][node.parent()->value(NAME)]->add_child(std::move(box));

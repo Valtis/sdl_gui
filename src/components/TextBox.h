@@ -24,6 +24,13 @@ public:
 	virtual void on_losing_focus() override;
 
 	void set_text(std::string text);
+	std::string get_text() {
+		return m_text;
+	}
+
+	void set_word_wrap(bool wrap) {
+		m_word_wrap = wrap;
+	}
 
 private:
 	std::shared_ptr<creation::ITextureFactory> m_factory;
@@ -31,6 +38,8 @@ private:
 	// vector needs copyability in order to resize and unique_ptrs are non-copyable
 	// therefore we use shared_ptrs
 	std::vector<std::shared_ptr<TextLabel>> m_text_lines;
+	int m_font_size;
+	bool m_word_wrap;
 };
 
 } /* namespace sdl_gui */
