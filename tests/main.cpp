@@ -8,6 +8,7 @@
 
 #include "ButtonTest.h"
 #include "HelperTest.h"
+#include "StringUtilityTest.h"
 #include "TextLabelTest.h"
 #include "UITest.h"
 #include "WindowTest.h"
@@ -34,6 +35,5 @@ int main() {
     CPPUNIT_NS::CompilerOutputter compileroutputter(&collectedresults, std::cerr);
     compileroutputter.write ();
 
-    // return 0 if tests were successful
     return collectedresults.wasSuccessful() ? 0 : 1;
 }

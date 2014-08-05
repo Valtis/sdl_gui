@@ -173,10 +173,10 @@ void WindowLoader::set_dimensions(const serialization::Node &node, WindowBase *b
 
 void WindowLoader::set_color(const serialization::Node &node, WindowBase *base) {
 	base->set_color({
-		stoi(node.value("r")),
-		stoi(node.value("g")),
-		stoi(node.value("b")),
-		stoi(node.value("a"), 255)
+		(Uint8)stoi(node.value("r")),
+		(Uint8)stoi(node.value("g")),
+		(Uint8)stoi(node.value("b")),
+		(Uint8)stoi(node.value("a"), 255)
 	});
 }
 
