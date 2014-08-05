@@ -25,18 +25,6 @@ class UtilityTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(lighter_color_produces_lighter_colors);
     CPPUNIT_TEST(darker_color_produces_darker_colors);
 
-    CPPUNIT_TEST(word_wrap_does_not_wrap_text_that_fits_the_field);
-    CPPUNIT_TEST(word_wrap_wraps_two_liner_correctly);
-    CPPUNIT_TEST(word_wrap_does_not_split_word_from_middle);
-    CPPUNIT_TEST(word_wrap_splist_correctly_when_long_word_is_first);
-    CPPUNIT_TEST(word_wrap_splist_correctly_when_long_word_is_last);
-    CPPUNIT_TEST(word_wrap_does_not_split_word_that_is_too_long_to_fit_single_line);
-    CPPUNIT_TEST(word_wrap_splits_with_left_offset_correctly);
-    CPPUNIT_TEST(word_wrap_splits_with_right_offset_correctly);
-    CPPUNIT_TEST(word_wrap_splits_with_both_offsets_correctly);
-    CPPUNIT_TEST(word_wrap_splits_with_both_offsets_correctly_with_long_word);
-
-
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -140,100 +128,6 @@ private:
     	CPPUNIT_ASSERT_MESSAGE("Produced b-component is not darker", darkened.b <= original.b);
     	CPPUNIT_ASSERT_EQUAL_MESSAGE("Alpha value has changed", original.a, darkened.a);
     }
-
-    void word_wrap_does_not_wrap_text_that_fits_the_field() {
-    	auto renderer = std::make_shared<TestRenderer>();
-    	std::string text = "This is a test";
-    	auto wrapped_text = utility::wrap_text(text, 12,  renderer.get(), {0, 0, 200, 200}, { 0, 0 });
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)1, wrapped_text.size());
-    	CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", text, wrapped_text[0]);
-    }
-
-    void word_wrap_wraps_two_liner_correctly() {
-    	auto renderer = std::make_shared<TestRenderer>();
-		std::string text = "This is a test line";
-		auto wrapped_text = utility::wrap_text(text, 12,  renderer.get(), {0, 0, 15, 200}, { 0, 0 });
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)2, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is a test "), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("line"), wrapped_text[1]);
-    }
-
-    void word_wrap_does_not_split_word_from_middle() {
-		auto renderer = std::make_shared<TestRenderer>();
-		std::string text = "This is largeish test line";
-		auto wrapped_text = utility::wrap_text(text, 12, renderer.get(), {0, 0, 15, 200}, { 0, 0 });
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)3, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is "), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("largeish test "), wrapped_text[1]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("line"), wrapped_text[2]);
-	}
-
-    void word_wrap_splist_correctly_when_long_word_is_first() {
-		auto renderer = std::make_shared<TestRenderer>();
-		std::string text = "gigantic_word_for_testing foo bar";
-		auto wrapped_text = utility::wrap_text(text, 12, renderer.get(), {0, 0, 15, 200}, { 0, 0 });
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)2, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("gigantic_word_for_testing"), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string(" foo bar"), wrapped_text[1]);
-    }
-
-    void word_wrap_splist_correctly_when_long_word_is_last() {
-		auto renderer = std::make_shared<TestRenderer>();
-		std::string text = "foo bar gigantic_word_for_testing";
-		auto wrapped_text = utility::wrap_text(text, 12, renderer.get(), {0, 0, 15, 200}, { 0, 0 });
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)2, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("foo bar "), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("gigantic_word_for_testing"), wrapped_text[1]);
-    }
-    void word_wrap_does_not_split_word_that_is_too_long_to_fit_single_line() {
-		auto renderer = std::make_shared<TestRenderer>();
-		std::string text = "This is gigantic_word_for_testing test line";
-		auto wrapped_text = utility::wrap_text(text, 12, renderer.get(), {0, 0, 15, 200}, { 0, 0 });
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)3, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is "), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("gigantic_word_for_testing"), wrapped_text[1]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string(" test line"), wrapped_text[2]);
-	}
-
-    void word_wrap_splits_with_left_offset_correctly() {
-		auto renderer = std::make_shared<TestRenderer>();
-		std::string text = "This is a test line";
-		auto wrapped_text = utility::wrap_text(text, 12,  renderer.get(), {0, 0, 15, 200}, { 5, 0 });
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)2, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is a "), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("test line"), wrapped_text[1]);
-    }
-
-    void word_wrap_splits_with_right_offset_correctly() {
-		auto renderer = std::make_shared<TestRenderer>();
-		std::string text = "This is a test line";
-		auto wrapped_text = utility::wrap_text(text, 12,  renderer.get(), {0, 0, 15, 200}, { 0, 5 });
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)2, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is a "), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("test line"), wrapped_text[1]);
-    }
-
-    void word_wrap_splits_with_both_offsets_correctly() {
-		auto renderer = std::make_shared<TestRenderer>();
-		std::string text = "This is a test line";
-		auto wrapped_text = utility::wrap_text(text, 12,  renderer.get(), {0, 0, 15, 200}, { 5, 5 });
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)4, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This "), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("is a "), wrapped_text[1]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("test "), wrapped_text[2]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("line"), wrapped_text[3]);
-    }
-
-    void word_wrap_splits_with_both_offsets_correctly_with_long_word() {
-		auto renderer = std::make_shared<TestRenderer>();
-		std::string text = "This is gigantic_word_for_testing test line";
-		auto wrapped_text = utility::wrap_text(text, 12, renderer.get(), {0, 0, 25, 200}, { 5, 5 });
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of lines created when wrapping text", (size_t)3, wrapped_text.size());
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is "), wrapped_text[0]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("gigantic_word_for_testing"), wrapped_text[1]);
-		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string(" test line"), wrapped_text[2]);
-    }
-
 };
 
 
