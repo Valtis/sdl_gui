@@ -17,6 +17,7 @@ class ButtonTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(button_on_click_handler_is_called_when_clicking_on_text);
     CPPUNIT_TEST(button_on_mouse_hover_handler_is_called_when_not_hovering_over_text);
     CPPUNIT_TEST(button_on_mouse_over_handler_is_called_when_hovering_over_text);
+    CPPUNIT_TEST(button_on_mouse_exit_handler_is_called_when_exiting_button);
     CPPUNIT_TEST(button_on_mouse_down_is_called_when_clicking_on_button);
     CPPUNIT_TEST(button_on_mouse_down_is_called_when_clicking_on_child);
 
@@ -48,7 +49,7 @@ private:
 		button.add_child(create_label(80, 60));
 
 		button.on_mouse_up(41, 41);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
     }
 
     void button_on_click_handler_is_called_when_clicking_on_text() {
@@ -65,7 +66,7 @@ private:
   		button.set_handler(Handler_Type::ON_CLICK, handler_name);
 
   		button.on_mouse_up(80, 70);
-  		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+  		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
     }
 
     void button_on_mouse_down_is_called_when_clicking_on_button() {
@@ -80,7 +81,7 @@ private:
 		button.set_handler(Handler_Type::ON_MOUSE_DOWN, handler_name);
 
 		button.on_mouse_down(41, 41);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
     }
 
     void button_on_mouse_down_is_called_when_clicking_on_child() {
@@ -97,7 +98,7 @@ private:
 		button.set_handler(Handler_Type::ON_MOUSE_DOWN, handler_name);
 
 		button.on_mouse_down(80, 70);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
     }
 
     void button_on_mouse_hover_handler_is_called_when_not_hovering_over_text() {
@@ -111,24 +112,39 @@ private:
 		button.add_child(create_label(80, 60));
 
 		button.on_mouse_over(41, 41);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
     }
 
 
 
     void button_on_mouse_over_handler_is_called_when_hovering_over_text() {
-          	Button button{};
-          	button.set_relative_dimension({40, 40, 100, 100});
-          	button.add_child(create_label(80, 60));
+		Button button{};
+		button.set_relative_dimension({40, 40, 100, 100});
+		button.add_child(create_label(80, 60));
 
-          	TestHandlerManager manager;
+		TestHandlerManager manager;
 
-      		button.set_handler_manager(&manager);
-      		std::string handler_name = "my_hover_manager";
-      		button.set_handler(Handler_Type::ON_MOUSE_OVER, handler_name);
+		button.set_handler_manager(&manager);
+		std::string handler_name = "my_hover_manager";
+		button.set_handler(Handler_Type::ON_MOUSE_OVER, handler_name);
 
-      		button.on_mouse_over(80, 70);
-      		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		button.on_mouse_over(80, 70);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
+    }
+
+    void button_on_mouse_exit_handler_is_called_when_exiting_button() {
+		Button button{};
+		button.set_relative_dimension({40, 40, 100, 100});
+		button.add_child(create_label(80, 60));
+
+		TestHandlerManager manager;
+
+		button.set_handler_manager(&manager);
+		std::string handler_name = "poasdeijpf";
+		button.set_handler(Handler_Type::ON_MOUSE_EXIT, handler_name);
+
+		button.on_mouse_exit(79, 70);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
     }
 
     void button_is_drawn_with_default_state() {
@@ -165,8 +181,6 @@ private:
            	CPPUNIT_ASSERT_EQUAL_MESSAGE("Source rectangle was not set", true, renderer->m_source_is_set);
            	CPPUNIT_ASSERT_EQUAL_MESSAGE("Destination rectangle was not set", true, renderer->m_destination_is_set);
     }
-
-
 
     void get_text_returns_empty_string_if_no_label_is_set() {
     	Button button{};

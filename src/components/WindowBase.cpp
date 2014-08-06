@@ -118,8 +118,8 @@ void WindowBase::on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) {
 
 void WindowBase::on_mouse_exit(Sint32 mouse_x, Sint32 mouse_y) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
-    if (child != nullptr) {
-    	child->on_mouse_exit(mouse_x, mouse_y);
+	if (child != nullptr) {
+		child->on_mouse_exit(mouse_x, mouse_y);
 	}
 
 	call_handler(Handler_Type::ON_MOUSE_EXIT);
