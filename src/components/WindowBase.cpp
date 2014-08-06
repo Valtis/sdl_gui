@@ -6,7 +6,7 @@ namespace sdl_gui {
 
 WindowBase::WindowBase() : m_dimension{0, 0, 0, 0}, m_color{0, 0, 0, 0},
 		m_background{nullptr, SDL_DestroyTexture}, m_parent(nullptr), m_renderer(nullptr),
-		m_handler_manager(nullptr), m_focused_child(nullptr) {
+		m_handler_manager(nullptr), m_focused_child(nullptr), m_hovered_child(nullptr) {
 
 }
 
@@ -89,7 +89,7 @@ void WindowBase::add_child(std::unique_ptr<WindowBase> child) {
 }
 
 void WindowBase::on_mouse_down(Sint32 mouse_x, Sint32 mouse_y) {
-	auto child = child_under_coordinates(mouse_x, mouse_y);
+	auto child = child_under_coordinates_update_focused(mouse_x, mouse_y);
 	if (child != nullptr) {
 		child->on_mouse_down(mouse_x, mouse_y);
 	} else {
@@ -99,7 +99,7 @@ void WindowBase::on_mouse_down(Sint32 mouse_x, Sint32 mouse_y) {
 }
 
 void WindowBase::on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) {
-	auto child = child_under_coordinates(mouse_x, mouse_y);
+	auto child = child_under_coordinates_update_focused(mouse_x, mouse_y);
 	if (child != nullptr) {
 		child->on_mouse_up(mouse_x, mouse_y);
 	} else {
@@ -108,7 +108,7 @@ void WindowBase::on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) {
 }
 
 void WindowBase::on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) {
-	auto child = child_under_coordinates(mouse_x, mouse_y);
+	auto child = child_under_coordinates_update_hovered(mouse_x, mouse_y);
     if (child != nullptr) {
     	child->on_mouse_over(mouse_x, mouse_y);
 	} else {
@@ -116,8 +116,18 @@ void WindowBase::on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) {
 	}
 }
 
-void WindowBase::on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) {
+void WindowBase::on_mouse_exit(Sint32 mouse_x, Sint32 mouse_y) {
 	auto child = child_under_coordinates(mouse_x, mouse_y);
+    if (child != nullptr) {
+    	child->on_mouse_exit(mouse_x, mouse_y);
+	}
+
+	call_handler(Handler_Type::ON_MOUSE_EXIT);
+
+}
+
+void WindowBase::on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy) {
+	auto child = child_under_coordinates_update_focused(mouse_x, mouse_y);
 	if (child != nullptr) {
 		child->on_drag(mouse_x, mouse_y, dx, dy);
 	} else {
@@ -155,24 +165,46 @@ void WindowBase::on_text_input(std::string text) {
 	}
 }
 
-WindowBase *WindowBase::child_under_coordinates(Sint16 x, Sint16 y) {
+WindowBase *WindowBase::child_under_coordinates_update_focused(Sint32 x, Sint32 y) {
+	WindowBase *child = child_under_coordinates(x, y);
+	update_child(child, &m_focused_child,
+			[](WindowBase *b) { b->on_gaining_focus(); },
+			[](WindowBase *b) { b->on_losing_focus(); }
+			);
+	return child;
+}
+
+
+WindowBase *WindowBase::child_under_coordinates_update_hovered(Sint32 x, Sint32 y) {
+	WindowBase *child = child_under_coordinates(x, y);
+	update_child(child, &m_hovered_child,
+			[=](WindowBase *b) { b->on_mouse_over(x, y); },
+			[=](WindowBase *b) { b->on_mouse_exit(x, y); }
+			);
+	return child;
+}
+
+WindowBase *WindowBase::child_under_coordinates(Sint32 x, Sint32 y) {
 	for (const auto &child : m_children) {
 		if (utility::point_inside_rect({x, y}, child->absolute_dimension())) {
-			if (m_focused_child != child.get() && m_focused_child != nullptr) {
-				m_focused_child->on_losing_focus();
-			}
-				m_focused_child = child.get();
-
 			return child.get();
 		}
 	}
-
-	if (m_focused_child != nullptr) {
-		m_focused_child->on_losing_focus();
-	}
-	m_focused_child = nullptr;
-
 	return nullptr;
+}
+
+void WindowBase::update_child(WindowBase *new_child, WindowBase **current_child,
+		std::function<void(WindowBase *)> new_child_func, std::function<void(WindowBase *)> current_child_func) {
+	if (*current_child != new_child) {
+		if (*current_child != nullptr) {
+			current_child_func(*current_child);
+		}
+
+		if (new_child != nullptr) {
+			new_child_func(new_child);
+		}
+		*current_child = new_child;
+	}
 }
 
 void WindowBase::set_handler(Handler_Type type, const std::string &handler_name) {

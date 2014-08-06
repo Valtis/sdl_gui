@@ -15,7 +15,7 @@ namespace creation {
 	class WindowLoader;
 }
 
-enum class Handler_Type { ON_MOUSE_DOWN, ON_CLICK, ON_MOUSE_OVER, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS, ON_KEY_DOWN, ON_KEY_UP, ON_TEXT_INPUT};
+enum class Handler_Type { ON_MOUSE_DOWN, ON_CLICK, ON_MOUSE_OVER, ON_MOUSE_EXIT, ON_DRAG, ON_LOSING_FOCUS, ON_GAINING_FOCUS, ON_KEY_DOWN, ON_KEY_UP, ON_TEXT_INPUT};
 
 class WindowBase {
 public:
@@ -29,6 +29,8 @@ public:
 	virtual void on_mouse_down(Sint32 mouse_x, Sint32 mouse_y);
 	virtual void on_mouse_up(Sint32 mouse_x, Sint32 mouse_y);
 	virtual void on_mouse_over(Sint32 mouse_x, Sint32 mouse_y);
+	virtual void on_mouse_exit(Sint32 mouse_x, Sint32 mouse_y);
+
 	virtual void on_drag(Sint32 mouse_x, Sint32 mouse_y, Sint32 dx, Sint32 dy);
 	virtual void on_losing_focus();
 	virtual void on_gaining_focus();
@@ -69,7 +71,12 @@ protected:
 	void draw(const texture_ptr &ptr) const;
 	SDL_Rect get_draw_area() const ;
 	friend class creation::WindowLoader;
-	WindowBase *child_under_coordinates(Sint16 x, Sint16 y);
+
+	WindowBase *child_under_coordinates(Sint32 x, Sint32 y);
+	WindowBase *child_under_coordinates_update_focused(Sint32 x, Sint32 y);
+	WindowBase *child_under_coordinates_update_hovered(Sint32 x, Sint32 y);
+	void update_child(WindowBase *new_child, WindowBase **current_child);
+
 	void do_draw(const texture_ptr &ptr, SDL_Rect destination_rect) const;
 	void call_handler(Handler_Type type);
 
@@ -84,6 +91,7 @@ protected:
 
 	std::vector<std::unique_ptr<WindowBase>> m_children;
 	WindowBase *m_focused_child;
+	WindowBase *m_hovered_child;
 	std::map<Handler_Type, std::string> m_handlers;
 
 	// currently does not change the color of the window after initialization
@@ -91,6 +99,10 @@ protected:
 	void set_color(const SDL_Color &color) {
 		m_color = color;
 	}
+
+private:
+	void update_child(WindowBase *new_child, WindowBase **current_child,
+			std::function<void(WindowBase *)> new_child_func, std::function<void(WindowBase *)> current_child_func);
 };
 
 } /* namespace SDL_GUI */

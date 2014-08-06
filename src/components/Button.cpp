@@ -25,6 +25,11 @@ void Button::on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) {
 	call_handler(Handler_Type::ON_MOUSE_OVER);
 }
 
+void Button::on_mouse_exit(Sint32 mouse_x, Sint32 mouse_y) {
+	m_current_texture = Button_Graphics::DEFAULT;
+	call_handler(Handler_Type::ON_MOUSE_EXIT);
+}
+
 void Button::on_mouse_down(Sint32 mouse_x, Sint32 mouse_y) {
 	m_current_texture = Button_Graphics::PRESSED_DOWN;
 	call_handler(Handler_Type::ON_MOUSE_DOWN);

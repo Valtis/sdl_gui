@@ -24,6 +24,10 @@ class WindowBaseTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(on_click_handler_is_called_with_no_children);
     CPPUNIT_TEST(on_click_handler_is_called_with_child_when_not_clicking_child);
     CPPUNIT_TEST(child_on_click_handler_is_called_with_child_when_clicking_child);
+    CPPUNIT_TEST(on_click_to_on_child_calls_child_on_gaining_focus_handler);
+    CPPUNIT_TEST(on_click_to_on_parent_calls_child_on_losing_focus_handler_when_child_had_focus);
+    CPPUNIT_TEST(second_on_click_to_on_child_does_not_call_on_gaining_focus_handler_when_child_had_focus);
+    CPPUNIT_TEST(second_on_click_to_on_new_child_calls_on_gaining_focus_on_new_child_and_on_losing_focus_on_old_child);
 
     CPPUNIT_TEST(on_mouse_down_handler_is_called_with_no_children);
     CPPUNIT_TEST(on_mouse_down_handler_is_called_with_child_when_not_clicking_child);
@@ -128,7 +132,7 @@ private:
 		TestHandlerManager manager;
 		auto base = set_up_base_for_no_children_handler_calls(manager, Handler_Type::ON_CLICK, handler_name);
 		base->on_mouse_up(0, 0);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
 	}
 
 	void on_click_handler_is_called_with_child_when_not_clicking_child() {
@@ -139,7 +143,7 @@ private:
 		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_CLICK, parent_handler_name, child_handler_name);
 		base->on_mouse_up(0, 0);
 
-		CPPUNIT_ASSERT_EQUAL(parent_handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(parent_handler_name, manager.m_called_handler.at(0));
 	}
 
 	void child_on_click_handler_is_called_with_child_when_clicking_child() {
@@ -149,7 +153,59 @@ private:
 		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_CLICK, parent_handler_name, child_handler_name);
 		base->on_mouse_up(60, 60);
 
-		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler.at(0));
+	}
+
+	void on_click_to_on_child_calls_child_on_gaining_focus_handler() {
+		TestHandlerManager manager;
+		std::string parent_handler_name = "parent_handler";
+		std::string child_handler_name = "child_handler";
+		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_GAINING_FOCUS, parent_handler_name, child_handler_name);
+		base->on_mouse_up(60, 60);
+		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler.at(0));
+	}
+
+	void on_click_to_on_parent_calls_child_on_losing_focus_handler_when_child_had_focus() {
+		TestHandlerManager manager;
+		std::string parent_handler_name = "parent_handler";
+		std::string child_handler_name = "child_handler";
+		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_LOSING_FOCUS, parent_handler_name, child_handler_name);
+		base->on_mouse_up(60, 60);
+		base->on_mouse_up(10, 10);
+		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler.at(0));
+	}
+
+	void second_on_click_to_on_child_does_not_call_on_gaining_focus_handler_when_child_had_focus() {
+		TestHandlerManager manager;
+		std::string parent_handler_name = "parent_handler";
+		std::string child_handler_name = "child_handler";
+		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_GAINING_FOCUS, parent_handler_name, child_handler_name);
+		base->on_mouse_up(60, 60);
+		base->on_mouse_up(10, 10);
+
+		CPPUNIT_ASSERT_EQUAL((size_t)1, manager.m_called_handler.size());
+		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler.at(0));
+	}
+
+	void second_on_click_to_on_new_child_calls_on_gaining_focus_on_new_child_and_on_losing_focus_on_old_child() {
+			TestHandlerManager manager;
+			std::string parent_handler_name = "parent_handler";
+			std::string child_handler_name = "child_handler";
+			std::string second_child_handler_name = "child_handler2";
+
+			auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_LOSING_FOCUS, parent_handler_name, child_handler_name);
+
+			std::unique_ptr<WindowBase> second_child{new WindowBase{}};
+			second_child->set_relative_dimension({10, 10, 10, 10});
+			second_child->set_handler(Handler_Type::ON_GAINING_FOCUS, second_child_handler_name);
+			base->add_child(std::move(second_child));
+
+			base->on_mouse_up(60, 60);
+			base->on_mouse_up(10, 10);
+
+			CPPUNIT_ASSERT_EQUAL((size_t)2, manager.m_called_handler.size());
+			CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler.at(0));
+			CPPUNIT_ASSERT_EQUAL(second_child_handler_name, manager.m_called_handler.at(1));
 	}
 
 	void on_mouse_down_handler_is_called_with_no_children() {
@@ -157,7 +213,7 @@ private:
 		TestHandlerManager manager;
 		auto base = set_up_base_for_no_children_handler_calls(manager, Handler_Type::ON_MOUSE_DOWN, handler_name);
 		base->on_mouse_down(0, 0);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
 	}
 
 	void on_mouse_down_handler_is_called_with_child_when_not_clicking_child() {
@@ -168,7 +224,7 @@ private:
 		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_MOUSE_DOWN, parent_handler_name, child_handler_name);
 		base->on_mouse_down(0, 0);
 
-		CPPUNIT_ASSERT_EQUAL(parent_handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(parent_handler_name, manager.m_called_handler.at(0));
 	}
 
 	void child_on_mouse_down_handler_is_called_with_child_when_clicking_child() {
@@ -179,7 +235,7 @@ private:
 		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_MOUSE_DOWN, parent_handler_name, child_handler_name);
 		base->on_mouse_down(60, 60);
 
-		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler.at(0));
 	}
 
 	void on_mouse_over_handler_is_called_with_no_children() {
@@ -187,7 +243,7 @@ private:
 		TestHandlerManager manager;
 		auto base = set_up_base_for_no_children_handler_calls(manager, Handler_Type::ON_MOUSE_OVER, handler_name);
 		base->on_mouse_over(0, 0);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
 	}
 
 	void on_mouse_over_handler_is_called_with_child_when_not_hovering_over_child() {
@@ -198,7 +254,7 @@ private:
 		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_MOUSE_OVER, parent_handler_name, child_handler_name);
 		base->on_mouse_over(0, 0);
 
-		CPPUNIT_ASSERT_EQUAL(parent_handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(parent_handler_name, manager.m_called_handler.at(0));
 	}
 
 	void child_on_mouse_over_handler_is_called_with_child_when_hovering_over_child() {
@@ -209,7 +265,7 @@ private:
 		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_MOUSE_OVER, parent_handler_name, child_handler_name);
 		base->on_mouse_over(60, 60);
 
-		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler.at(0));
 	}
 
 	void on_drag_handler_is_called_with_no_children() {
@@ -217,7 +273,7 @@ private:
 		TestHandlerManager manager;
 		auto base = set_up_base_for_no_children_handler_calls(manager, Handler_Type::ON_DRAG, handler_name);
 		base->on_drag(0, 0, 1, 1);
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
 	}
 
 	void on_drag_handler_is_called_with_child_when_not_dragging_child() {
@@ -228,7 +284,7 @@ private:
 		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_DRAG, parent_handler_name, child_handler_name);
 		base->on_drag(0, 0, 1, 1);
 
-		CPPUNIT_ASSERT_EQUAL(parent_handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(parent_handler_name, manager.m_called_handler.at(0));
 	}
 
 	void child_on_drag_handler_is_called_with_child_when_dragging_child() {
@@ -239,7 +295,7 @@ private:
 		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_DRAG, parent_handler_name, child_handler_name);
 		base->on_drag(60, 60, 1, 1);
 
-		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(child_handler_name, manager.m_called_handler.at(0));
 	}
 
 	void on_gaining_focus_handler_is_called_with_no_children() {
@@ -247,7 +303,7 @@ private:
 		TestHandlerManager manager;
 		auto base = set_up_base_for_no_children_handler_calls(manager, Handler_Type::ON_GAINING_FOCUS, handler_name);
 		base->on_gaining_focus();
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
 	}
 
 	void on_gaining_focus_handler_is_called_with_child_and_parent() {
@@ -267,7 +323,7 @@ private:
 		TestHandlerManager manager;
 		auto base = set_up_base_for_no_children_handler_calls(manager, Handler_Type::ON_LOSING_FOCUS, handler_name);
 		base->on_losing_focus();
-		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler[0]);
+		CPPUNIT_ASSERT_EQUAL(handler_name, manager.m_called_handler.at(0));
 	}
 
 	void on_losing_focus_handler_is_called_with_child_and_parent() {
@@ -283,20 +339,20 @@ private:
 	}
 
 	void on_losing_focus_handler_is_called_with_child_if_another_child_gains_focus() {
-			TestHandlerManager manager;
-			std::string parent_handler_name = "parent_handler";
-			std::string child_handler_name = "child_handler";
+		TestHandlerManager manager;
+		std::string parent_handler_name = "parent_handler";
+		std::string child_handler_name = "child_handler";
 
-			auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_LOSING_FOCUS, parent_handler_name, child_handler_name);
-			std::unique_ptr<WindowBase> child{new WindowBase{}};
-			child->set_relative_dimension({0, 0, 10, 10});
-			base->add_child(std::move(child));
+		auto base = set_up_base_with_child_for_handler_calls(manager, Handler_Type::ON_LOSING_FOCUS, parent_handler_name, child_handler_name);
+		std::unique_ptr<WindowBase> child{new WindowBase{}};
+		child->set_relative_dimension({0, 0, 10, 10});
+		base->add_child(std::move(child));
 
-			base->on_mouse_up(60, 60);
-			base->on_mouse_up(10, 10);
+		base->on_mouse_up(60, 60);
+		base->on_mouse_up(10, 10);
 
-			CPPUNIT_ASSERT(std::find(manager.m_called_handler.begin(), manager.m_called_handler.end(), child_handler_name) != manager.m_called_handler.end());
-		}
+		CPPUNIT_ASSERT(std::find(manager.m_called_handler.begin(), manager.m_called_handler.end(), child_handler_name) != manager.m_called_handler.end());
+	}
 
 	std::unique_ptr<WindowBase> set_up_base_for_no_children_handler_calls(TestHandlerManager &manager, Handler_Type type, const std::string &name) {
 		std::unique_ptr<WindowBase> base{new WindowBase{}};

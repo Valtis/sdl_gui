@@ -17,6 +17,7 @@ public:
 
 	virtual void draw() const override;
 	virtual void on_mouse_over(Sint32 mouse_x, Sint32 mouse_y) override;
+	virtual void on_mouse_exit(Sint32 mouse_x, Sint32 mouse_y) override;
 	virtual void on_mouse_down(Sint32 mouse_x, Sint32 mouse_y) override;
 	virtual void on_mouse_up(Sint32 mouse_x, Sint32 mouse_y) override;
 
