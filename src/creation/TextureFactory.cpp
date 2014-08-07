@@ -75,6 +75,11 @@ texture_ptr TextureFactory::create_text_box(const int width, const int height, c
 	return create_texture(surface.get());
 }
 
+texture_ptr TextureFactory::create_text_cursor(int width, int height, const SDL_Color &color) {
+	auto surface = create_surface(width, height, color);
+	return create_texture(surface.get());
+}
+
 surface_ptr TextureFactory::create_surface(const int width, const int height, const SDL_Color &color) {
 	surface_ptr surface{SDL_CreateRGBSurface(0, width, height, 32, RMASK, GMASK, BMASK, AMASK), SDL_FreeSurface};
 

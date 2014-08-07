@@ -3,7 +3,6 @@
 namespace sdl_gui {
 
 TextBox::TextBox(std::shared_ptr<creation::ITextureFactory> factory) : m_factory(factory), m_font_size(12), m_word_wrap(false) {
-
 }
 
 TextBox::~TextBox() {
@@ -18,13 +17,17 @@ void TextBox::on_losing_focus() {
 	SDL_StopTextInput();
 }
 
+/**
+ * text must be utf8-encoded
+ */
 void TextBox::on_text_input(std::string text) {
-	set_text(m_text + text);
+	set_text(m_text + text + "молоде́ц");
 }
 
 void TextBox::on_key_down(SDL_Keycode code) {
+
 	if (code == SDLK_BACKSPACE && m_text.length() > 0) {
-		m_text.erase(m_text.end()-1);
+		m_text = utility::erase_from_end_utf8(m_text, 1);
 		set_text(m_text);
 	}
 }

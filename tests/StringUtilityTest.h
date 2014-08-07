@@ -30,6 +30,26 @@ class StringUtilityTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(word_wrap_splits_with_both_offsets_correctly);
     CPPUNIT_TEST(word_wrap_splits_with_both_offsets_correctly_with_long_word);
 
+   CPPUNIT_TEST(erase_does_not_erase_ascii_if_char_count_is_zero);
+    CPPUNIT_TEST(erase_does_not_erase_ascii_if_char_count_is_negative);
+    CPPUNIT_TEST(erase_returns_empty_string_if_count_is_larger_than_char_count_in_ascii);
+    CPPUNIT_TEST(erase_removes_single_character_from_ascii_correctly);
+    CPPUNIT_TEST(erase_removes_multiple_characters_from_ascii_correctly);
+    CPPUNIT_TEST(erase_removes_all_characters_from_ascii_correctly);
+
+
+    CPPUNIT_TEST(erase_does_not_erase_cyrillic_if_char_count_is_zero);
+    CPPUNIT_TEST(erase_does_not_erase_cyrillic_if_char_count_is_negative);
+    CPPUNIT_TEST(erase_returns_empty_string_if_count_is_larger_than_char_count_in_cyrillic);
+    CPPUNIT_TEST(erase_removes_single_character_from_cyrillic_correctly);
+    CPPUNIT_TEST(erase_removes_multiple_characters_from_cyrillic_correctly);
+    CPPUNIT_TEST(erase_removes_all_characters_from_cyrillic_correctly);
+
+    CPPUNIT_TEST(erase_removes_multiple_characters_from_mix_of_ascii_and_cyrillic_correctly);
+    CPPUNIT_TEST(erase_removes_all_characters_from_mix_of_ascii_and_cyrillic_correctly);
+
+    CPPUNIT_TEST(test_method);
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -172,6 +192,100 @@ private:
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("This is"), wrapped_text[0]);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("gigantic_word_for_testing"), wrapped_text[1]);
 		CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid text", std::string("test line"), wrapped_text[2]);
+	}
+
+	void erase_does_not_erase_ascii_if_char_count_is_zero() {
+		std::string text = "helloo!";
+		auto result = utility::erase_from_end_utf8(text, 0);
+		CPPUNIT_ASSERT_EQUAL(text, result);
+	}
+
+	void erase_does_not_erase_ascii_if_char_count_is_negative() {
+		std::string text = "helloo!";
+		auto result = utility::erase_from_end_utf8(text, -1);
+		CPPUNIT_ASSERT_EQUAL(text, result);
+	}
+
+	void erase_returns_empty_string_if_count_is_larger_than_char_count_in_ascii() {
+		std::string text = "helloo!";
+		auto result = utility::erase_from_end_utf8(text, 255);
+		CPPUNIT_ASSERT(result.empty());
+	}
+
+	void erase_removes_single_character_from_ascii_correctly() {
+		std::string text = "helloo!";
+		std::string expected = "helloo";
+		auto result = utility::erase_from_end_utf8(text, 1);
+		CPPUNIT_ASSERT_EQUAL(expected, result);
+	}
+
+	void erase_removes_multiple_characters_from_ascii_correctly() {
+		std::string text = "helloo!";
+		std::string expected = "hell";
+		auto result = utility::erase_from_end_utf8(text, 3);
+		CPPUNIT_ASSERT_EQUAL(expected, result);
+	}
+
+	void erase_removes_all_characters_from_ascii_correctly() {
+		std::string text = "helloo!";
+		auto result = utility::erase_from_end_utf8(text, 7);
+		CPPUNIT_ASSERT(result.empty());
+	}
+
+	void test_method() {
+		std::string text = "е́";
+		auto result = utility::erase_from_end_utf8(text, 1);
+		CPPUNIT_ASSERT_EQUAL(std::string(""), result);
+	}
+
+	void erase_does_not_erase_cyrillic_if_char_count_is_zero() {
+		std::string text = "молоде́ц";
+		auto result = utility::erase_from_end_utf8(text, 0);
+		CPPUNIT_ASSERT_EQUAL(text, result);
+	}
+
+	void erase_does_not_erase_cyrillic_if_char_count_is_negative() {
+		std::string text = "молоде́ц";
+		auto result = utility::erase_from_end_utf8(text, -1);
+		CPPUNIT_ASSERT_EQUAL(text, result);
+	}
+
+	void erase_returns_empty_string_if_count_is_larger_than_char_count_in_cyrillic() {
+		std::string text = "молоде́ц";
+		auto result = utility::erase_from_end_utf8(text, 255);
+		CPPUNIT_ASSERT(result.empty());
+	}
+
+	void erase_removes_single_character_from_cyrillic_correctly() {
+		std::string text = "молоде́ц";
+		std::string expected = "молоде́";
+		auto result = utility::erase_from_end_utf8(text, 1);
+		CPPUNIT_ASSERT_EQUAL(expected, result);
+	}
+
+	void erase_removes_multiple_characters_from_cyrillic_correctly() {
+		std::string text = "молоде́ц";
+		std::string expected = "моло";
+		auto result = utility::erase_from_end_utf8(text, 3);
+		CPPUNIT_ASSERT_EQUAL(expected, result);
+	}
+
+	void erase_removes_all_characters_from_cyrillic_correctly() {
+		std::string text = "молоде́ц";
+		auto result = utility::erase_from_end_utf8(text, 7);
+		CPPUNIT_ASSERT(result.empty());
+	}
+	void erase_removes_multiple_characters_from_mix_of_ascii_and_cyrillic_correctly() {
+		std::string text = "молодaе́ц!";
+		std::string expected = "молод";
+		auto result = utility::erase_from_end_utf8(text, 4);
+		CPPUNIT_ASSERT_EQUAL(expected, result);
+	}
+
+	void erase_removes_all_characters_from_mix_of_ascii_and_cyrillic_correctly() {
+		std::string text = "молодaе́ц!";
+		auto result = utility::erase_from_end_utf8(text, 9);
+		CPPUNIT_ASSERT(result.empty());
 	}
 
 };

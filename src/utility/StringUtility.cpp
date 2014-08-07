@@ -1,7 +1,6 @@
 #include "StringUtility.h"
 #include <cstring>
 #include "../rendering/Renderer.h"
-
 namespace sdl_gui {
 namespace utility {
 
@@ -76,6 +75,70 @@ std::vector<std::string> do_wrap(const std::string &text, const int font_size, r
 	}
 
 	return wrapped_lines;
+}
+
+std::string erase_from_end_utf8(const std::string &text, const int erasable_char_count) {
+	if (erasable_char_count <= 0) {
+		return text;
+	}
+
+
+	int pos = text.length();
+	int erased_characters = 0;
+
+	auto is_continuation_codepoint = [](int c) {
+		int mask =	0xc0; // 11000000
+		return (c & mask) == 128; // is 10xxxxxx
+	};
+
+	// Todo: Refactor (or better yet, replace with unicode library instead of implementing this)
+	auto is_combining_character = [](const std::string &text, int start_pos) {
+		// Combining Diacritical Marks U+0300 - U+036F -> between bytes 11001100:10000000 and 11001101:10101111
+
+		const char block_1_first_char = 0xcc; // 11001100
+		const char block_1_start = 0x80; // 10000000
+		const char block_1_end = 0xaf; // 10101111
+
+		if (start_pos <= text.length() -2) {
+			if (text[start_pos] == block_1_first_char &&
+					text[start_pos + 1] >= block_1_start &&
+					text[start_pos + 1] <= block_1_end) {
+				return true;
+			}
+		}
+
+		// Combining Diacritical Marks Extended U+1AB0 - U+1ABE:  11100001:10101010:10110000 - 11100001:10101010:10111110
+
+		const char block_2_first_char = 0xe1;
+		const char block_2_second_char = 0xaa;
+		const char block_2_start = 0xb0;
+		const char block_2_end = 0xbe;
+
+		if (start_pos <= text.length() - 3) {
+			if (text[start_pos] == block_2_first_char && text[start_pos + 1] == block_2_second_char &&
+					text[start_pos + 2] >= block_2_start &&
+					text[start_pos + 2] <= block_2_end) {
+				return true;
+			}
+		}
+
+		/* TODO: implement
+		 * Combining Diacritical Marks Supplement (1DC0–1DFF),
+		 * Combining Diacritical Marks for Symbols (20D0–20FF),
+		 * Combining Half Marks (FE20–FE2F)
+		*/
+
+		return false;
+	};
+
+	while (erased_characters < erasable_char_count && pos > 0) {
+		--pos;
+		if (!is_continuation_codepoint(text[pos]) && !is_combining_character(text, pos)) {
+			++erased_characters;
+		}
+	}
+
+	return text.substr(0, pos);;
 }
 
 } /* namespace utility */

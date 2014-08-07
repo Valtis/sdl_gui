@@ -22,6 +22,10 @@ public:
 		return texture_ptr{ nullptr, SDL_DestroyTexture };
 	}
 
+	texture_ptr create_text_cursor(const int width, const int height, const SDL_Color &color) override {
+		return texture_ptr{ nullptr, SDL_DestroyTexture };
+	}
+
 };
 
 } /* namespace sdl_gui */

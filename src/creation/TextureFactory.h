@@ -21,6 +21,7 @@ public:
 	texture_ptr create_button(const int width, const int height, const SDL_Color &color) override;
 	texture_ptr create_text(std::string text, const SDL_Color &color, int font_size) override;
 	texture_ptr create_text_box(const int width, const int height, const SDL_Color &color) override;
+	texture_ptr create_text_cursor(const int width, const int height, const SDL_Color &color) override;
 
 private:
 	surface_ptr create_surface(const int width, const int height, const SDL_Color &color);
