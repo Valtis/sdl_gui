@@ -21,7 +21,7 @@ void TextBox::on_losing_focus() {
  * text must be utf8-encoded
  */
 void TextBox::on_text_input(std::string text) {
-	set_text(m_text + text + "молоде́ц");
+	set_text(m_text + text);
 }
 
 void TextBox::on_key_down(SDL_Keycode code) {
