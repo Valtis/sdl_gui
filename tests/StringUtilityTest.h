@@ -30,7 +30,7 @@ class StringUtilityTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(word_wrap_splits_with_both_offsets_correctly);
     CPPUNIT_TEST(word_wrap_splits_with_both_offsets_correctly_with_long_word);
 
-   CPPUNIT_TEST(erase_does_not_erase_ascii_if_char_count_is_zero);
+    CPPUNIT_TEST(erase_does_not_erase_ascii_if_char_count_is_zero);
     CPPUNIT_TEST(erase_does_not_erase_ascii_if_char_count_is_negative);
     CPPUNIT_TEST(erase_returns_empty_string_if_count_is_larger_than_char_count_in_ascii);
     CPPUNIT_TEST(erase_removes_single_character_from_ascii_correctly);
@@ -52,7 +52,24 @@ class StringUtilityTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(erase_removes_multiple_chinese_characters);
     CPPUNIT_TEST(erase_removes_mix_of_chinese_and_ascii);
 
-    CPPUNIT_TEST(test_method);
+    CPPUNIT_TEST(substring_returns_empty_string_on_empty_input);
+    CPPUNIT_TEST(substring_returns_empty_string_on_empty_input_and_with_large_length);
+    CPPUNIT_TEST(substring_returns_empty_string_on_empty_input_and_with_large_initial_position);
+
+    CPPUNIT_TEST(substring_returns_correct_string_with_ascii_when_initial_position_is_in_the_beginning);
+    CPPUNIT_TEST(substring_returns_correct_string_with_ascii_when_initial_position_is_not_in_the_beginning);
+    CPPUNIT_TEST(substring_returns_correct_string_with_ascii_if_length_is_larger_than_text_length);
+    CPPUNIT_TEST(substring_returns_correct_string_with_ascii_if_length_is_exactly_text_length);
+
+    CPPUNIT_TEST(substring_returns_correct_string_with_cyrillic_when_initial_position_is_in_the_beginning);
+	CPPUNIT_TEST(substring_returns_correct_string_with_cyrillic_when_initial_position_is_not_in_the_beginning);
+	CPPUNIT_TEST(substring_returns_correct_string_with_cyrillic_if_length_is_larger_than_text_length);
+	CPPUNIT_TEST(substring_returns_correct_string_with_cyrillic_if_length_is_exactly_text_length);
+
+	CPPUNIT_TEST(substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_when_initial_position_is_in_the_beginning);
+	CPPUNIT_TEST(substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_when_initial_position_is_not_in_the_beginning);
+	CPPUNIT_TEST(substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_if_length_is_larger_than_text_length);
+	CPPUNIT_TEST(substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_if_length_is_exactly_text_length);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -236,12 +253,6 @@ private:
 		CPPUNIT_ASSERT(result.empty());
 	}
 
-	void test_method() {
-		std::string text = "е́";
-		auto result = utility::erase_from_end_utf8(text, 1);
-		CPPUNIT_ASSERT_EQUAL(std::string(""), result);
-	}
-
 	void erase_does_not_erase_cyrillic_if_char_count_is_zero() {
 		std::string text = "молоде́ц";
 		auto result = utility::erase_from_end_utf8(text, 0);
@@ -312,6 +323,69 @@ private:
 		std::string expected = "好久!";
 		auto result = utility::erase_from_end_utf8(text, 6);
 		CPPUNIT_ASSERT_EQUAL(expected, result);
+	}
+
+	void substring_returns_empty_string_on_empty_input() {
+		CPPUNIT_ASSERT_EQUAL(std::string(""), utility::substring_utf8("", 0, 0));
+	}
+
+	void substring_returns_empty_string_on_empty_input_and_with_large_length() {
+		CPPUNIT_ASSERT_EQUAL(std::string(""), utility::substring_utf8("", 0, 159));
+	}
+
+	void substring_returns_empty_string_on_empty_input_and_with_large_initial_position() {
+		CPPUNIT_ASSERT_EQUAL(std::string(""), utility::substring_utf8("", 24, 159));
+	}
+
+	void substring_returns_correct_string_with_ascii_when_initial_position_is_in_the_beginning() {
+		CPPUNIT_ASSERT_EQUAL(std::string("abc"), utility::substring_utf8("abcdefgh", 0, 3));
+	}
+
+	void substring_returns_correct_string_with_ascii_when_initial_position_is_not_in_the_beginning() {
+		CPPUNIT_ASSERT_EQUAL(std::string("cde"), utility::substring_utf8("abcdefgh", 2, 3));
+	}
+
+	void substring_returns_correct_string_with_ascii_if_length_is_larger_than_text_length() {
+		CPPUNIT_ASSERT_EQUAL(std::string("abcdefgh"), utility::substring_utf8("abcdefgh", 0, 124));
+	}
+
+
+	void substring_returns_correct_string_with_ascii_if_length_is_exactly_text_length() {
+		CPPUNIT_ASSERT_EQUAL(std::string("abcdefgh"), utility::substring_utf8("abcdefgh", 0, 8));
+	}
+
+
+	void substring_returns_correct_string_with_cyrillic_when_initial_position_is_in_the_beginning() {
+		CPPUNIT_ASSERT_EQUAL(std::string("хор"), utility::substring_utf8("хоро́ший", 0, 3));
+	}
+
+	void substring_returns_correct_string_with_cyrillic_when_initial_position_is_not_in_the_beginning() {
+		CPPUNIT_ASSERT_EQUAL(std::string("ро́ш"), utility::substring_utf8("хоро́ший", 2, 3));
+	}
+
+	void substring_returns_correct_string_with_cyrillic_if_length_is_larger_than_text_length() {
+		CPPUNIT_ASSERT_EQUAL(std::string("хоро́ший"), utility::substring_utf8("хоро́ший", 0, 124));
+	}
+
+	void substring_returns_correct_string_with_cyrillic_if_length_is_exactly_text_length() {
+		CPPUNIT_ASSERT_EQUAL(std::string("хоро́ший"), utility::substring_utf8("хоро́ший", 0, 7));
+	}
+
+
+	void substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_when_initial_position_is_in_the_beginning() {
+		CPPUNIT_ASSERT_EQUAL(std::string("хор"), utility::substring_utf8("хоро́ший", 0, 3));
+	}
+
+	void substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_when_initial_position_is_not_in_the_beginning() {
+		CPPUNIT_ASSERT_EQUAL(std::string("ро́ш"), utility::substring_utf8("хоро́ший", 2, 3));
+	}
+
+	void substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_if_length_is_larger_than_text_length() {
+		CPPUNIT_ASSERT_EQUAL(std::string("хоро́ший"), utility::substring_utf8("хоро́ший", 0, 124));
+	}
+
+	void substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_if_length_is_exactly_text_length() {
+		CPPUNIT_ASSERT_EQUAL(std::string("хоро́ший"), utility::substring_utf8("хоро́ший", 0, 7));
 	}
 };
 
