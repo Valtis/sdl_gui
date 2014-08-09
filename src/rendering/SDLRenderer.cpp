@@ -14,7 +14,7 @@ SDLRenderer::~SDLRenderer() {
 	// this class does not own the renderer and the pointer must not be released here
 }
 
-void SDLRenderer::draw(const texture_ptr &texture, SDL_Rect *source_rect, SDL_Rect *destination_rect) {
+void SDLRenderer::draw(const texture_ptr &texture, const SDL_Rect *source_rect, const SDL_Rect *destination_rect) {
 	SDL_RenderCopy(m_renderer, texture.get(), source_rect, destination_rect);
 }
 

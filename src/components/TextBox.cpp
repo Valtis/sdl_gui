@@ -2,7 +2,8 @@
 #include "../utility/StringUtility.h"
 namespace sdl_gui {
 
-TextBox::TextBox(std::shared_ptr<creation::ITextureFactory> factory) : m_factory(factory), m_font_size(12), m_word_wrap(false) {
+TextBox::TextBox(std::shared_ptr<creation::ITextureFactory> factory) : m_factory(factory), m_font_size(12), m_word_wrap(false),
+		m_cursor{nullptr, SDL_DestroyTexture}, m_cursor_draw_position{0, 0, 0, 0}, m_draw_cursor(false) {
 }
 
 TextBox::~TextBox() {
@@ -11,10 +12,12 @@ TextBox::~TextBox() {
 
 void TextBox::on_gaining_focus() {
 	SDL_StartTextInput();
+	m_draw_cursor = true;
 }
 
 void TextBox::on_losing_focus() {
 	SDL_StopTextInput();
+	m_draw_cursor = false;
 }
 
 /**
@@ -36,32 +39,51 @@ void TextBox::set_text(std::string text) {
 	m_text_lines.clear();
 	m_text = text;
 
+	set_text_lines();
+
+	m_cursor_draw_position.x = absolute_dimension().x + 1;
+	m_cursor_draw_position.y = absolute_dimension().y;
+
+	if (!m_text_lines.empty()) {
+		auto line_text = m_text_lines.back()->get_text();
+		int width = 0;
+		int height = 0;
+		m_renderer->text_width_and_height(line_text, m_font_size, &width, &height);
+		m_cursor_draw_position.x += width;
+		m_cursor_draw_position.y += height*(m_text_lines.size()-1);
+	}
+}
+
+void TextBox::set_text_lines() {
+
+	if (m_text.empty()) {
+		return;
+	}
+
 	const int offset_from_left = 2;
 	const int offset_from_right = 2;
 
-	if (!text.empty()) {
-		std::vector<std::string> m_lines;
-		if (m_word_wrap) {
-			m_lines = utility::wrap_text(m_text, m_font_size, m_renderer, relative_dimension(), { offset_from_left, offset_from_right });
-		} else {
-			m_lines.push_back(text);
-		}
+	std::vector<std::string> m_lines;
+	if (m_word_wrap) {
+		m_lines = utility::wrap_text(m_text, m_font_size, m_renderer, relative_dimension(), { offset_from_left, offset_from_right });
+	} else {
+		m_lines.push_back(m_text);
+	}
 
-		int height = 0;
-		int current_y_pos = 0;
+	int height = 0;
+	int current_y_pos = 0;
 
-		for (const std::string &line : m_lines) {
-			auto label = std::make_shared<TextLabel>(m_factory);
+	for (const std::string &line : m_lines) {
+		auto label = std::make_shared<TextLabel>(m_factory);
 
-			label->set_parent(this);
-			label->set_renderer(m_renderer);
-			label->set_text(line);
-			label->set_relative_dimension({offset_from_left, current_y_pos, label->relative_dimension().w, label->relative_dimension().h});
+		label->set_parent(this);
+		label->set_renderer(m_renderer);
+		label->set_text(line);
+		label->set_relative_dimension({offset_from_left, current_y_pos, label->relative_dimension().w, label->relative_dimension().h});
 
-			m_renderer->text_width_and_height(line, m_font_size, nullptr, &height);
-			current_y_pos += height;
-			m_text_lines.push_back(label);
-		}
+		m_renderer->text_width_and_height(line, m_font_size, nullptr, &height);
+		current_y_pos += height;
+		m_text_lines.push_back(label);
 	}
 }
 
@@ -71,6 +93,9 @@ void TextBox::draw() const {
 		line->draw();
 	}
 
+	if (m_draw_cursor) {
+		do_draw(m_cursor, m_cursor_draw_position);
+	}
 }
 
 } /* namespace sdl_gui */

@@ -9,6 +9,7 @@ namespace sdl_gui {
 
 namespace creation {
 	class ITextureFactory;
+	class WindowLoader;
 }
 
 class TextBox : public WindowBase {
@@ -33,6 +34,9 @@ public:
 	}
 
 private:
+	friend class creation::WindowLoader;
+
+	void set_text_lines();
 	std::shared_ptr<creation::ITextureFactory> m_factory;
 	std::string m_text;
 	// vector needs copyability in order to resize and unique_ptrs are non-copyable
@@ -40,6 +44,12 @@ private:
 	std::vector<std::shared_ptr<TextLabel>> m_text_lines;
 	int m_font_size;
 	bool m_word_wrap;
+
+
+	texture_ptr m_cursor;
+	SDL_Rect m_cursor_draw_position;
+
+	bool m_draw_cursor;
 };
 
 } /* namespace sdl_gui */

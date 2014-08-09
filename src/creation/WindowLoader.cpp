@@ -117,6 +117,14 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 		std::unique_ptr<TextBox> box{new TextBox{m_factory}};
 		set_generic_parameters(node, box.get());
 		box->m_background = m_factory->create_text_box(box->m_dimension.w, box->m_dimension.h, box->m_color);
+
+		// placeholder, replace with call to TTF_FontHeight(const TTF_Font *font)
+		int height = 0;
+		renderer->text_width_and_height("a", box->m_font_size, nullptr, &height);
+		box->m_cursor = m_factory->create_text_cursor(1, height, {0, 0, 0, 255});
+		box->m_cursor_draw_position.w = 1;
+		box->m_cursor_draw_position.h = height;
+
 		box->set_word_wrap(node.value(WORD_WRAP) == "true");
 
 		m_parent_windows[TEXT_BOX][node.value(NAME)] = box.get();

@@ -11,7 +11,7 @@ public:
 	SDLRenderer(SDL_Renderer *renderer);
 	virtual ~SDLRenderer();
 
-	virtual void draw(const texture_ptr &ptr, SDL_Rect *source_rect, SDL_Rect *destination_rect) override;
+	virtual void draw(const texture_ptr &ptr, const SDL_Rect *source_rect, const SDL_Rect *destination_rect) override;
 
 	virtual void texture_width_and_height(const texture_ptr &ptr, int &width, int &height) override;
 
