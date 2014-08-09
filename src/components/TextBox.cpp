@@ -1,9 +1,10 @@
 #include "TextBox.h"
 #include "../utility/StringUtility.h"
+
 namespace sdl_gui {
 
 TextBox::TextBox(std::shared_ptr<creation::ITextureFactory> factory) : m_factory(factory), m_font_size(12), m_word_wrap(false),
-		m_cursor{nullptr, SDL_DestroyTexture}, m_cursor_draw_position{0, 0, 0, 0}, m_draw_cursor(false) {
+		m_cursor{nullptr, SDL_DestroyTexture}, m_cursor_draw_position{0, 0, 0, 0}, m_cursor_timer_id{0}, m_draw_cursor(false){
 }
 
 TextBox::~TextBox() {
@@ -12,12 +13,33 @@ TextBox::~TextBox() {
 
 void TextBox::on_gaining_focus() {
 	SDL_StartTextInput();
-	m_draw_cursor = true;
+	start_timer();
 }
 
 void TextBox::on_losing_focus() {
 	SDL_StopTextInput();
+	stop_timer();
 	m_draw_cursor = false;
+}
+
+void TextBox::start_timer() {
+	m_draw_cursor = true;
+	if (m_cursor_timer_id == 0) {
+		m_cursor_timer_id = SDL_AddTimer(750, [](Uint32 interval, void *param) {
+			bool *draw_cursor = (bool *)param;
+			*draw_cursor = !(*draw_cursor);
+			return interval;
+		},
+
+		&m_draw_cursor);
+	}
+}
+
+void TextBox::stop_timer() {
+	if (m_cursor_timer_id != 0) {
+		SDL_RemoveTimer(m_cursor_timer_id);
+		m_cursor_timer_id = 0;
+	}
 }
 
 /**
@@ -28,6 +50,8 @@ void TextBox::on_text_input(std::string text) {
 }
 
 void TextBox::on_key_down(SDL_Keycode code) {
+	stop_timer();
+		start_timer();
 
 	if (code == SDLK_BACKSPACE && m_text.length() > 0) {
 		m_text = utility::erase_from_end_utf8(m_text, 1);
@@ -36,22 +60,15 @@ void TextBox::on_key_down(SDL_Keycode code) {
 }
 
 void TextBox::set_text(std::string text) {
+	stop_timer();
+	start_timer();
+
 	m_text_lines.clear();
 	m_text = text;
 
 	set_text_lines();
+	set_cursor_position();
 
-	m_cursor_draw_position.x = absolute_dimension().x + 1;
-	m_cursor_draw_position.y = absolute_dimension().y;
-
-	if (!m_text_lines.empty()) {
-		auto line_text = m_text_lines.back()->get_text();
-		int width = 0;
-		int height = 0;
-		m_renderer->text_width_and_height(line_text, m_font_size, &width, &height);
-		m_cursor_draw_position.x += width;
-		m_cursor_draw_position.y += height*(m_text_lines.size()-1);
-	}
 }
 
 void TextBox::set_text_lines() {
@@ -84,6 +101,20 @@ void TextBox::set_text_lines() {
 		m_renderer->text_width_and_height(line, m_font_size, nullptr, &height);
 		current_y_pos += height;
 		m_text_lines.push_back(label);
+	}
+}
+
+void TextBox::set_cursor_position() {
+	m_cursor_draw_position.x = absolute_dimension().x + 1;
+	m_cursor_draw_position.y = absolute_dimension().y;
+
+	if (!m_text_lines.empty()) {
+		auto line_text = m_text_lines.back()->get_text();
+		int width = 0;
+		int height = 0;
+		m_renderer->text_width_and_height(line_text, m_font_size, &width, &height);
+		m_cursor_draw_position.x += width;
+		m_cursor_draw_position.y += height*(m_text_lines.size()-1);
 	}
 }
 

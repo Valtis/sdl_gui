@@ -37,6 +37,9 @@ private:
 	friend class creation::WindowLoader;
 
 	void set_text_lines();
+	void set_cursor_position();
+	void start_timer();
+	void stop_timer();
 	std::shared_ptr<creation::ITextureFactory> m_factory;
 	std::string m_text;
 	// vector needs copyability in order to resize and unique_ptrs are non-copyable
@@ -48,6 +51,7 @@ private:
 
 	texture_ptr m_cursor;
 	SDL_Rect m_cursor_draw_position;
+	SDL_TimerID m_cursor_timer_id;
 
 	bool m_draw_cursor;
 };
