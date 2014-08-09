@@ -13,7 +13,7 @@ public:
 	}
 
 	// pointers may be released shortly after this call so we can't simply copy the pointer
-	void draw(const texture_ptr &texture, SDL_Rect *source_rect, SDL_Rect *destination_rect) override  {
+	void draw(const texture_ptr &texture, const SDL_Rect *source_rect, const SDL_Rect *destination_rect) override  {
 		m_source_is_set = false;
 		m_destination_is_set = false;
 
