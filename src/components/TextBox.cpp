@@ -105,8 +105,8 @@ void TextBox::set_text_lines() {
 }
 
 void TextBox::set_cursor_position() {
-	m_cursor_draw_position.x = absolute_dimension().x + 1;
-	m_cursor_draw_position.y = absolute_dimension().y;
+	m_cursor_draw_position.x = 1;
+	m_cursor_draw_position.y = 0;
 
 	if (!m_text_lines.empty()) {
 		auto line_text = m_text_lines.back()->get_text();
@@ -125,7 +125,10 @@ void TextBox::draw() const {
 	}
 
 	if (m_draw_cursor) {
-		do_draw(m_cursor, m_cursor_draw_position);
+		auto pos = m_cursor_draw_position;
+		pos.x += absolute_dimension().x;
+		pos.y += absolute_dimension().y;
+		do_draw(m_cursor, pos);
 	}
 }
 
