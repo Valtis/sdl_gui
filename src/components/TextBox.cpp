@@ -52,11 +52,32 @@ void TextBox::on_text_input(std::string text) {
 
 void TextBox::on_key_down(SDL_Keycode code) {
 	stop_timer();
-		start_timer();
+	start_timer();
 
-	if (code == SDLK_BACKSPACE && m_text.length() > 0) {
-		m_text = utility::erase_from_end_utf8(m_text, 1);
-		set_text(m_text);
+	switch (code) {
+	case SDLK_BACKSPACE:
+		if (m_text.length() > 0) {
+			m_text = utility::erase_from_end_utf8(m_text, 1);
+			set_text(m_text);
+		}
+		break;
+	case SDLK_LEFT:
+		m_cursor_line_position.x = std::max(0, m_cursor_line_position.x - 1);
+		set_cursor_position();
+		break;
+
+	case SDLK_RIGHT:
+		{
+			int max = 0;
+			if (!m_text_lines.empty()) {
+				max = m_text_lines.back()->get_text().length();
+			}
+			m_cursor_line_position.x = std::min(max, m_cursor_line_position.x + 1);
+			set_cursor_position();
+		}
+		break;
+
+
 	}
 }
 
@@ -110,13 +131,12 @@ void TextBox::set_text_lines() {
 
 void TextBox::set_cursor_position() {
 
-
 	m_cursor_relative_position.x = 1;
 	m_cursor_relative_position.y = 0;
 
 	if (!m_text_lines.empty()) {
 		auto line_text = m_text_lines[m_cursor_line_position.y]->get_text();
-		line_text = utility::substring_utf8(line_text, m_cursor_line_position.y, std::string::npos);
+		line_text = utility::substring_utf8(line_text, 0, m_cursor_line_position.x);
 		int width = 0;
 		int height = 0;
 		m_renderer->text_width_and_height(line_text, m_font_size, &width, &height);
