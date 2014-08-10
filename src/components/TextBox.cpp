@@ -70,14 +70,37 @@ void TextBox::on_key_down(SDL_Keycode code) {
 		{
 			int max = 0;
 			if (!m_text_lines.empty()) {
-				max = m_text_lines.back()->get_text().length();
+				max = m_text_lines[m_cursor_line_position.y]->get_text().length();
 			}
 			m_cursor_line_position.x = std::min(max, m_cursor_line_position.x + 1);
 			set_cursor_position();
 		}
 		break;
+	case SDLK_UP:
+	{
+		int max = 0;
+		m_cursor_line_position.y = std::max(0, m_cursor_line_position.y - 1);
+		if (!m_text_lines.empty()) {
+			max = m_text_lines[m_cursor_line_position.y]->get_text().length();
+		}
+		m_cursor_line_position.x = std::max(0, std::min(max, m_cursor_line_position.x));
+		set_cursor_position();
+	}
+	break;
+	case SDLK_DOWN:
+	{
+		int max = 0;
 
-
+		m_cursor_line_position.y = std::min(m_text_lines.size() - 1, (size_t)m_cursor_line_position.y + 1);
+		if (!m_text_lines.empty()) {
+			max = m_text_lines[m_cursor_line_position.y]->get_text().length();
+		}
+		m_cursor_line_position.x = std::max(0, std::min(max, m_cursor_line_position.x));
+		set_cursor_position();
+	}
+	break;
+	default:
+		break;
 	}
 }
 
@@ -141,7 +164,7 @@ void TextBox::set_cursor_position() {
 		int height = 0;
 		m_renderer->text_width_and_height(line_text, m_font_size, &width, &height);
 		m_cursor_relative_position.x += width;
-		m_cursor_relative_position.y += height*(m_text_lines.size()-1);
+		m_cursor_relative_position.y += height*m_cursor_line_position.y;
 	}
 }
 
