@@ -122,8 +122,10 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 		int height = 0;
 		renderer->text_width_and_height("a", box->m_font_size, nullptr, &height);
 		box->m_cursor = m_factory->create_text_cursor(1, height, {0, 0, 0, 255});
-		box->m_cursor_draw_position.w = 1;
-		box->m_cursor_draw_position.h = height;
+		box->m_cursor_relative_position.x = 1;
+		box->m_cursor_relative_position.y = 0;
+		box->m_cursor_relative_position.w = 1;
+		box->m_cursor_relative_position.h = height;
 
 		box->set_word_wrap(node.value(WORD_WRAP) == "true");
 

@@ -4,7 +4,8 @@
 namespace sdl_gui {
 
 TextBox::TextBox(std::shared_ptr<creation::ITextureFactory> factory) : m_factory(factory), m_font_size(12), m_word_wrap(false),
-		m_cursor{nullptr, SDL_DestroyTexture}, m_cursor_relative_position{0, 0, 0, 0}, m_cursor_timer_id{0}, m_draw_cursor(false){
+		m_cursor{nullptr, SDL_DestroyTexture}, m_cursor_relative_position{0, 0, 0, 0}, m_cursor_line_position{0, 0},
+		m_cursor_timer_id{0}, m_draw_cursor(false){
 }
 
 TextBox::~TextBox() {
@@ -102,14 +103,20 @@ void TextBox::set_text_lines() {
 		current_y_pos += height;
 		m_text_lines.push_back(label);
 	}
+
+	m_cursor_line_position.y = m_lines.size() - 1;
+	m_cursor_line_position.x = m_lines.back().length();
 }
 
 void TextBox::set_cursor_position() {
+
+
 	m_cursor_relative_position.x = 1;
 	m_cursor_relative_position.y = 0;
 
 	if (!m_text_lines.empty()) {
-		auto line_text = m_text_lines.back()->get_text();
+		auto line_text = m_text_lines[m_cursor_line_position.y]->get_text();
+		line_text = utility::substring_utf8(line_text, m_cursor_line_position.y, std::string::npos);
 		int width = 0;
 		int height = 0;
 		m_renderer->text_width_and_height(line_text, m_font_size, &width, &height);

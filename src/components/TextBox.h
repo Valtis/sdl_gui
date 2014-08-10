@@ -49,9 +49,11 @@ private:
 	bool m_word_wrap;
 
 
+
 	texture_ptr m_cursor;
 
-	SDL_Rect m_cursor_relative_position;
+	SDL_Rect m_cursor_relative_position; // relative coordinates inside text box. Used for drawing.
+	SDL_Point m_cursor_line_position; // x=the number of character the cursor is in front of, y = line number. Used to calculate new relative position on changes
 	SDL_TimerID m_cursor_timer_id;
 
 	bool m_draw_cursor;

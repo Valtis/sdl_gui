@@ -126,7 +126,7 @@ bool is_glyph(const std::string &text, int pos) {
 	return !is_continuation_codepoint(text[pos]) && !is_combining_character(text, pos);
 }
 
-std::string substring_utf8(const std::string &text, const int pos, const int length) {
+std::string substring_utf8(const std::string &text, const unsigned int pos, const unsigned int length) {
 
 	int start_buffer_pos = 0;
 	int character_count = 0;
