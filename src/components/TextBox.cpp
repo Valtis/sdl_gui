@@ -1,6 +1,5 @@
 #include "TextBox.h"
 #include "../utility/StringUtility.h"
-
 namespace sdl_gui {
 
 TextBox::TextBox(std::shared_ptr<creation::ITextureFactory> factory) : m_factory(factory), m_font_size(12), m_word_wrap(false),
@@ -69,9 +68,11 @@ void TextBox::on_key_down(SDL_Keycode code) {
 	case SDLK_RIGHT:
 		{
 			int max = 0;
+
 			if (!m_text_lines.empty()) {
 				max = m_text_lines[m_cursor_line_position.y]->get_text().length();
 			}
+
 			m_cursor_line_position.x = std::min(max, m_cursor_line_position.x + 1);
 			set_cursor_position();
 		}
@@ -80,9 +81,11 @@ void TextBox::on_key_down(SDL_Keycode code) {
 	{
 		int max = 0;
 		m_cursor_line_position.y = std::max(0, m_cursor_line_position.y - 1);
+
 		if (!m_text_lines.empty()) {
 			max = m_text_lines[m_cursor_line_position.y]->get_text().length();
 		}
+
 		m_cursor_line_position.x = std::max(0, std::min(max, m_cursor_line_position.x));
 		set_cursor_position();
 	}
@@ -90,11 +93,12 @@ void TextBox::on_key_down(SDL_Keycode code) {
 	case SDLK_DOWN:
 	{
 		int max = 0;
-
 		m_cursor_line_position.y = std::min(m_text_lines.size() - 1, (size_t)m_cursor_line_position.y + 1);
+
 		if (!m_text_lines.empty()) {
 			max = m_text_lines[m_cursor_line_position.y]->get_text().length();
 		}
+
 		m_cursor_line_position.x = std::max(0, std::min(max, m_cursor_line_position.x));
 		set_cursor_position();
 	}
