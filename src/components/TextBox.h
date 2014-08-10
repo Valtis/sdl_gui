@@ -50,7 +50,8 @@ private:
 
 
 	texture_ptr m_cursor;
-	SDL_Rect m_cursor_draw_position;
+
+	SDL_Rect m_cursor_relative_position;
 	SDL_TimerID m_cursor_timer_id;
 
 	bool m_draw_cursor;

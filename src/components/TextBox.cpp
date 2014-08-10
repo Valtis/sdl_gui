@@ -4,7 +4,7 @@
 namespace sdl_gui {
 
 TextBox::TextBox(std::shared_ptr<creation::ITextureFactory> factory) : m_factory(factory), m_font_size(12), m_word_wrap(false),
-		m_cursor{nullptr, SDL_DestroyTexture}, m_cursor_draw_position{0, 0, 0, 0}, m_cursor_timer_id{0}, m_draw_cursor(false){
+		m_cursor{nullptr, SDL_DestroyTexture}, m_cursor_relative_position{0, 0, 0, 0}, m_cursor_timer_id{0}, m_draw_cursor(false){
 }
 
 TextBox::~TextBox() {
@@ -105,16 +105,16 @@ void TextBox::set_text_lines() {
 }
 
 void TextBox::set_cursor_position() {
-	m_cursor_draw_position.x = 1;
-	m_cursor_draw_position.y = 0;
+	m_cursor_relative_position.x = 1;
+	m_cursor_relative_position.y = 0;
 
 	if (!m_text_lines.empty()) {
 		auto line_text = m_text_lines.back()->get_text();
 		int width = 0;
 		int height = 0;
 		m_renderer->text_width_and_height(line_text, m_font_size, &width, &height);
-		m_cursor_draw_position.x += width;
-		m_cursor_draw_position.y += height*(m_text_lines.size()-1);
+		m_cursor_relative_position.x += width;
+		m_cursor_relative_position.y += height*(m_text_lines.size()-1);
 	}
 }
 
@@ -125,7 +125,7 @@ void TextBox::draw() const {
 	}
 
 	if (m_draw_cursor) {
-		auto pos = m_cursor_draw_position;
+		auto pos = m_cursor_relative_position;
 		pos.x += absolute_dimension().x;
 		pos.y += absolute_dimension().y;
 		do_draw(m_cursor, pos);
