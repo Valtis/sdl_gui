@@ -22,7 +22,7 @@ public:
 	WindowBase();
 	virtual ~WindowBase();
 
-	void set_renderer(rendering::Renderer *renderer);
+	virtual void set_renderer(rendering::Renderer *renderer);
 
 	virtual void draw() const;
 

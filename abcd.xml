@@ -1,5 +1,5 @@
 <window name="abcd.xml" title="my_title3" x="120" y="120" w="300" h="210" r="100" g="255" b="100" a="255">
-	<textbox name="my_textbox" word_wrap="true" x="5" y="10" w="290" h="160" r="255" g="255" b="255"/>
+	<textbox name="my_textbox" font_size="12" word_wrap="true" x="5" y="10" w="290" h="160" r="255" g="255" b="255"/>
 	<button name="save_button" x="5" y="180" w="80" h="20" r="200" g="150" b="200" on_click="save">
 		<text name="save_button_text" text="Save" valign="center" halign="center"/>
 	</button>

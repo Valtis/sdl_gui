@@ -114,18 +114,9 @@ WindowLoader::WindowLoader(serialization::Serializer &serializer, std::shared_pt
 	};
 
 	m_loaders[TEXT_BOX] = [=](const serialization::Node &node) {
-		std::unique_ptr<TextBox> box{new TextBox{m_factory}};
+		std::unique_ptr<TextBox> box{new TextBox{m_factory, stoi(node.value(FONT_SIZE))}};
 		set_generic_parameters(node, box.get());
 		box->m_background = m_factory->create_text_box(box->m_dimension.w, box->m_dimension.h, box->m_color);
-
-		// placeholder, replace with call to TTF_FontHeight(const TTF_Font *font)
-		int height = 0;
-		renderer->text_width_and_height("a", box->m_font_size, nullptr, &height);
-		box->m_cursor = m_factory->create_text_cursor(1, height, {0, 0, 0, 255});
-		box->m_cursor_relative_position.x = 1;
-		box->m_cursor_relative_position.y = 0;
-		box->m_cursor_relative_position.w = 1;
-		box->m_cursor_relative_position.h = height;
 
 		box->set_word_wrap(node.value(WORD_WRAP) == "true");
 

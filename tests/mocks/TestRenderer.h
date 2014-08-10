@@ -44,6 +44,10 @@ public:
 		}
 	}
 
+	int get_font_height(int font_size) override {
+		return font_size;
+	}
+
 	SDL_Rect m_source_rect;
 	bool m_source_is_set;
 

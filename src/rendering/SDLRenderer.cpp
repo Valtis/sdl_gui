@@ -28,5 +28,10 @@ void SDLRenderer::text_width_and_height(std::string text, int font_size, int *wi
 	TTF_SizeUTF8(font.get(), text.c_str(), width, height);
 }
 
+int SDLRenderer::get_font_height(int font_size) {
+	font_ptr font{TTF_OpenFont("FreeMono.ttf", font_size), TTF_CloseFont};
+	return TTF_FontHeight(font.get());
+}
+
 } /* namespace rendering */
 } /* namespace sdl_gui */

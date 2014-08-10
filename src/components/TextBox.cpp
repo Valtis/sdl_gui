@@ -2,9 +2,10 @@
 #include "../utility/StringUtility.h"
 namespace sdl_gui {
 
-TextBox::TextBox(std::shared_ptr<creation::ITextureFactory> factory) : m_factory(factory), m_font_size(12), m_word_wrap(false),
-		m_cursor{nullptr, SDL_DestroyTexture}, m_cursor_relative_position{0, 0, 0, 0}, m_cursor_line_position{0, 0},
-		m_cursor_timer_id{0}, m_draw_cursor(false){
+TextBox::TextBox(std::shared_ptr<creation::ITextureFactory> factory, int font_size) : m_texture_factory(factory), m_font_size(font_size), m_word_wrap(false) {
+			m_cursor.set_texture_factory(factory);
+			m_cursor.set_parent(this);
+			m_cursor.set_font_size(font_size);
 }
 
 TextBox::~TextBox() {
@@ -13,33 +14,17 @@ TextBox::~TextBox() {
 
 void TextBox::on_gaining_focus() {
 	SDL_StartTextInput();
-	start_timer();
+	m_cursor.on_gaining_focus();
 }
 
 void TextBox::on_losing_focus() {
 	SDL_StopTextInput();
-	stop_timer();
-	m_draw_cursor = false;
+	m_cursor.on_losing_focus();
 }
 
-void TextBox::start_timer() {
-	m_draw_cursor = true;
-	if (m_cursor_timer_id == 0) {
-		m_cursor_timer_id = SDL_AddTimer(750, [](Uint32 interval, void *param) {
-			bool *draw_cursor = (bool *)param;
-			*draw_cursor = !(*draw_cursor);
-			return interval;
-		},
-
-		&m_draw_cursor);
-	}
-}
-
-void TextBox::stop_timer() {
-	if (m_cursor_timer_id != 0) {
-		SDL_RemoveTimer(m_cursor_timer_id);
-		m_cursor_timer_id = 0;
-	}
+void TextBox::set_renderer(rendering::Renderer *renderer) {
+	WindowBase::set_renderer(renderer);
+	m_cursor.set_renderer(renderer);
 }
 
 /**
@@ -47,11 +32,11 @@ void TextBox::stop_timer() {
  */
 void TextBox::on_text_input(std::string text) {
 	set_text(m_text + text);
+	m_cursor.move_cursor({text.length(), 0 }, get_text_lines());
 }
 
 void TextBox::on_key_down(SDL_Keycode code) {
-	stop_timer();
-	start_timer();
+	m_cursor.reset_blink();
 
 	switch (code) {
 	case SDLK_BACKSPACE:
@@ -61,47 +46,18 @@ void TextBox::on_key_down(SDL_Keycode code) {
 		}
 		break;
 	case SDLK_LEFT:
-		m_cursor_line_position.x = std::max(0, m_cursor_line_position.x - 1);
-		set_cursor_position();
+		m_cursor.move_cursor({-1, 0}, get_text_lines());
+
 		break;
 
 	case SDLK_RIGHT:
-		{
-			int max = 0;
-
-			if (!m_text_lines.empty()) {
-				max = m_text_lines[m_cursor_line_position.y]->get_text().length();
-			}
-
-			m_cursor_line_position.x = std::min(max, m_cursor_line_position.x + 1);
-			set_cursor_position();
-		}
+		m_cursor.move_cursor({1, 0}, get_text_lines());
 		break;
 	case SDLK_UP:
-	{
-		int max = 0;
-		m_cursor_line_position.y = std::max(0, m_cursor_line_position.y - 1);
-
-		if (!m_text_lines.empty()) {
-			max = m_text_lines[m_cursor_line_position.y]->get_text().length();
-		}
-
-		m_cursor_line_position.x = std::max(0, std::min(max, m_cursor_line_position.x));
-		set_cursor_position();
-	}
+		m_cursor.move_cursor({0, -1}, get_text_lines());
 	break;
 	case SDLK_DOWN:
-	{
-		int max = 0;
-		m_cursor_line_position.y = std::min(m_text_lines.size() - 1, (size_t)m_cursor_line_position.y + 1);
-
-		if (!m_text_lines.empty()) {
-			max = m_text_lines[m_cursor_line_position.y]->get_text().length();
-		}
-
-		m_cursor_line_position.x = std::max(0, std::min(max, m_cursor_line_position.x));
-		set_cursor_position();
-	}
+		m_cursor.move_cursor({0, 1}, get_text_lines());
 	break;
 	default:
 		break;
@@ -109,16 +65,15 @@ void TextBox::on_key_down(SDL_Keycode code) {
 }
 
 void TextBox::set_text(std::string text) {
-	stop_timer();
-	start_timer();
+	m_cursor.reset_blink();
 
 	m_text_lines.clear();
 	m_text = text;
 
 	set_text_lines();
-	set_cursor_position();
-
 }
+
+
 
 void TextBox::set_text_lines() {
 
@@ -140,7 +95,7 @@ void TextBox::set_text_lines() {
 	int current_y_pos = 0;
 
 	for (const std::string &line : m_lines) {
-		auto label = std::make_shared<TextLabel>(m_factory);
+		auto label = std::make_shared<TextLabel>(m_texture_factory);
 
 		label->set_parent(this);
 		label->set_renderer(m_renderer);
@@ -151,25 +106,15 @@ void TextBox::set_text_lines() {
 		current_y_pos += height;
 		m_text_lines.push_back(label);
 	}
-
-	m_cursor_line_position.y = m_lines.size() - 1;
-	m_cursor_line_position.x = m_lines.back().length();
 }
 
-void TextBox::set_cursor_position() {
-
-	m_cursor_relative_position.x = 1;
-	m_cursor_relative_position.y = 0;
-
-	if (!m_text_lines.empty()) {
-		auto line_text = m_text_lines[m_cursor_line_position.y]->get_text();
-		line_text = utility::substring_utf8(line_text, 0, m_cursor_line_position.x);
-		int width = 0;
-		int height = 0;
-		m_renderer->text_width_and_height(line_text, m_font_size, &width, &height);
-		m_cursor_relative_position.x += width;
-		m_cursor_relative_position.y += height*m_cursor_line_position.y;
+std::vector<std::string> TextBox::get_text_lines() {
+	std::vector<std::string> ret;
+	for (auto line : m_text_lines) {
+		ret.push_back(line->get_text());
 	}
+
+	return ret;
 }
 
 void TextBox::draw() const {
@@ -178,12 +123,12 @@ void TextBox::draw() const {
 		line->draw();
 	}
 
-	if (m_draw_cursor) {
-		auto pos = m_cursor_relative_position;
-		pos.x += absolute_dimension().x;
-		pos.y += absolute_dimension().y;
-		do_draw(m_cursor, pos);
-	}
+	m_cursor.draw();
+}
+
+void TextBox::set_font_size(int size) {
+	m_font_size = size;
+	m_cursor.set_font_size(size);
 }
 
 } /* namespace sdl_gui */
