@@ -47,17 +47,26 @@ void TextCursor::move_cursor(const SDL_Point movement, const std::vector<std::st
 		}
 	}
 
-	// if moving outside the end of line, move the cursor to the beginning of the next line, or if on last line, back to the end
+	// if moving outside the end of line: if moving right,  move the cursor to the beginning of the next line, or if on last line, back to the end
+	// else if movement is up/down, move the cursor to end of the line
 	if (!lines.empty() && (size_t)m_cursor_line_position.x > lines[m_cursor_line_position.y].length()) {
+		if (movement.x > 0) {
 			if ((size_t)m_cursor_line_position.y == lines.size() - 1) {
 				m_cursor_line_position.x = lines[m_cursor_line_position.y].length();
 			} else {
 				++m_cursor_line_position.y;
 				m_cursor_line_position.x = 0;
 			}
+		} else if (movement.y != 0){
+			m_cursor_line_position.x = lines[m_cursor_line_position.y].length();
 		}
+	}
 
 	update_cursor_position(lines);
+}
+
+void  TextCursor::set_cursor_line_position(SDL_Point point, const std::vector<std::string> &lines) {
+	move_cursor({point.x - m_cursor_line_position.x, point.y - m_cursor_line_position.y }, lines);
 }
 
 void TextCursor::start_timer() {
@@ -102,9 +111,8 @@ void TextCursor::set_font_size(int size) {
 }
 
 void TextCursor::update_cursor_texture() {
-	if (m_renderer) {
+	if (m_renderer && m_texture_factory) {
 		int height = m_renderer->get_font_height(m_font_size);
-
 		m_background = m_texture_factory->create_text_cursor(1, height, {0, 0, 0, 255});
 		m_dimension.h = height;
 	}

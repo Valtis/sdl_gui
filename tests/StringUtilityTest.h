@@ -36,7 +36,7 @@ class StringUtilityTest : public CppUnit::TestFixture {
     CPPUNIT_TEST(erase_removes_single_character_from_ascii_correctly);
     CPPUNIT_TEST(erase_removes_multiple_characters_from_ascii_correctly);
     CPPUNIT_TEST(erase_removes_all_characters_from_ascii_correctly);
-
+    CPPUNIT_TEST(erase_handles_white_space);
 
     CPPUNIT_TEST(erase_does_not_erase_cyrillic_if_char_count_is_zero);
     CPPUNIT_TEST(erase_does_not_erase_cyrillic_if_char_count_is_negative);
@@ -326,6 +326,13 @@ private:
 	void erase_removes_mix_of_chinese_and_ascii() {
 		std::string text = "好久!!不a見va";
 		std::string expected = "好久!";
+		auto result = utility::erase_from_end_utf8(text, 6);
+		CPPUNIT_ASSERT_EQUAL(expected, result);
+	}
+
+	void erase_handles_white_space() {
+		std::string text = "abc def ghi jkl";
+		std::string expected = "abc def g";
 		auto result = utility::erase_from_end_utf8(text, 6);
 		CPPUNIT_ASSERT_EQUAL(expected, result);
 	}

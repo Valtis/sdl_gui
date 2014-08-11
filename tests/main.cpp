@@ -10,6 +10,7 @@
 #include "HelperTest.h"
 #include "StringUtilityTest.h"
 #include "TextLabelTest.h"
+#include "TextCursorTest.h"
 #include "UITest.h"
 #include "WindowTest.h"
 #include "WindowBaseTest.h"

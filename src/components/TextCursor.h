@@ -19,7 +19,7 @@ public:
 	void reset_blink();
 
 	void move_cursor(const SDL_Point movement, const std::vector<std::string> &lines);
-
+	void set_cursor_line_position(SDL_Point position, const std::vector<std::string> &lines);
 
 	void set_font_size(int font_size);
 	void set_texture_factory(std::shared_ptr<creation::ITextureFactory> factory);
