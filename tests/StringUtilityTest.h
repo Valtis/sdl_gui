@@ -71,6 +71,11 @@ class StringUtilityTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_if_length_is_larger_than_text_length);
 	CPPUNIT_TEST(substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_if_length_is_exactly_text_length);
 
+	CPPUNIT_TEST(glyph_count_returns_0_for_empty_string);
+	CPPUNIT_TEST(glyph_count_returns_correct_count_for_ascii);
+	CPPUNIT_TEST(glyph_count_returns_correct_count_for_cyrillic);
+	CPPUNIT_TEST(glyph_count_returns_correct_count_for_chinese);
+
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -386,6 +391,23 @@ private:
 
 	void substring_returns_correct_string_with_mix_of_ascii_and_cyrillic_if_length_is_exactly_text_length() {
 		CPPUNIT_ASSERT_EQUAL(std::string("хоро́ший"), utility::substring_utf8("хоро́ший", 0, 7));
+	}
+
+
+	void glyph_count_returns_0_for_empty_string() {
+		CPPUNIT_ASSERT_EQUAL(0, utility::glyph_count_utf8(""));
+	}
+
+	void glyph_count_returns_correct_count_for_ascii() {
+		CPPUNIT_ASSERT_EQUAL(11, utility::glyph_count_utf8("hello world"));
+	}
+
+	void glyph_count_returns_correct_count_for_cyrillic() {
+		CPPUNIT_ASSERT_EQUAL(15, utility::glyph_count_utf8("хоро́ший хоро́ший"));
+	}
+
+	void glyph_count_returns_correct_count_for_chinese() {
+		CPPUNIT_ASSERT_EQUAL(9, utility::glyph_count_utf8("好久不見 好久不見"));
 	}
 };
 

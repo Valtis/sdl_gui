@@ -19,6 +19,7 @@ namespace utility {
 	// TODO: replace with unicode library that handles this for us...
 	std::string substring_utf8(const std::string &text, const unsigned int  pos, const unsigned int length);
 	std::string erase_from_end_utf8(const std::string &text, const int erasable_char_count);
+	int glyph_count_utf8(const std::string &text);
 
 } /* namespace utility */
 } /* namespace sdl_gui*/

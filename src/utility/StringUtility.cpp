@@ -173,6 +173,19 @@ std::string erase_from_end_utf8(const std::string &text, const int erasable_char
 	}
 
 	return text.substr(0, pos);
+
+	//return substring_utf8(text, 0, glyph_count_utf_8(text)-erasable_char_count);
+}
+
+int glyph_count_utf8(const std::string &text) {
+	int count = 0;
+	for (int i = 0; i < text.length(); ++i) {
+		if (is_glyph(text, i)) {
+			++count;
+		}
+	}
+
+	return count;
 }
 
 } /* namespace utility */
