@@ -157,24 +157,11 @@ std::string substring_utf8(const std::string &text, const unsigned int pos, cons
 }
 
 std::string erase_from_end_utf8(const std::string &text, const int erasable_char_count) {
-	if (erasable_char_count <= 0) {
-		return text;
+	int character_count = glyph_count_utf8(text);
+	if (erasable_char_count >= character_count) {
+		return "";
 	}
-
-	int pos = text.length();
-	int erased_characters = 0;
-
-
-	while (erased_characters < erasable_char_count && pos > 0) {
-		--pos;
-		if (is_glyph(text, pos)) {
-			++erased_characters;
-		}
-	}
-
-	return text.substr(0, pos);
-
-	//return substring_utf8(text, 0, glyph_count_utf_8(text)-erasable_char_count);
+	return substring_utf8(text, 0, character_count - erasable_char_count);
 }
 
 int glyph_count_utf8(const std::string &text) {
