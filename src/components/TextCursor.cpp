@@ -5,134 +5,155 @@
 
 namespace sdl_gui {
 
-TextCursor::TextCursor() : m_font_size(0) , m_cursor_line_position{0, 0},  m_cursor_timer_id{0},
-		m_draw_cursor(false) {
-    m_dimension = {1, 0, 1, 0 };
+TextCursor::TextCursor() :
+        m_font_size(0), m_cursor_line_position { 0, 0 }, m_cursor_timer_id { 0 }, m_draw_cursor(false) {
+    m_dimension = {1, 0, 1, 0};
 }
 
 TextCursor::~TextCursor() {
 
 }
 
-
 void TextCursor::on_gaining_focus() {
-	start_timer();
+    start_timer();
 }
 
 void TextCursor::on_losing_focus() {
-	stop_timer();
-	m_draw_cursor = false;
+    stop_timer();
+    m_draw_cursor = false;
 }
 
 void TextCursor::reset_blink() {
-	stop_timer();
-	start_timer();
+    stop_timer();
+    start_timer();
 }
 
 void TextCursor::move_cursor(const SDL_Point movement, const std::vector<std::string> &lines) {
 
-	// fails if m_lines has more than 2^31 lines but this is mostly theoretical concern
-	m_cursor_line_position.y = std::max(0, std::min((int)lines.size() - 1, m_cursor_line_position.y + movement.y));
+    if (lines.size() == 0) {
+        m_cursor_line_position = {0, 0};
+    }
 
+    m_cursor_line_position.y = std::max((Sint64)0, std::min((Sint64) lines.size() - 1, (Sint64)m_cursor_line_position.y + movement.y));
 
-	m_cursor_line_position.x = m_cursor_line_position.x + movement.x;
+    const auto new_x = m_cursor_line_position.x + movement.x;
+    const auto line_length = utility::glyph_count_utf8(lines[m_cursor_line_position.y]);
 
-	// if x < 0, move to end of previous line, or if on first line, back to 0
-	if (m_cursor_line_position.x < 0) {
-		if (m_cursor_line_position.y == 0) {
-			m_cursor_line_position.x = 0;
-		} else {
-			--m_cursor_line_position.y;
-			m_cursor_line_position.x = lines[m_cursor_line_position.y].length();
-		}
-	}
+    // if moving right and new position is larger than glyph count in the line:
+    // * if the line in question is the last one, move the cursor back to the end of line
+    // * else, move the cursor to the beginning of next line
+    if (movement.x > 0 && new_x > line_length) {
+        if (m_cursor_line_position.y == lines.size() - 1) {
+            m_cursor_line_position.x = line_length;
+        } else {
+            ++m_cursor_line_position.y;
+            m_cursor_line_position.x = 0;
+        }
+        // if moving left, and cursor position is larger than glyph count (happens when moving up/down from longer line first as
+        // x-value is intentionally not updated, only constrained for drawing):
+        // set current cursor position to the end of current line and call the method again with the x-value so that any other constraints are respected
+    } else if (movement.x < 0 && new_x > line_length) {
+        m_cursor_line_position.x = line_length;
+        move_cursor( {movement.x, 0}, lines);
+    }
+    // if x is smaller than zero:
+    // * if at first line, set x to zero
+    // * otherwise, move the cursor the end of previous line
+    else if (new_x < 0) {
+        if (m_cursor_line_position.y == 0) {
+            m_cursor_line_position.x = 0;
+        } else {
+            --m_cursor_line_position.y;
+            m_cursor_line_position.x = utility::glyph_count_utf8(lines[m_cursor_line_position.y]);
+        }
+        // if new coordinate is within the line boundaries, just update the position
+    } else {
+        m_cursor_line_position.x = new_x;
+    }
 
-	// if moving outside the end of line: if moving right,  move the cursor to the beginning of the next line, or if on last line, back to the end
-	// else if movement is up/down, move the cursor to end of the line
-	if (!lines.empty() && (size_t)m_cursor_line_position.x > lines[m_cursor_line_position.y].length()) {
-		if (movement.x > 0) {
-			if ((size_t)m_cursor_line_position.y == lines.size() - 1) {
-				m_cursor_line_position.x = lines[m_cursor_line_position.y].length();
-			} else {
-				++m_cursor_line_position.y;
-				m_cursor_line_position.x = 0;
-			}
-		} else if (movement.y != 0){
-			m_cursor_line_position.x = lines[m_cursor_line_position.y].length();
-		}
-	}
-
-	update_cursor_position(lines);
+    update_cursor_position (lines);
 }
 
-void  TextCursor::set_cursor_line_position(SDL_Point point, const std::vector<std::string> &lines) {
-	move_cursor({point.x - m_cursor_line_position.x, point.y - m_cursor_line_position.y }, lines);
+void TextCursor::set_cursor_line_position(SDL_Point point, const std::vector<std::string> &lines) {
+    if (lines.size() == 0) {
+        m_cursor_line_position = { 0, 0 };
+    }
+
+    m_cursor_line_position.y = std::max((Sint64)0, std::min((Sint64) lines.size() - 1, (Sint64)point.y));
+
+    const int line_length = utility::glyph_count_utf8(lines[m_cursor_line_position.y]);
+    m_cursor_line_position.x = std::max((Sint64)0, std::min((Sint64)line_length, (Sint64)point.x));
+    update_cursor_position (lines);
 }
 
 void TextCursor::start_timer() {
-	m_draw_cursor = true;
-	if (m_cursor_timer_id == 0) {
-		m_cursor_timer_id = SDL_AddTimer(750, [](Uint32 interval, void *param) {
-			bool *draw_cursor = (bool *)param;
-			*draw_cursor = !(*draw_cursor);
-			return interval;
-		},
+    m_draw_cursor = true;
+    if (m_cursor_timer_id == 0) {
+        m_cursor_timer_id = SDL_AddTimer(750, [](Uint32 interval, void *param) {
+            bool *draw_cursor = (bool *)param;
+            *draw_cursor = !(*draw_cursor);
+            return interval;
+        },
 
-		&m_draw_cursor);
-	}
+        &m_draw_cursor);
+    }
 }
 
 void TextCursor::stop_timer() {
-	if (m_cursor_timer_id != 0) {
-		SDL_RemoveTimer(m_cursor_timer_id);
-		m_cursor_timer_id = 0;
-	}
+    if (m_cursor_timer_id != 0) {
+        SDL_RemoveTimer(m_cursor_timer_id);
+        m_cursor_timer_id = 0;
+    }
 }
 
 void TextCursor::update_cursor_position(const std::vector<std::string> &lines) {
 
-	m_dimension.x = 1;
-	m_dimension.y = 0;
+    const int x_offset = 1; // move cursor slightly to right so it looks better
+    m_dimension.x = x_offset;
+    m_dimension.y = 0;
 
-	if (!lines.empty()) {
-		auto line_text = lines[m_cursor_line_position.y];
-		line_text = utility::substring_utf8(line_text, 0, m_cursor_line_position.x);
-		int width = 0;
-		int height = 0;
-		m_renderer->text_width_and_height(line_text, m_font_size, &width, &height);
-		m_dimension.x += width;
-		m_dimension.y += height*m_cursor_line_position.y;
-	}
+    int max_width = 0;
+
+    if (!lines.empty()) {
+        auto line_text = lines[m_cursor_line_position.y];
+        m_renderer->text_width_and_height(line_text, m_font_size, &max_width, 0);
+
+        line_text = utility::substring_utf8(line_text, 0, m_cursor_line_position.x);
+        int width = 0;
+        int height = 0;
+        m_renderer->text_width_and_height(line_text, m_font_size, &width, &height);
+
+        m_dimension.x = std::min(max_width + x_offset, m_dimension.x + width);
+        m_dimension.y += height * m_cursor_line_position.y;
+    }
 }
 
 void TextCursor::set_font_size(int size) {
-	m_font_size = size;
-	update_cursor_texture();
+    m_font_size = size;
+    update_cursor_texture();
 }
 
 void TextCursor::update_cursor_texture() {
-	if (m_renderer && m_texture_factory) {
-		int height = m_renderer->get_font_height(m_font_size);
-		m_background = m_texture_factory->create_text_cursor(1, height, {0, 0, 0, 255});
-		m_dimension.h = height;
-	}
+    if (m_renderer && m_texture_factory) {
+        int height = m_renderer->get_font_height(m_font_size);
+        m_background = m_texture_factory->create_text_cursor(1, height, { 0, 0, 0, 255 });
+        m_dimension.h = height;
+    }
 }
 
 void TextCursor::set_renderer(rendering::Renderer *renderer) {
-	m_renderer = renderer;
-	update_cursor_texture();
+    m_renderer = renderer;
+    update_cursor_texture();
 }
 
 void TextCursor::set_texture_factory(std::shared_ptr<creation::ITextureFactory> factory) {
-	m_texture_factory = factory;
+    m_texture_factory = factory;
 }
 
 void TextCursor::draw() const {
-	if (m_draw_cursor) {
-		WindowBase::draw();
-	}
+    if (m_draw_cursor) {
+        WindowBase::draw();
+    }
 }
-
-
 
 } /* namespace sdl_gui */

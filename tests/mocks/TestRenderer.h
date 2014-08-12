@@ -1,6 +1,7 @@
 #ifndef TESTRENDERER_H_
 #define TESTRENDERER_H_
 #include "../../src/rendering/Renderer.h"
+#include "../../src/utility/StringUtility.h"
 #include <functional>
 
 namespace sdl_gui {
@@ -37,7 +38,7 @@ public:
 
 	void text_width_and_height(std::string text, int font_size, int *width, int *height) override {
 		if (width != nullptr) {
-			*width = text.length();
+			*width = utility::glyph_count_utf8(text);
 		}
 		if (height != nullptr) {
 			*height = 1;
