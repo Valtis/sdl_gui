@@ -77,7 +77,7 @@ private:
     std::shared_ptr<TestRenderer> m_test_renderer;
 
     void text_cursor_does_not_move_when_no_movement_asked() {
-        m_cursor->set_cursor_line_position({5, 3}, m_lines);
+        m_cursor->set_cursor_line_position( {5, 3}, m_lines);
         m_cursor->move_cursor( {0, 0}, m_lines);
 
         assert_position(5, 3);
