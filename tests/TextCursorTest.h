@@ -76,98 +76,82 @@ private:
     std::shared_ptr<TextCursor> m_cursor;
     std::shared_ptr<TestRenderer> m_test_renderer;
 
-    // relative dimension x has +1 added, this must be taken account when testing
-
     void text_cursor_does_not_move_when_no_movement_asked() {
         m_cursor->set_cursor_line_position({5, 3}, m_lines);
         m_cursor->move_cursor( {0, 0}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 6, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 3, m_cursor->relative_dimension().y);
+        assert_position(5, 3);
     }
 
     void text_cursor_moves_to_right_correctly_inside_a_line() {
         m_cursor->move_cursor( {4, 0}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 5, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 0, m_cursor->relative_dimension().y);
-
+        assert_position(4, 0);
     }
 
     void text_cursor_moves_to_left_correctly_inside_a_line() {
         m_cursor->set_cursor_line_position( {10, 0}, m_lines);
         m_cursor->move_cursor( {-5, 0}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 6, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 0, m_cursor->relative_dimension().y);
-
+        assert_position(5, 0);
     }
 
     void text_cursor_moves_up_correctly() {
         m_cursor->set_cursor_line_position( {10, 1}, m_lines);
         m_cursor->move_cursor( {0, -1}, m_lines);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 11, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 0, m_cursor->relative_dimension().y);
+        assert_position(10, 0);
     }
 
     void text_cursor_moves_down_correctly() {
         m_cursor->set_cursor_line_position( {10, 0}, m_lines);
         m_cursor->move_cursor( {0, 1}, m_lines);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 11, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 1, m_cursor->relative_dimension().y);
+        assert_position(10, 1);
     }
 
     void text_cursor_is_set_back_to_first_line_when_moving_up() {
         m_cursor->set_cursor_line_position( {5, 0}, m_lines);
         m_cursor->move_cursor( {0, -1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 6, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 0, m_cursor->relative_dimension().y);
+        assert_position(5, 0);
     }
 
     void text_cursor_is_set_back_to_last_line_when_moving_down() {
         m_cursor->set_cursor_line_position( {4, 3}, m_lines);
         m_cursor->move_cursor( {0, 1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 5, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 3, m_cursor->relative_dimension().y);
+        assert_position(4, 3);
     }
 
     void text_cursor_moves_to_end_of_line_if_next_line_is_shorter_and_moving_up() {
         m_cursor->set_cursor_line_position( {20, 1}, m_lines);
         m_cursor->move_cursor( {0, -1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 15, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 0, m_cursor->relative_dimension().y);
+        assert_position(14, 0);
     }
 
     void text_cursor_moves_to_end_of_line_if_next_line_is_shorter_and_moving_down() {
         m_cursor->set_cursor_line_position( {20, 1}, m_lines);
         m_cursor->move_cursor( {0, 1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 6, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 2, m_cursor->relative_dimension().y);
+        assert_position(5, 2);
     }
 
     void text_cursor_moves_to_end_of_previous_line_when_moving_left_from_longer_line() {
         m_cursor->set_cursor_line_position( {0, 1}, m_lines);
         m_cursor->move_cursor( {-1, 0}, m_lines);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 15, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 0, m_cursor->relative_dimension().y);
+        assert_position(14, 0);
     }
 
     void text_cursor_moves_to_end_of_previous_line_when_moving_left_from_shorter_line() {
         m_cursor->set_cursor_line_position( {0, 2}, m_lines);
         m_cursor->move_cursor( {-1, 0}, m_lines);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 22, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 1, m_cursor->relative_dimension().y);
+        assert_position(21, 1);
     }
 
     void text_cursor_moves_to_beginning_of_next_line_when_moving_right() {
         m_cursor->set_cursor_line_position( {14, 0}, m_lines);
         m_cursor->move_cursor( {1, 0}, m_lines);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 1, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 1, m_cursor->relative_dimension().y);
+        assert_position(0, 1);
     }
 
     void moving_down_from_longer_line_and_then_moving_left_works() {
@@ -175,8 +159,7 @@ private:
         m_cursor->move_cursor( {0, 1}, m_lines);
         m_cursor->move_cursor( {-1, 0}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 5, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 2, m_cursor->relative_dimension().y);
+        assert_position(4, 2);
 
     }
 
@@ -185,24 +168,20 @@ private:
         m_cursor->move_cursor( {0, 1}, m_lines);
         m_cursor->move_cursor( {1, 0}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 1, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 3, m_cursor->relative_dimension().y);
-
+        assert_position(0, 3);
     }
 
     void text_cursor_stops_at_upper_left_corner() {
         m_cursor->set_cursor_line_position( {0, 0}, m_lines);
         m_cursor->move_cursor( {-5, -2}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 1, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 0, m_cursor->relative_dimension().y);
+        assert_position(0, 0);
     }
 
     void text_cursor_stops_at_lower_right_corner() {
         m_cursor->move_cursor( {70, 5}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 16, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 3, m_cursor->relative_dimension().y);
+        assert_position(15, 3);
     }
 
     void text_cursor_maintains_old_x_position_when_moving_up() {
@@ -210,8 +189,7 @@ private:
         m_cursor->move_cursor( {0, -1}, m_lines);
         m_cursor->move_cursor( {0, -1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 9, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 1, m_cursor->relative_dimension().y);
+        assert_position(8, 1);
     }
 
     void text_cursor_maintains_old_x_position_when_moving_down() {
@@ -220,8 +198,7 @@ private:
         m_cursor->move_cursor( {0, 1}, m_lines);
         m_cursor->move_cursor( {0, 1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 11, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 3, m_cursor->relative_dimension().y);
+        assert_position(10, 3);
     }
 
     void text_cursor_maintains_old_x_position_when_moving_up_and_down() {
@@ -230,8 +207,7 @@ private:
         m_cursor->move_cursor( {0, -1}, m_lines);
         m_cursor->move_cursor( {0, 1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 21, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 1, m_cursor->relative_dimension().y);
+        assert_position(20, 1);
     }
 
     void text_cursor_maintains_old_x_position_when_moving_down_and_up() {
@@ -240,8 +216,7 @@ private:
         m_cursor->move_cursor( {0, 1}, m_lines);
         m_cursor->move_cursor( {0, -1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 21, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 1, m_cursor->relative_dimension().y);
+        assert_position(20, 1);
     }
 
     void text_cursor_old_position_is_reset_when_moving_left_and_right() {
@@ -252,8 +227,7 @@ private:
         m_cursor->move_cursor( {1, 0}, m_lines);
         m_cursor->move_cursor( {0, -1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 6, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 1, m_cursor->relative_dimension().y);
+        assert_position(5, 1);
     }
 
     void text_cursor_old_position_is_reset_when_moving_left() {
@@ -263,8 +237,7 @@ private:
         m_cursor->move_cursor( {-1, 0}, m_lines);
         m_cursor->move_cursor( {0, 1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 14, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 1, m_cursor->relative_dimension().y);
+        assert_position(13, 1);
     }
 
     void text_cursor_old_position_is_reset_when_moving_right() {
@@ -274,15 +247,18 @@ private:
         m_cursor->move_cursor( {-1, 0}, m_lines);
         m_cursor->move_cursor( {0, 1}, m_lines);
 
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 14, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 1, m_cursor->relative_dimension().y);
+        assert_position(13, 1);
     }
 
     void text_cursor_set_line_position_works() {
         m_cursor->set_cursor_line_position( {10, 1}, m_lines);
         m_cursor->set_cursor_line_position( {4, 2}, m_lines);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x coordinate", 5, m_cursor->relative_dimension().x);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y coordinate", 2, m_cursor->relative_dimension().y);
+        assert_position(4, 2);
+    }
+
+    void assert_position(int x, int y) {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x position", x, m_cursor->cursor_line_position(m_lines).x);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y position", y, m_cursor->cursor_line_position(m_lines).y);
     }
 
 };

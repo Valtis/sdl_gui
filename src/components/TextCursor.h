@@ -20,10 +20,12 @@ public:
 
 	void move_cursor(const SDL_Point movement, const std::vector<std::string> &lines);
 	void set_cursor_line_position(SDL_Point position, const std::vector<std::string> &lines);
+    SDL_Point cursor_line_position(const std::vector<std::string> &lines) const;
 
 	void set_font_size(int font_size);
 	void set_texture_factory(std::shared_ptr<creation::ITextureFactory> factory);
 	void set_renderer(rendering::Renderer *renderer);
+
 
 	void draw() const override;
 private:

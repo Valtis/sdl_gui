@@ -86,6 +86,18 @@ void TextCursor::set_cursor_line_position(SDL_Point point, const std::vector<std
     update_cursor_position (lines);
 }
 
+
+// m_cursor_line_position x value might be larger than the line allows so that when you move cursor up/down and move through shorter lines,
+// it snaps to correct position once line is long enough to allow this.
+// However, this method returns the visible position on screen, so x must be restricted to 0 < x < line_max_x
+SDL_Point TextCursor::cursor_line_position(const std::vector<std::string> &lines) const {
+    int max_position = utility::glyph_count_utf8(lines[m_cursor_line_position.y]);
+    return {
+        std::min(max_position, m_cursor_line_position.x),
+        m_cursor_line_position.y
+    };
+}
+
 void TextCursor::start_timer() {
     m_draw_cursor = true;
     if (m_cursor_timer_id == 0) {
