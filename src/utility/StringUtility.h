@@ -13,7 +13,8 @@ namespace rendering {
 
 namespace utility {
 
-	std::vector<std::string> tokenize(const std::string &text, const char delimiter);
+    // if include_delimiters is true, delimiters are added as separate strings to return vector
+	std::vector<std::string> tokenize(const std::string &text, const char delimiter, bool include_delimiters=false);
 	std::vector<std::string> wrap_text(const std::string &text, const int font_size, rendering::Renderer *renderer, const SDL_Rect &text_box_size, const std::pair<int, int> offsets_from_sides);
 
 	// TODO: replace with unicode library that handles this for us...

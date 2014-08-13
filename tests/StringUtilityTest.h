@@ -12,12 +12,10 @@ class StringUtilityTest: public CppUnit::TestFixture {
 CPPUNIT_TEST_SUITE(StringUtilityTest);
 
     CPPUNIT_TEST(tokenize_returns_empty_vector_for_empty_string);
-    CPPUNIT_TEST(tokenize_returns_vector_with_correct_size_if_no_separator_is_found_from_string);
     CPPUNIT_TEST(tokenize_returns_vector_with_correct_content_if_no_separator_is_found_from_string);
-    CPPUNIT_TEST(tokenize_returns_vector_with_correct_size_if_separator_is_found_from_string);
     CPPUNIT_TEST(tokenize_returns_vector_with_correct_content_if_separator_is_found_from_string);
-    CPPUNIT_TEST(tokenize_returns_vector_with_correct_size_if_multiple_separators_are_in_row_in_string);
     CPPUNIT_TEST(tokenize_returns_vector_with_correct_content_if_multiple_separators_are_in_row_in_string);
+    CPPUNIT_TEST(tokenize_returns_delimiters_if_include_delimiters_is_true);
 
     CPPUNIT_TEST(word_wrap_does_not_wrap_text_that_fits_the_field);
     CPPUNIT_TEST(word_wrap_wraps_two_liner_correctly);
@@ -97,41 +95,35 @@ private:
 
     void tokenize_returns_empty_vector_for_empty_string() {
         auto result = utility::tokenize("", ' ');
-        CPPUNIT_ASSERT_EQUAL((size_t )0, result.size());
-    }
-
-    void tokenize_returns_vector_with_correct_size_if_no_separator_is_found_from_string() {
-        auto result = utility::tokenize("string_to_tokenize", '*');
-        CPPUNIT_ASSERT_EQUAL((size_t )1, result.size());
+        assert_tokenization_is_correct({ }, result);
     }
 
     void tokenize_returns_vector_with_correct_content_if_no_separator_is_found_from_string() {
         auto result = utility::tokenize("string_to_tokenize", '*');
-        CPPUNIT_ASSERT_EQUAL(std::string("string_to_tokenize"), result.at(0));
-    }
-
-    void tokenize_returns_vector_with_correct_size_if_separator_is_found_from_string() {
-        auto result = utility::tokenize("string_to_ tokenize ", '_');
-        CPPUNIT_ASSERT_EQUAL((size_t )3, result.size());
+        assert_tokenization_is_correct({"string_to_tokenize"}, result);
     }
 
     void tokenize_returns_vector_with_correct_content_if_separator_is_found_from_string() {
         auto result = utility::tokenize("string_to_ tokenize ", '_');
-        CPPUNIT_ASSERT_EQUAL(std::string("string"), result.at(0));
-        CPPUNIT_ASSERT_EQUAL(std::string("to"), result.at(1));
-        CPPUNIT_ASSERT_EQUAL(std::string(" tokenize "), result.at(2));
-    }
-
-    void tokenize_returns_vector_with_correct_size_if_multiple_separators_are_in_row_in_string() {
-        auto result = utility::tokenize("string_____________to_____ tokenize ", '_');
-        CPPUNIT_ASSERT_EQUAL((size_t )3, result.size());
+        assert_tokenization_is_correct({"string", "to", " tokenize "}, result);
     }
 
     void tokenize_returns_vector_with_correct_content_if_multiple_separators_are_in_row_in_string() {
         auto result = utility::tokenize("string_____________to_____ tokenize ", '_');
-        CPPUNIT_ASSERT_EQUAL(std::string("string"), result.at(0));
-        CPPUNIT_ASSERT_EQUAL(std::string("to"), result.at(1));
-        CPPUNIT_ASSERT_EQUAL(std::string(" tokenize "), result.at(2));
+        assert_tokenization_is_correct({"string", "to", " tokenize "}, result);
+    }
+
+    void tokenize_returns_delimiters_if_include_delimiters_is_true() {
+        auto result = utility::tokenize("this_is_a__string", '_', true);
+        assert_tokenization_is_correct({"this", "_", "is", "_", "a", "_", "_", "string"}, result);
+    }
+
+    void assert_tokenization_is_correct(const std::vector<std::string> &expected, const std::vector<std::string> &actual) {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of tokens created when tokenizing", expected.size(),
+                actual.size());
+        for (size_t i = 0; i < expected.size(); ++i) {
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Tokens do not match", expected[i], actual[i]);
+        }
     }
 
     void word_wrap_does_not_wrap_text_that_fits_the_field() {
@@ -141,47 +133,47 @@ private:
 
     void word_wrap_wraps_two_liner_correctly() {
         auto wrapped_text = wrap("This is a test line", { 0, 0, 15, 200 }, { 0, 0 });
-        assert_word_wrap_content_is_correct( { "This is a test", "line" }, wrapped_text);
+        assert_word_wrap_content_is_correct( { "This is a test ", "line" }, wrapped_text);
     }
 
     void word_wrap_does_not_split_word_from_middle() {
         auto wrapped_text = wrap("This is largeish test line", { 0, 0, 15, 200 }, { 0, 0 });
-        assert_word_wrap_content_is_correct( { "This is", "largeish test", "line" }, wrapped_text);
+        assert_word_wrap_content_is_correct( { "This is ", "largeish test ", "line" }, wrapped_text);
     }
 
     void word_wrap_splist_correctly_when_long_word_is_first() {
         auto wrapped_text = wrap("gigantic_word_for_testing foo bar", { 0, 0, 15, 200 }, { 0, 0 });
-        assert_word_wrap_content_is_correct( { "gigantic_word_for_testing", "foo bar" }, wrapped_text);
+        assert_word_wrap_content_is_correct( { "gigantic_word_for_testing", " foo bar" }, wrapped_text);
     }
 
     void word_wrap_splist_correctly_when_long_word_is_last() {
         auto wrapped_text = wrap("foo bar gigantic_word_for_testing", { 0, 0, 15, 200 }, { 0, 0 });
-        assert_word_wrap_content_is_correct( { "foo bar", "gigantic_word_for_testing" }, wrapped_text);
+        assert_word_wrap_content_is_correct( { "foo bar ", "gigantic_word_for_testing" }, wrapped_text);
     }
 
     void word_wrap_does_not_split_word_that_is_too_long_to_fit_single_line() {
         auto wrapped_text = wrap("This is gigantic_word_for_testing test line", { 0, 0, 15, 200 }, { 0, 0 });
-        assert_word_wrap_content_is_correct( { "This is", "gigantic_word_for_testing", "test line"}, wrapped_text);
+        assert_word_wrap_content_is_correct( { "This is ", "gigantic_word_for_testing", " test line"}, wrapped_text);
     }
 
     void word_wrap_splits_with_left_offset_correctly() {
         auto wrapped_text = wrap("This is a test line", { 0, 0, 15, 200 }, { 5, 0 });
-        assert_word_wrap_content_is_correct( { "This is a", "test line"}, wrapped_text);
+        assert_word_wrap_content_is_correct( { "This is a ", "test line"}, wrapped_text);
     }
 
     void word_wrap_splits_with_right_offset_correctly() {
         auto wrapped_text = wrap("This is a test line", { 0, 0, 15, 200 }, { 0, 5 });
-        assert_word_wrap_content_is_correct( { "This is a", "test line"}, wrapped_text);
+        assert_word_wrap_content_is_correct( { "This is a ", "test line"}, wrapped_text);
     }
 
     void word_wrap_splits_with_both_offsets_correctly() {
         auto wrapped_text = wrap("This is a test line", { 0, 0, 15, 200 }, { 5, 5 });
-        assert_word_wrap_content_is_correct( { "This", "is a", "test", "line" }, wrapped_text);
+        assert_word_wrap_content_is_correct( { "This ", "is a ", "test ", "line" }, wrapped_text);
     }
 
     void word_wrap_splits_with_both_offsets_correctly_with_long_word() {
         auto wrapped_text = wrap("This is gigantic_word_for_testing test line", { 0, 0, 25, 200 }, { 5, 5 });
-        assert_word_wrap_content_is_correct( { "This is", "gigantic_word_for_testing", "test line" }, wrapped_text);
+        assert_word_wrap_content_is_correct( { "This is ", "gigantic_word_for_testing", " test line" }, wrapped_text);
     }
 
     void word_wrap_preserves_multiple_spaces_correctly_in_a_sentence() {
@@ -202,7 +194,6 @@ private:
         for (size_t i = 0; i < expected.size(); ++i) {
             CPPUNIT_ASSERT_EQUAL_MESSAGE("Wrapped line does not match", expected[i], actual[i]);
         }
-
     }
 
     void erase_does_not_erase_ascii_if_char_count_is_zero() {

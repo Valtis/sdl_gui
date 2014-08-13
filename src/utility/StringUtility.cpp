@@ -4,7 +4,7 @@
 namespace sdl_gui {
 namespace utility {
 
-std::vector<std::string> tokenize(const std::string &text, const char delimiter)
+std::vector<std::string> tokenize(const std::string &text, const char delimiter, bool include_delimiters)
 {
 	std::vector<std::string> tokens;
 
@@ -22,6 +22,11 @@ std::vector<std::string> tokenize(const std::string &text, const char delimiter)
 		if (!token.empty()) {
 			tokens.push_back(token);
 		}
+
+		if (include_delimiters) {
+		    tokens.push_back(std::string("") + delimiter);
+		}
+
 		begin_pos = end_pos+1;
 	}
 
@@ -51,7 +56,7 @@ std::vector<std::string> wrap_text(const std::string &text, const int font_size,
 std::vector<std::string> do_wrap(const std::string &text, const int font_size, rendering::Renderer *renderer, const int max_width) {
 
 	const char delimiter = ' ';
-	std::vector<std::string> tokens = tokenize(text, delimiter);
+	std::vector<std::string> tokens = tokenize(text, delimiter, true);
 	std::vector<std::string> wrapped_lines;
 
 
@@ -59,7 +64,7 @@ std::vector<std::string> do_wrap(const std::string &text, const int font_size, r
 
 	for (size_t i = 1; i < tokens.size(); ++i) {
 		int width = 0;
-		std::string new_string = wrapped_text + delimiter + tokens[i];
+		std::string new_string = wrapped_text + tokens[i];
 		renderer->text_width_and_height(new_string, font_size, &width, nullptr);
 
 		if (width <= max_width) {
