@@ -51,6 +51,12 @@ CPPUNIT_TEST_SUITE(StringUtilityTest);
     CPPUNIT_TEST(erase_removes_multiple_chinese_characters);
     CPPUNIT_TEST(erase_removes_mix_of_chinese_and_ascii);
 
+
+    CPPUNIT_TEST(erase_from_before_position_does_nothing_if_deleting_characters_from_beginning);
+    CPPUNIT_TEST(erase_from_before_position_deletes_from_middle);
+    CPPUNIT_TEST(erase_from_before_position_deletes_all_characters_from_position_if_requested_deletion_is_larger_than_position);
+    CPPUNIT_TEST(erase_from_before_position_deletes_from_end);
+
     CPPUNIT_TEST(substring_returns_empty_string_on_empty_input);
     CPPUNIT_TEST(substring_returns_empty_string_on_empty_input_and_with_large_length);
     CPPUNIT_TEST(substring_returns_empty_string_on_empty_input_and_with_large_initial_position);
@@ -76,6 +82,11 @@ CPPUNIT_TEST_SUITE(StringUtilityTest);
     CPPUNIT_TEST(glyph_count_returns_correct_count_for_ascii);
     CPPUNIT_TEST(glyph_count_returns_correct_count_for_cyrillic);
     CPPUNIT_TEST(glyph_count_returns_correct_count_for_chinese);
+    CPPUNIT_TEST(glyph_count_returns_correct_count_for_mixed_string);
+
+    CPPUNIT_TEST(adding_to_beginning_of_string_works);
+    CPPUNIT_TEST(adding_to_middle_of_string_works);
+    CPPUNIT_TEST(adding_to_end_of_string_works);
 
     CPPUNIT_TEST_SUITE_END()
     ;
@@ -95,30 +106,31 @@ private:
 
     void tokenize_returns_empty_vector_for_empty_string() {
         auto result = utility::tokenize("", ' ');
-        assert_tokenization_is_correct({ }, result);
+        assert_tokenization_is_correct( { }, result);
     }
 
     void tokenize_returns_vector_with_correct_content_if_no_separator_is_found_from_string() {
         auto result = utility::tokenize("string_to_tokenize", '*');
-        assert_tokenization_is_correct({"string_to_tokenize"}, result);
+        assert_tokenization_is_correct( { "string_to_tokenize" }, result);
     }
 
     void tokenize_returns_vector_with_correct_content_if_separator_is_found_from_string() {
         auto result = utility::tokenize("string_to_ tokenize ", '_');
-        assert_tokenization_is_correct({"string", "to", " tokenize "}, result);
+        assert_tokenization_is_correct( { "string", "to", " tokenize " }, result);
     }
 
     void tokenize_returns_vector_with_correct_content_if_multiple_separators_are_in_row_in_string() {
         auto result = utility::tokenize("string_____________to_____ tokenize ", '_');
-        assert_tokenization_is_correct({"string", "to", " tokenize "}, result);
+        assert_tokenization_is_correct( { "string", "to", " tokenize " }, result);
     }
 
     void tokenize_returns_delimiters_if_include_delimiters_is_true() {
         auto result = utility::tokenize("this_is_a__string", '_', true);
-        assert_tokenization_is_correct({"this", "_", "is", "_", "a", "_", "_", "string"}, result);
+        assert_tokenization_is_correct( { "this", "_", "is", "_", "a", "_", "_", "string" }, result);
     }
 
-    void assert_tokenization_is_correct(const std::vector<std::string> &expected, const std::vector<std::string> &actual) {
+    void assert_tokenization_is_correct(const std::vector<std::string> &expected,
+            const std::vector<std::string> &actual) {
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect number of tokens created when tokenizing", expected.size(),
                 actual.size());
         for (size_t i = 0; i < expected.size(); ++i) {
@@ -153,17 +165,17 @@ private:
 
     void word_wrap_does_not_split_word_that_is_too_long_to_fit_single_line() {
         auto wrapped_text = wrap("This is gigantic_word_for_testing test line", { 0, 0, 15, 200 }, { 0, 0 });
-        assert_word_wrap_content_is_correct( { "This is ", "gigantic_word_for_testing", " test line"}, wrapped_text);
+        assert_word_wrap_content_is_correct( { "This is ", "gigantic_word_for_testing", " test line" }, wrapped_text);
     }
 
     void word_wrap_splits_with_left_offset_correctly() {
         auto wrapped_text = wrap("This is a test line", { 0, 0, 15, 200 }, { 5, 0 });
-        assert_word_wrap_content_is_correct( { "This is a ", "test line"}, wrapped_text);
+        assert_word_wrap_content_is_correct( { "This is a ", "test line" }, wrapped_text);
     }
 
     void word_wrap_splits_with_right_offset_correctly() {
         auto wrapped_text = wrap("This is a test line", { 0, 0, 15, 200 }, { 0, 5 });
-        assert_word_wrap_content_is_correct( { "This is a ", "test line"}, wrapped_text);
+        assert_word_wrap_content_is_correct( { "This is a ", "test line" }, wrapped_text);
     }
 
     void word_wrap_splits_with_both_offsets_correctly() {
@@ -312,6 +324,35 @@ private:
         CPPUNIT_ASSERT_EQUAL(expected, result);
     }
 
+    void erase_from_before_position_does_nothing_if_deleting_characters_from_beginning() {
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string expected = "хоро́ший ascii 好久不見";
+        auto result = utility::erase_from_before_position_utf8(text, 0, 5);
+        CPPUNIT_ASSERT_EQUAL(expected, result);
+    }
+
+    void erase_from_before_position_deletes_from_middle() {
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string expected = "хоий ascii 好久不見";
+        auto result = utility::erase_from_before_position_utf8(text, 3, 5);
+        CPPUNIT_ASSERT_EQUAL(expected, result);
+    }
+
+
+    void erase_from_before_position_deletes_all_characters_from_position_if_requested_deletion_is_larger_than_position() {
+       std::string text = "хоро́ший ascii 好久不見";
+       std::string expected = "ий ascii 好久不見";
+       auto result = utility::erase_from_before_position_utf8(text, 7, 5);
+       CPPUNIT_ASSERT_EQUAL(expected, result);
+    }
+
+    void erase_from_before_position_deletes_from_end() {
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string expected = "хоро́ший ascii 好";
+        auto result = utility::erase_from_before_position_utf8(text, 3, 18);
+        CPPUNIT_ASSERT_EQUAL(expected, result);
+    }
+
     void substring_returns_empty_string_on_empty_input() {
         CPPUNIT_ASSERT_EQUAL(std::string(""), utility::substring_utf8("", 0, 0));
     }
@@ -386,6 +427,31 @@ private:
 
     void glyph_count_returns_correct_count_for_chinese() {
         CPPUNIT_ASSERT_EQUAL(9, utility::glyph_count_utf8("好久不見 好久不見"));
+    }
+
+    void glyph_count_returns_correct_count_for_mixed_string() {
+        CPPUNIT_ASSERT_EQUAL(18, utility::glyph_count_utf8("хоро́ший ascii 好久不見"));
+    }
+
+    void adding_to_beginning_of_string_works() {
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string addition = "*好久хоро́ascii*";
+        CPPUNIT_ASSERT_EQUAL(std::string("*好久хоро́ascii*хоро́ший ascii 好久不見"),
+                utility::add_text_to_position_utf8(text, addition, 0));
+    }
+
+    void adding_to_middle_of_string_works() {
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string addition = "*好久хоро́ascii*";
+        CPPUNIT_ASSERT_EQUAL(std::string("хоро́ш*好久хоро́ascii*ий ascii 好久不見"),
+                utility::add_text_to_position_utf8(text, addition, 5));
+    }
+
+    void adding_to_end_of_string_works() {
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string addition = "*好久хоро́ascii*";
+        CPPUNIT_ASSERT_EQUAL(std::string("хоро́ший ascii 好久不見*好久хоро́ascii*"),
+                utility::add_text_to_position_utf8(text, addition, 18));
     }
 };
 

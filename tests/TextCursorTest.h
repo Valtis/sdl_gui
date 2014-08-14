@@ -54,11 +54,19 @@ CPPUNIT_TEST_SUITE(TextCursorTest);
     CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insetion_to_back_when_no_text_wrap_happens);
     CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insertion_to_back_when_new_word_is_wrapped_to_next_line);
     CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insertion_to_back_when_existing_word_is_wrapped_to_next_line);
-
     CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_wrapping_does_not_change);
+    CPPUNIT_TEST(
+            text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_changes_but_cursor_does_not_change_line);
+    CPPUNIT_TEST(
+            text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_changes_and_cursor_moves_to_next_line);
 
-    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_changes_but_cursor_does_not_change_line);
-    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_changes_and_cursor_moves_to_next_line);
+    CPPUNIT_TEST(text_cursor_does_not_correctly_on_text_deletion_if_deleting_from_beginning_of_first_line);
+    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_deletion_from_end_when_wrapping_does_not_change);
+    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_deletion_from_end_when_wrapping_changes);
+    CPPUNIT_TEST(
+            text_cursor_moves_correctly_on_text_deletion_from_the_middle_of_the_sentence_when_wrapping_does_not_change);
+    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_deletion_from_the_middle_of_the_sentence_when_wrapping_changes);
+
     CPPUNIT_TEST_SUITE_END()
     ;
 
@@ -316,26 +324,61 @@ private:
 
     void text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_changes_but_cursor_does_not_change_line() {
         m_cursor->set_cursor_line_position( {10, 0}, m_lines);
-       std::string insertion = "changed ";
-       m_lines[0] = "this is a " + insertion;
-       m_lines[1] = "line " + m_lines[1];
-       auto text_line = construct_line();
+        std::string insertion = "changed ";
+        m_lines[0] = "this is a " + insertion;
+        m_lines[1] = "line " + m_lines[1];
+        auto text_line = construct_line();
 
-       m_cursor->text_insertion(insertion, text_line, m_lines);
-       assert_position(18, 0);
+        m_cursor->text_insertion(insertion, text_line, m_lines);
+        assert_position(18, 0);
     }
 
     void text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_changes_and_cursor_moves_to_next_line() {
-       m_cursor->set_cursor_line_position( {10, 0}, m_lines);
-       std::string insertion = "changed ";
-       m_lines[0] = "this is a ";
-       m_lines[1] = insertion + "line " + m_lines[1];
-       auto text_line = construct_line();
+        m_cursor->set_cursor_line_position( {10, 0}, m_lines);
+        std::string insertion = "changed ";
+        m_lines[0] = "this is a ";
+        m_lines[1] = insertion + "line " + m_lines[1];
+        auto text_line = construct_line();
 
-       m_cursor->text_insertion(insertion, text_line, m_lines);
-       assert_position(8, 1);
+        m_cursor->text_insertion(insertion, text_line, m_lines);
+        assert_position(8, 1);
     }
 
+    void text_cursor_does_not_correctly_on_text_deletion_if_deleting_from_beginning_of_first_line() {
+        m_cursor->set_cursor_line_position( {0, 0}, m_lines);
+        m_cursor->text_deletion(0, m_lines);
+        assert_position(0, 0);
+    }
+
+    void text_cursor_moves_correctly_on_text_deletion_from_end_when_wrapping_does_not_change() {
+        m_cursor->set_cursor_line_position( {15, 3}, m_lines);
+        m_lines[3] = "Chinese 好久不見";
+        m_cursor->text_deletion(3, m_lines);
+        assert_position(12, 3);
+    }
+
+    void text_cursor_moves_correctly_on_text_deletion_from_end_when_wrapping_changes() {
+
+        m_cursor->set_cursor_line_position( {15, 3}, m_lines);
+        m_lines = {"this is a line", "this is a longer line", "хоро́шChinese" };
+        m_cursor->text_deletion(8, m_lines);
+        assert_position(12, 2);
+    }
+
+    void text_cursor_moves_correctly_on_text_deletion_from_the_middle_of_the_sentence_when_wrapping_does_not_change() {
+        m_cursor->set_cursor_line_position( {4, 0}, m_lines);
+        m_lines[0] = "th is a line";
+        m_cursor->text_deletion(2, m_lines);
+        assert_position(2, 0);
+
+    }
+    void text_cursor_moves_correctly_on_text_deletion_from_the_middle_of_the_sentence_when_wrapping_changes() {
+       m_cursor->set_cursor_line_position( {2, 1}, m_lines);
+       m_lines[0] = "this is a lineis";
+       m_lines[1] = " a longer line";
+       m_cursor->text_deletion(2, m_lines);
+       assert_position(14, 0);
+    }
 
     std::string construct_line() {
         std::string text_line = "";

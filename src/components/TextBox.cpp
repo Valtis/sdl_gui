@@ -32,13 +32,9 @@ void TextBox::set_renderer(rendering::Renderer *renderer) {
  * text must be utf8-encoded
  */
 void TextBox::on_text_input(std::string text) {
-    int m_lines_count = m_text_lines.size();
+    std::string new_text = utility::add_text_to_position_utf8(m_text, text, m_cursor.cursor_character_position());
 
-    std::string new_text = utility::substring_utf8(m_text, 0, m_cursor.cursor_character_position()) +
-            text +
-            utility::substring_utf8(m_text, utility::glyph_count_utf8(text) + m_cursor.cursor_character_position()-1, std::string::npos);
-
-    set_text( new_text);
+    set_text(new_text);
 
     m_cursor.text_insertion(text, m_text, get_text_lines());
 }
@@ -47,11 +43,16 @@ void TextBox::on_key_down(SDL_Keycode code) {
     m_cursor.reset_blink();
 
     switch (code) {
+
+    case SDLK_DELETE:
+        break;
+
     case SDLK_BACKSPACE:
         if (m_text.length() > 0) {
-            m_text = utility::erase_from_end_utf8(m_text, 1);
+
+            m_text = utility::erase_from_before_position_utf8(m_text, 1, m_cursor.cursor_character_position());
             set_text(m_text);
-            m_cursor.move_cursor( { -1, 0 }, get_text_lines());
+            m_cursor.text_deletion(1, get_text_lines());
         }
         break;
     case SDLK_LEFT:

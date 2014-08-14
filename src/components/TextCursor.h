@@ -21,12 +21,11 @@ public:
     void move_cursor(const SDL_Point movement, const std::vector<std::string> &lines);
     void text_insertion(const std::string &inserted_text, const std::string &total_text_string,
             const std::vector<std::string> &new_lines);
-/*
-    void text_delete_from_behind_cursor(const int deletion_count, const std::string &total_text_string,
-            const std::vector<std::string> &new_lines);
 
-    void text_delete_from_front_of_cursor(const int deletion_count, const std::string &total_text_string,
-            const std::vector<std::string> &new_lines);*/
+    void text_deletion(const int deletion_count, const std::vector<std::string> &new_lines);
+    /*
+     void text_delete_from_front_of_cursor(const int deletion_count, const std::string &total_text_string,
+     const std::vector<std::string> &new_lines);*/
 
     void set_cursor_line_position(SDL_Point position, const std::vector<std::string> &lines);
     SDL_Point cursor_line_position(const std::vector<std::string> &lines) const;

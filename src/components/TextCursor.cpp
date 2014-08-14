@@ -131,6 +131,13 @@ void TextCursor::text_insertion(const std::string &inserted_text, const std::str
     update_cursor_position(new_lines);
 }
 
+void TextCursor::text_deletion(const int delete_count, const std::vector<std::string> &new_lines) {
+    m_cursor_character_position = std::max(0, m_cursor_character_position - delete_count);
+    calculate_cursor_line_position_from_character_position(new_lines);
+    update_cursor_position(new_lines);
+}
+
+
 
 void TextCursor::calculate_cursor_line_position_from_character_position(const std::vector<std::string> &new_lines) {
     int glyphs_remaining = m_cursor_character_position;
@@ -151,6 +158,7 @@ void TextCursor::update_cursor_line_position_by_line(const std::string &line, in
         glyphs_remaining = 0;
     }
 }
+
 
 // m_cursor_line_position x value might be larger than the line allows so that when you move cursor up/down and move through shorter lines,
 // it snaps to correct position once line is long enough to allow this.
