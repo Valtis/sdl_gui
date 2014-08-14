@@ -51,6 +51,14 @@ CPPUNIT_TEST_SUITE(TextCursorTest);
 
     CPPUNIT_TEST(text_cursor_set_line_position_works);
 
+    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insetion_to_back_when_no_text_wrap_happens);
+    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insertion_to_back_when_new_word_is_wrapped_to_next_line);
+    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insertion_to_back_when_existing_word_is_wrapped_to_next_line);
+
+    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_wrapping_does_not_change);
+
+    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_changes_but_cursor_does_not_change_line);
+    CPPUNIT_TEST(text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_changes_and_cursor_moves_to_next_line);
     CPPUNIT_TEST_SUITE_END()
     ;
 
@@ -254,6 +262,93 @@ private:
         m_cursor->set_cursor_line_position( {10, 1}, m_lines);
         m_cursor->set_cursor_line_position( {4, 2}, m_lines);
         assert_position(4, 2);
+    }
+
+    void text_cursor_moves_correctly_on_text_insetion_to_back_when_no_text_wrap_happens() {
+
+        std::string insertion = " and more";
+        m_cursor->set_cursor_line_position( {15, 3}, m_lines);
+
+        m_lines.back() += insertion;
+        auto text_line = construct_line();
+
+        m_cursor->text_insertion(insertion, text_line, m_lines);
+        assert_position(24, 3);
+    }
+
+    void text_cursor_moves_correctly_on_text_insertion_to_back_when_new_word_is_wrapped_to_next_line() {
+
+        m_cursor->set_cursor_line_position( {15, 3}, m_lines);
+
+        std::string insertion = "wrapped words here";
+        m_lines.push_back(insertion);
+        auto text_line = construct_line();
+
+        m_cursor->text_insertion(insertion, text_line, m_lines);
+
+        assert_position(18, 4);
+    }
+
+    void text_cursor_moves_correctly_on_text_insertion_to_back_when_existing_word_is_wrapped_to_next_line() {
+        m_cursor->set_cursor_line_position( {15, 3}, m_lines);
+
+        std::string insertion = "blablalbalba";
+        m_cursor->set_cursor_line_position( {15, 3}, m_lines);
+
+        m_lines[3] = "Chinese 好久不見 ";
+
+        m_lines.push_back("!!" + insertion);
+        auto text_line = construct_line();
+
+        m_cursor->text_insertion(insertion, text_line, m_lines);
+        assert_position(14, 4);
+    }
+
+    void text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_wrapping_does_not_change() {
+        m_cursor->set_cursor_line_position( {10, 0}, m_lines);
+        std::string insertion = "changed ";
+        m_lines[0] = "this is a " + insertion + "line";
+        auto text_line = construct_line();
+
+        m_cursor->text_insertion(insertion, text_line, m_lines);
+        assert_position(18, 0);
+    }
+
+    void text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_changes_but_cursor_does_not_change_line() {
+        m_cursor->set_cursor_line_position( {10, 0}, m_lines);
+       std::string insertion = "changed ";
+       m_lines[0] = "this is a " + insertion;
+       m_lines[1] = "line " + m_lines[1];
+       auto text_line = construct_line();
+
+       m_cursor->text_insertion(insertion, text_line, m_lines);
+       assert_position(18, 0);
+    }
+
+    void text_cursor_moves_correctly_on_text_insertion_to_middle_when_word_changes_and_cursor_moves_to_next_line() {
+       m_cursor->set_cursor_line_position( {10, 0}, m_lines);
+       std::string insertion = "changed ";
+       m_lines[0] = "this is a ";
+       m_lines[1] = insertion + "line " + m_lines[1];
+       auto text_line = construct_line();
+
+       m_cursor->text_insertion(insertion, text_line, m_lines);
+       assert_position(8, 1);
+    }
+
+
+    std::string construct_line() {
+        std::string text_line = "";
+        bool first_line = true;
+        for (auto &line : m_lines) {
+            if (!first_line) {
+                text_line += " ";
+            }
+
+            text_line += line;
+            first_line = false;
+        }
+        return text_line;
     }
 
     void assert_position(int x, int y) {
