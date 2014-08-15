@@ -13,10 +13,8 @@ TextCursorLinePosition::TextCursorLinePosition() :
 // However, this method returns the visible position on screen, so x must be restricted to 0 < x < line_max_x
 SDL_Point TextCursorLinePosition::cursor_line_position(const std::vector<std::string> &lines) const {
 
-    int max_position = 0;
-    if (!lines.empty()) {
-        max_position = utility::glyph_count_utf8(lines[m_cursor_line_position.y]);
-    }
+    int max_position = current_line_length(lines);
+
     return {
         std::min(max_position, m_cursor_line_position.x),
         m_cursor_line_position.y
@@ -60,20 +58,19 @@ void TextCursorLinePosition::handle_cursor_movement(const SDL_Point movement, co
     } else {
         set_cursor_position_to_new_position(new_x);
     }
-
 }
 
 bool TextCursorLinePosition::cursor_moving_right(const SDL_Point movement, const int new_x,
-        const std::vector<std::string> &lines) {
+        const std::vector<std::string> &lines) const {
     return movement.x > 0 && new_x > current_line_length(lines);
 }
 
 bool TextCursorLinePosition::cursor_moving_left_and_new_position_outside_right_edge(const SDL_Point movement,
-        const int new_x, const std::vector<std::string> &lines) {
+        const int new_x, const std::vector<std::string> &lines) const {
     return movement.x < 0 && new_x > current_line_length(lines);
 }
 
-bool TextCursorLinePosition::cursor_new_position_outside_left_edge(const int new_x) {
+bool TextCursorLinePosition::cursor_new_position_outside_left_edge(const int new_x) const {
     return new_x < 0;
 }
 
@@ -86,7 +83,7 @@ void TextCursorLinePosition::handle_right_movement(const std::vector<std::string
     }
 }
 
-bool TextCursorLinePosition::cursor_at_last_line(const size_t line_size) {
+bool TextCursorLinePosition::cursor_at_last_line(const size_t line_size) const {
     return m_cursor_line_position.y == line_size - 1;
 }
 
@@ -106,7 +103,7 @@ void TextCursorLinePosition::handle_cursor_outside_left_edge(const std::vector<s
     }
 }
 
-bool TextCursorLinePosition::cursor_at_first_line() {
+bool TextCursorLinePosition::cursor_at_first_line() const {
     return m_cursor_line_position.y == 0;
 }
 
@@ -118,7 +115,11 @@ void TextCursorLinePosition::set_cursor_position_to_new_position(const int new_x
     m_cursor_line_position.x = new_x;
 }
 
-int TextCursorLinePosition::current_line_length(const std::vector<std::string> &lines) {
+int TextCursorLinePosition::current_line_length(const std::vector<std::string> &lines) const {
+    if (lines.size() <= m_cursor_line_position.y) {
+        return 0;
+    }
+
     return utility::glyph_count_utf8(lines[m_cursor_line_position.y]);
 }
 
