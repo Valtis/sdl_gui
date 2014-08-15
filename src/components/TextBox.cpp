@@ -40,7 +40,6 @@ void TextBox::on_text_input(std::string text) {
 }
 
 void TextBox::on_key_down(SDL_Keycode code) {
-    m_cursor.reset_blink();
 
     switch (code) {
 
@@ -75,7 +74,6 @@ void TextBox::on_key_down(SDL_Keycode code) {
 }
 
 void TextBox::set_text(std::string text) {
-    m_cursor.reset_blink();
 
     m_text_lines.clear();
     m_text = text;
