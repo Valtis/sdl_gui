@@ -68,10 +68,8 @@ CPPUNIT_TEST_SUITE(TextCursorTest);
             text_cursor_moves_correctly_on_text_deletion_from_the_middle_of_the_sentence_when_wrapping_does_not_change);
     CPPUNIT_TEST(text_cursor_moves_correctly_on_text_deletion_from_the_middle_of_the_sentence_when_wrapping_changes);
 
-
     CPPUNIT_TEST(text_cursor_movement_followed_by_text_insert_works_correctly);
-    CPPUNIT_TEST(text_cursor_text_insert_followed_by_movement_works_correctly);
-    CPPUNIT_TEST_SUITE_END()
+    CPPUNIT_TEST(text_cursor_text_insert_followed_by_movement_works_correctly);CPPUNIT_TEST_SUITE_END()
     ;
 
 public:
@@ -96,11 +94,10 @@ private:
     std::shared_ptr<TextCursor> m_cursor;
     std::shared_ptr<TestRenderer> m_test_renderer;
 
-
     void text_cursor_movement_on_empty_lines_sets_cursor_line_position_to_beginning() {
-        std::vector<std::string> empty_lines = {};
-        m_cursor->move_cursor({5, 4}, empty_lines);
-        assert_position(0, 0);
+        std::vector<std::string> empty_lines;
+        m_cursor->move_cursor( {5, 4}, empty_lines);
+        assert_position(0, 0, empty_lines);
     }
 
     void text_cursor_does_not_move_when_no_movement_asked() {
@@ -371,7 +368,7 @@ private:
     void text_cursor_moves_correctly_on_text_deletion_from_end_when_wrapping_changes() {
 
         m_cursor->set_cursor_line_position( {15, 3}, m_lines);
-        m_lines = {"this is a line", "this is a longer line", "хоро́шChinese" };
+        m_lines = {"this is a line", "this is a longer line", "хоро́шChinese"};
         m_cursor->text_deletion(8, m_lines);
         assert_position(12, 2);
     }
@@ -384,17 +381,16 @@ private:
 
     }
     void text_cursor_moves_correctly_on_text_deletion_from_the_middle_of_the_sentence_when_wrapping_changes() {
-       m_cursor->set_cursor_line_position( {2, 1}, m_lines);
-       m_lines[0] = "this is a lineis";
-       m_lines[1] = " a longer line";
-       m_cursor->text_deletion(2, m_lines);
-       assert_position(14, 0);
+        m_cursor->set_cursor_line_position( {2, 1}, m_lines);
+        m_lines[0] = "this is a lineis";
+        m_lines[1] = " a longer line";
+        m_cursor->text_deletion(2, m_lines);
+        assert_position(14, 0);
     }
-
 
     void text_cursor_movement_followed_by_text_insert_works_correctly() {
         m_cursor->set_cursor_line_position( {0, 0}, m_lines);
-        m_cursor->move_cursor({2, 0}, m_lines);
+        m_cursor->move_cursor( {2, 0}, m_lines);
         m_lines[0] = "thaais is a line";
         m_cursor->text_insertion("aa", construct_line(), m_lines);
         assert_position(4, 0);
@@ -404,7 +400,7 @@ private:
         m_cursor->set_cursor_line_position( {0, 0}, m_lines);
         m_lines[0] = "aathis is a line";
         m_cursor->text_insertion("aa", construct_line(), m_lines);
-        m_cursor->move_cursor({2, 0}, m_lines);
+        m_cursor->move_cursor( {2, 0}, m_lines);
         assert_position(4, 0);
     }
 
@@ -427,6 +423,10 @@ private:
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y position", y, m_cursor->cursor_line_position(m_lines).y);
     }
 
+    void assert_position(int x, int y, const std::vector<std::string> &lines) {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect x position", x, m_cursor->cursor_line_position(lines).x);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("Incorrect y position", y, m_cursor->cursor_line_position(lines).y);
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(TextCursorTest);

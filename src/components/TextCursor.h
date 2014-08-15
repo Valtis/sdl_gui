@@ -3,6 +3,8 @@
 #include <SDL2/SDL.h>
 #include "WindowBase.h"
 
+#include "TextCursorLinePosition.h"
+
 namespace sdl_gui {
 namespace creation {
 class ITextureFactory;
@@ -21,7 +23,7 @@ public:
             const std::vector<std::string> &new_lines);
 
     void text_deletion(const int deletion_count, const std::vector<std::string> &new_lines);
-    void set_cursor_line_position(SDL_Point position, const std::vector<std::string> &lines);
+    void set_cursor_line_position(const SDL_Point position, const std::vector<std::string> &lines);
     SDL_Point cursor_line_position(const std::vector<std::string> &lines) const;
     int cursor_character_position() const {
         return m_cursor_character_position;
@@ -40,34 +42,13 @@ private:
     void update_cursor_texture();
     void update_cursor_screen_position(const std::vector<std::string> &lines);
     void update_cursor_text_position(const std::vector<std::string> &lines);
-    void calculate_cursor_line_position_from_character_position(const std::vector<std::string> &new_lines);
-    void update_cursor_line_position_by_line(const std::string &line, int &glyphs_remaining);
 
-    void update_cursor_y_position(const SDL_Point movement, const std::vector<std::string> &lines);
-
-    void handle_cursor_movement(const SDL_Point movement, const std::vector<std::string> &lines);
-    bool cursor_moving_right(const SDL_Point movement, const int new_x, const std::vector<std::string> &lines);
-    bool cursor_moving_left_and_new_position_outside_right_edge(const SDL_Point movement, const int new_x,
-            const std::vector<std::string> &lines);
-    bool cursor_new_position_outside_left_edge(const int new_x);
-
-    void handle_right_movement(const std::vector<std::string> &lines);
-    bool cursor_at_last_line(const size_t line_size);
-
-    void handle_cursor_outside_left_edge(const std::vector<std::string> &lines);
-    bool cursor_at_first_line();
-    void set_cursor_position_to_end_of_previous_line(const std::vector<std::string> &lines);
-
-    void handle_left_movement_outside_right_edge(const SDL_Point movement, const std::vector<std::string> &lines);
-
-    void set_cursor_position_to_new_position(int new_x);
-
-    int current_line_length(const std::vector<std::string> &lines);
 
     std::shared_ptr<creation::ITextureFactory> m_texture_factory;
     int m_font_size;
 
-    SDL_Point m_cursor_line_position; // x=the number of character the cursor is in front of, y = line number. Used to calculate new relative position on changes
+    TextCursorLinePosition m_line_position;
+
     int m_cursor_character_position; // 0 = before first character in unwrapped string, string.length_utf8() = position in the front of last character
     SDL_TimerID m_cursor_timer_id;
 
