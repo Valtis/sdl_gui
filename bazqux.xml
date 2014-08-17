@@ -5,5 +5,5 @@
     <button name="button2" x="70" y="10" w="50" h="20" r="255" g="0" b="0" on_click="set_label_text">
 	<text name="label2" halign="center" valign="center" text="baar"/>
     </button>
-    <text name="label3" text="huehue" x="10" y="40"/>
+    <text name="label3" text="text" x="10" y="40"/>
 </window>

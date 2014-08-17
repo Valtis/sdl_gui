@@ -55,6 +55,7 @@ void TextCursor::text_insertion(const std::string &inserted_text, const std::str
 }
 
 void TextCursor::text_deletion(const int delete_count, const std::vector<std::string> &new_lines) {
+    reset_blink();
     m_character_position.text_deletion(delete_count);
     m_line_position.calculate_cursor_line_position_from_character_position(m_character_position.cursor_character_position(), new_lines);
     update_cursor_screen_position(new_lines);
