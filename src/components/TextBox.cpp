@@ -46,7 +46,7 @@ void TextBox::on_key_down(SDL_Keycode code) {
     case SDLK_DELETE:
         m_text = utility::erase_from_after_position_utf8(m_text, 1, m_cursor.cursor_character_position());
         set_text(m_text);
-        m_cursor.reset_blink();
+        m_cursor.text_deletion(0, get_text_lines()); // when deleting with delete, we don't want the cursor to move, unless line wrapping changes
         break;
 
     case SDLK_BACKSPACE:

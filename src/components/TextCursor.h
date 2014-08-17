@@ -36,9 +36,9 @@ public:
 
     void draw() const override;
 
-    void reset_blink();
-private:
 
+private:
+    void reset_blink();
     void start_timer();
     void set_timer();
     void stop_timer();
