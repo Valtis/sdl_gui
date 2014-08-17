@@ -6,6 +6,10 @@
 
 namespace sdl_gui {
 
+
+/**
+ * This class handles the cursor position as x/y coordinates inside the text box. This allows easier handling of cursor movement with arrow keys inside the box
+ */
 class TextCursorLinePosition {
 public:
     TextCursorLinePosition();
