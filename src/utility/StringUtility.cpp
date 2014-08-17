@@ -174,6 +174,10 @@ std::string erase_from_before_position_utf8(const std::string &text, const int e
     return beginning + substring_utf8(text, position, std::string::npos);
 }
 
+std::string erase_from_after_position_utf8(const std::string &text, const int erasable_char_count, const int position) {
+    return substring_utf8(text, 0, position) + substring_utf8(text, position + erasable_char_count, std::string::npos);
+}
+
 int glyph_count_utf8(const std::string &text) {
     int count = 0;
     for (size_t i = 0; i < text.length(); ++i) {

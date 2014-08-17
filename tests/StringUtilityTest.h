@@ -51,11 +51,17 @@ CPPUNIT_TEST_SUITE(StringUtilityTest);
     CPPUNIT_TEST(erase_removes_multiple_chinese_characters);
     CPPUNIT_TEST(erase_removes_mix_of_chinese_and_ascii);
 
-
     CPPUNIT_TEST(erase_from_before_position_does_nothing_if_deleting_characters_from_beginning);
     CPPUNIT_TEST(erase_from_before_position_deletes_from_middle);
-    CPPUNIT_TEST(erase_from_before_position_deletes_all_characters_from_position_if_requested_deletion_is_larger_than_position);
+    CPPUNIT_TEST(
+            erase_from_before_position_deletes_all_characters_from_position_if_requested_deletion_is_larger_than_position);
     CPPUNIT_TEST(erase_from_before_position_deletes_from_end);
+
+    CPPUNIT_TEST(erase_from_after_position_removes_characters_from_beginning);
+    CPPUNIT_TEST(erase_from_after_position_removes_characters_from_middle);
+    CPPUNIT_TEST(erase_from_after_position_does_nothing_if_deleting_characters_from_the_end);
+    CPPUNIT_TEST(
+            erase_from_after_position_deletes_all_characters_if_requested_deletion_is_larger_than_the_remaining_string);
 
     CPPUNIT_TEST(substring_returns_empty_string_on_empty_input);
     CPPUNIT_TEST(substring_returns_empty_string_on_empty_input_and_with_large_length);
@@ -338,18 +344,45 @@ private:
         CPPUNIT_ASSERT_EQUAL(expected, result);
     }
 
-
     void erase_from_before_position_deletes_all_characters_from_position_if_requested_deletion_is_larger_than_position() {
-       std::string text = "хоро́ший ascii 好久不見";
-       std::string expected = "ий ascii 好久不見";
-       auto result = utility::erase_from_before_position_utf8(text, 7, 5);
-       CPPUNIT_ASSERT_EQUAL(expected, result);
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string expected = "ий ascii 好久不見";
+        auto result = utility::erase_from_before_position_utf8(text, 7, 5);
+        CPPUNIT_ASSERT_EQUAL(expected, result);
     }
 
     void erase_from_before_position_deletes_from_end() {
         std::string text = "хоро́ший ascii 好久不見";
         std::string expected = "хоро́ший ascii 好";
         auto result = utility::erase_from_before_position_utf8(text, 3, 18);
+        CPPUNIT_ASSERT_EQUAL(expected, result);
+    }
+
+    void erase_from_after_position_removes_characters_from_beginning() {
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string expected = "cii 好久不見";
+        auto result = utility::erase_from_after_position_utf8(text, 10, 0);
+        CPPUNIT_ASSERT_EQUAL(expected, result);
+    }
+
+    void erase_from_after_position_removes_characters_from_middle() {
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string expected = "хоро́ший as久不見";
+        auto result = utility::erase_from_after_position_utf8(text, 5, 10);
+        CPPUNIT_ASSERT_EQUAL(expected, result);
+    }
+
+    void erase_from_after_position_does_nothing_if_deleting_characters_from_the_end() {
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string expected = text;
+        auto result = utility::erase_from_after_position_utf8(text, 10, 18);
+        CPPUNIT_ASSERT_EQUAL(expected, result);
+    }
+
+    void erase_from_after_position_deletes_all_characters_if_requested_deletion_is_larger_than_the_remaining_string() {
+        std::string text = "хоро́ший ascii 好久不見";
+        std::string expected = "хоро́ший asci";
+        auto result = utility::erase_from_after_position_utf8(text, 255, 12);
         CPPUNIT_ASSERT_EQUAL(expected, result);
     }
 

@@ -22,6 +22,7 @@ namespace utility {
 	std::string erase_from_end_utf8(const std::string &text, const int erasable_char_count);
 	// deletes n character from the position; so characters position - n -> position are erased
 	std::string erase_from_before_position_utf8(const std::string &text, const int erasable_char_count, const int position);
+	std::string erase_from_after_position_utf8(const std::string &text, const int erasable_char_count, const int position);
 
 	int glyph_count_utf8(const std::string &text);
 	std::string add_text_to_position_utf8(const std::string &original, const std::string &new_text, const int position);

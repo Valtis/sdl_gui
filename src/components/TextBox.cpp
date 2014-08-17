@@ -44,6 +44,9 @@ void TextBox::on_key_down(SDL_Keycode code) {
     switch (code) {
 
     case SDLK_DELETE:
+        m_text = utility::erase_from_after_position_utf8(m_text, 1, m_cursor.cursor_character_position());
+        set_text(m_text);
+        m_cursor.reset_blink();
         break;
 
     case SDLK_BACKSPACE:
