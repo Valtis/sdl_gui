@@ -57,8 +57,8 @@ private:
     TextCursorLinePosition m_line_position;
     TextCursorCharacterPosition m_character_position;
 
-    const int m_cursor_x_offset; // offset to cursor position to make it look a bit better
     SDL_TimerID m_cursor_timer_id;
+    const int m_cursor_x_offset; // offset to cursor position to make it look a bit better
     bool m_draw_cursor;
 };
 

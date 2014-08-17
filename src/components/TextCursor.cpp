@@ -6,7 +6,7 @@
 namespace sdl_gui {
 
 TextCursor::TextCursor() :
-        m_font_size(0), m_cursor_timer_id { 0 }, m_draw_cursor(false), m_cursor_x_offset(1) {
+        m_font_size(0), m_cursor_timer_id { 0 }, m_cursor_x_offset(1), m_draw_cursor(false) {
     m_dimension = {1, 0, 1, 0};
 }
 

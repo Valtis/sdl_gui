@@ -84,7 +84,7 @@ void TextCursorLinePosition::handle_right_movement(const std::vector<std::string
 }
 
 bool TextCursorLinePosition::cursor_at_last_line(const size_t line_size) const {
-    return m_cursor_line_position.y == line_size - 1;
+    return (size_t)m_cursor_line_position.y == line_size - 1;
 }
 
 // cursor might still be right of the current line ending when moving left because when moving up\down, the x position is not updated
@@ -116,7 +116,7 @@ void TextCursorLinePosition::set_cursor_position_to_new_position(const int new_x
 }
 
 int TextCursorLinePosition::current_line_length(const std::vector<std::string> &lines) const {
-    if (lines.size() <= m_cursor_line_position.y) {
+    if (lines.size() <= (size_t)m_cursor_line_position.y) {
         return 0;
     }
 
@@ -128,7 +128,7 @@ void TextCursorLinePosition::calculate_cursor_line_position_from_character_posit
     int glyphs_remaining = cursor_character_position;
     m_cursor_line_position = {0, 0};
 
-    for (int i = 0; i < new_lines.size() && glyphs_remaining > 0; ++i) {
+    for (size_t i = 0; i < new_lines.size() && (size_t)glyphs_remaining > 0; ++i) {
         update_cursor_line_position_by_line(new_lines[i], glyphs_remaining);
     }
 }

@@ -11,8 +11,8 @@ std::vector<std::string> tokenize(const std::string &text, const char delimiter,
         return tokens;
     }
 
-    int begin_pos = 0;
-    int end_pos = 0;
+    size_t begin_pos = 0;
+    size_t end_pos = 0;
 
     while ((end_pos = text.find(delimiter, begin_pos)) != std::string::npos) {
         std::string token = text.substr(begin_pos, end_pos - begin_pos);
@@ -86,7 +86,7 @@ bool is_continuation_codepoint(int c) {
 }
 
 // Todo: Refactor (or better yet, replace with unicode library instead of implementing this)
-bool is_combining_character(const std::string &text, int start_pos) {
+bool is_combining_character(const std::string &text, size_t start_pos) {
     // Combining Diacritical Marks U+0300 - U+036F -> between bytes 11001100:10000000 and 11001101:10101111
 
     const char block_1_first_char = 0xcc; // 11001100
@@ -127,10 +127,10 @@ bool is_glyph(const std::string &text, int pos) {
     return !is_continuation_codepoint(text[pos]) && !is_combining_character(text, pos);
 }
 
-std::string substring_utf8(const std::string &text, const unsigned int pos, const unsigned int length) {
+std::string substring_utf8(const std::string &text, const size_t pos, const size_t length) {
 
-    int start_buffer_pos = 0;
-    int character_count = 0;
+    size_t start_buffer_pos = 0;
+    size_t character_count = 0;
     while (character_count <= pos && start_buffer_pos < text.length()) {
         if (is_glyph(text, start_buffer_pos)) {
             ++character_count;
@@ -143,7 +143,7 @@ std::string substring_utf8(const std::string &text, const unsigned int pos, cons
 
     std::string ret;
     character_count = 0;
-    for (int i = start_buffer_pos; character_count <= length && i < text.length(); ++i) {
+    for (size_t i = start_buffer_pos; character_count <= length && i < text.length(); ++i) {
 
         if (is_glyph(text, i)) {
             ++character_count;
@@ -170,12 +170,13 @@ std::string erase_from_before_position_utf8(const std::string &text, const int e
     if (erasable_char_count <= position) {
         beginning = substring_utf8(text, 0, position-erasable_char_count);
     }
+
     return beginning + substring_utf8(text, position, std::string::npos);
 }
 
 int glyph_count_utf8(const std::string &text) {
     int count = 0;
-    for (int i = 0; i < text.length(); ++i) {
+    for (size_t i = 0; i < text.length(); ++i) {
         if (is_glyph(text, i)) {
             ++count;
         }

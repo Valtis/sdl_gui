@@ -43,7 +43,8 @@ private:
 
     int current_line_length(const std::vector<std::string> &lines) const;
 
-    SDL_Point m_cursor_line_position; // x=the number of character the cursor is in front of, y = line number. Used to calculate new relative position on changes
+    // x=the number of character the cursor is in front of, y = line number. Used to calculate new relative position on changes. Neither value should ever be negative
+    SDL_Point m_cursor_line_position;
 };
 
 } /* namespace sdl_gui */
